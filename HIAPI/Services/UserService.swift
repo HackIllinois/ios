@@ -31,17 +31,15 @@ public final class UserService: BaseService {
     public static func favoriteEvent(userToken: String, eventID: String) -> APIRequest<FollowStatus> {
         var authorizationHeaders = HTTPHeaders()
         authorizationHeaders["Authorization"] = userToken
-        var body = HTTPBody()
-        body["eventId"] = eventID
-        return APIRequest<FollowStatus>(service: self, endpoint: "follow/", body: body, headers: authorizationHeaders, method: .PUT)
+        let endpoint = "follow/\(eventID)/"
+        return APIRequest<FollowStatus>(service: self, endpoint: endpoint, headers: authorizationHeaders, method: .PUT)
     }
     
     public static func unfavoriteEvent(userToken: String, eventID: String) -> APIRequest<FollowStatus> {
         var authorizationHeaders = HTTPHeaders()
         authorizationHeaders["Authorization"] = userToken
-        var body = HTTPBody()
-        body["eventId"] = eventID
-        return APIRequest<FollowStatus>(service: self, endpoint: "unfollow/", body: body, headers: authorizationHeaders, method: .PUT)
+        let endpoint = "unfollow/\(eventID)/"
+        return APIRequest<FollowStatus>(service: self, endpoint: endpoint, headers: authorizationHeaders, method: .DELETE)
     }
     
     public static func userScanEvent(userToken: String, eventID: String) -> APIRequest<UserCheckInStatus> {
