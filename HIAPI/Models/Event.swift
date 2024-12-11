@@ -130,5 +130,7 @@ public struct EventTracker: Codable {
 }
 
 public struct Attendance: Codable, APIReturnable {
-    public let status: String
+    public let success: Bool? // Present in success responses
+    public let error: String? // Present in error responses
+    public let message: String? // Present in error responses
 }

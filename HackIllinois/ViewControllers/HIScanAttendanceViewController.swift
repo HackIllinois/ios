@@ -187,36 +187,45 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
     func handleStaffCheckInAlert(status: String) {
         var alertTitle = "Error!"
         var alertMessage = ""
+
         self.respondingToQRCodeFound = true
+
         switch status {
-        case "Success":
+        case "Check-in successful!":
             alertTitle = "Success!"
             alertMessage = "You have successfully checked in."
             self.respondingToQRCodeFound = false
-        case "Error info: invalidHTTPReponse(code: 400, description: \"bad request\")":
-            alertMessage = "QR code expired."
-        case "Error info: invalidHTTPReponse(code: 500, description: \"internal error\")":
-            alertMessage = "Internal error."
-        case "Error info: invalidHTTPReponse(code: 401, description: \"unauthorized\")":
+        case "QR code expired.":
+            alertMessage = "The code for this event has expired."
+        case "NotFound":
+            alertMessage = "Could not find event."
+        case "Invalid token.":
             alertMessage = "Invalid token."
+        case "Internal server error.":
+            alertMessage = "Internal server error."
         default:
             alertMessage = "Something isn't quite right."
         }
+
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+
         if alertTitle == "Success!" {
             alert.addAction(
                 UIAlertAction(title: "OK", style: .default, handler: { _ in
                     self.dismiss(animated: true, completion: nil)
-                    //Dismisses view controller
+                    // Dismisses the view controller
                     self.didSelectCloseButton(self.closeButton)
                     NotificationCenter.default.post(name: .qrCodeSuccessfulScan, object: nil)
-                }))
+                })
+            )
         } else {
             alert.addAction(
                 UIAlertAction(title: "OK", style: .default, handler: { _ in
                     self.registerForKeyboardNotifications()
-                }))
+                })
+            )
         }
+
         self.present(alert, animated: true, completion: nil)
     }
 
@@ -235,17 +244,39 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
             var codeResult: Attendance?
             HIAPI.EventService.staffMeetingAttendanceCheckIn(userToken: String(user.token), eventId: eventId)
                 .onCompletion { result in
-                    do {
-                        let (codeResult, _) = try result.get()
-                        DispatchQueue.main.async { [self] in
-                                self.handleStaffCheckInAlert(status: codeResult.status)
-                        }
-                    } catch {
-                        DispatchQueue.main.async { [self] in
-                                self.handleStaffCheckInAlert(status: "Error info: \(error)")
-                        }
-                        print("Error info: \(error)")
-                    }
+                    switch result {
+                    case .success(let (attendance, _)): // `attendance` is already decoded into the `Attendance` model
+                            print("Success Response: \(attendance)")
+
+                            DispatchQueue.main.async {
+                                if let success = attendance.success, success {
+                                                self.handleStaffCheckInAlert(status: "Check-in successful!")
+                                            } else if let error = attendance.error {
+                                                self.handleStaffCheckInAlert(status: error)
+                                            } else {
+                                                self.handleStaffCheckInAlert(status: "Something isn't quite right")
+                                            }
+                                        }
+                    case .failure(let error): // Handle failure responses
+                               print("Request failed with error: \(error)")
+
+                        DispatchQueue.main.async {
+                                // Extract error description
+                            let rawErrorString = String(describing: error).lowercased()
+                            print("Raw Error String: \(rawErrorString)")
+                                if rawErrorString.contains("code: 400") {
+                                    self.handleStaffCheckInAlert(status: "QR code expired.")
+                                } else if rawErrorString.contains("code: 401") {
+                                    self.handleStaffCheckInAlert(status: "Invalid token.")
+                                } else if rawErrorString.contains("code: 500") {
+                                    self.handleStaffCheckInAlert(status: "Internal server error.")
+                                } else if rawErrorString.contains("code: 402") {
+                                    self.handleStaffCheckInAlert(status: "NotFound")
+                                } else {
+                                    self.handleStaffCheckInAlert(status: "Something isn't quite right.")
+                                }
+                            }
+                           }
                     sleep(2)
                 }
                 .authorize(with: HIApplicationStateController.shared.user)
