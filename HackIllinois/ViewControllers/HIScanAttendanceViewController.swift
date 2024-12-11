@@ -195,13 +195,13 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
             alertTitle = "Success!"
             alertMessage = "You have successfully checked in."
             self.respondingToQRCodeFound = false
-        case "CodeExpired":
+        case "QR code expired.":
             alertMessage = "The code for this event has expired."
         case "NotFound":
             alertMessage = "Could not find event."
-        case "Unauthorized":
+        case "Invalid token.":
             alertMessage = "Invalid token."
-        case "InternalError":
+        case "Internal server error.":
             alertMessage = "Internal server error."
         default:
             alertMessage = "Something isn't quite right."
@@ -257,11 +257,25 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
                                                 self.handleStaffCheckInAlert(status: "Something isn't quite right")
                                             }
                                         }
-                                    case .failure(let error):
-                                        print("Request failed with error: \(error)")
-                                        DispatchQueue.main.async {
-                                            self.handleStaffCheckInAlert(status: "Network or API Error")
-                                        }
+                    case .failure(let error): // Handle failure responses
+                               print("Request failed with error: \(error)")
+
+                        DispatchQueue.main.async {
+                                // Extract error description
+                            let rawErrorString = String(describing: error).lowercased()
+                            print("Raw Error String: \(rawErrorString)")
+                                if rawErrorString.contains("code: 400") {
+                                    self.handleStaffCheckInAlert(status: "QR code expired.")
+                                } else if rawErrorString.contains("code: 401") {
+                                    self.handleStaffCheckInAlert(status: "Invalid token.")
+                                } else if rawErrorString.contains("code: 500") {
+                                    self.handleStaffCheckInAlert(status: "Internal server error.")
+                                } else if rawErrorString.contains("code: 402") {
+                                    self.handleStaffCheckInAlert(status: "NotFound")
+                                } else {
+                                    self.handleStaffCheckInAlert(status: "Something isn't quite right.")
+                                }
+                            }
                            }
                     sleep(2)
                 }
