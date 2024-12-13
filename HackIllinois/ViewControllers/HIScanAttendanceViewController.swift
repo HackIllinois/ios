@@ -196,13 +196,13 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
             alertMessage = "You have successfully checked in."
             self.respondingToQRCodeFound = false
         case "QR code expired.":
-            alertMessage = "The code for this event has expired."
+            alertMessage = "The check-in code for this event has expired."
         case "NotFound":
-            alertMessage = "Could not find event."
+            alertMessage = "The event could not be found. Ensure the QR code is correct and try again."
         case "Invalid token.":
-            alertMessage = "Invalid token."
+            alertMessage = "Invalid token. You do not have the necessary permissions to check in."
         case "Internal server error.":
-            alertMessage = "Internal server error."
+            alertMessage = "An internal server error occurred. Please try again later."
         default:
             alertMessage = "Something isn't quite right."
         }
@@ -270,7 +270,7 @@ extension HIScanAttendanceViewController: AVCaptureMetadataOutputObjectsDelegate
                                     self.handleStaffCheckInAlert(status: "Invalid token.")
                                 } else if rawErrorString.contains("code: 500") {
                                     self.handleStaffCheckInAlert(status: "Internal server error.")
-                                } else if rawErrorString.contains("code: 402") {
+                                } else if rawErrorString.contains("code: 404") {
                                     self.handleStaffCheckInAlert(status: "NotFound")
                                 } else {
                                     self.handleStaffCheckInAlert(status: "Something isn't quite right.")
