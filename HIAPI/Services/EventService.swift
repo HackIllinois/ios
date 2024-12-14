@@ -45,6 +45,7 @@ public class EventService: BaseService {
         body["eventId"] = eventId
         var headers = HTTPHeaders()
         headers["Authorization"] = userToken
+        print(APIRequest<Attendance>(service: self, endpoint: "staff/attendance/", body: body, headers: headers, method: .POST))
         return APIRequest<Attendance>(service: self, endpoint: "staff/attendance/", body: body, headers: headers, method: .POST)
     }
 
