@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Background@1x.png",
+      "filename" : "iPhone 16 - 1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Background@2x.png",
+      "filename" : "iPhone 16 - 1 (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Background@3x.png",
+      "filename" : "iPhone 16 - 1 (2).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
