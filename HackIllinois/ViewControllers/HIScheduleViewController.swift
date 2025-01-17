@@ -244,7 +244,7 @@ extension HIScheduleViewController {
     @objc func scheduleButtonTapped(_ sender: UIButton) {
         if onlyShifts {
             onlyShifts = false
-            backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
+            backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
             labelColor = .white // Set label color to brown
             setStaffShiftsControl()
             // Call removeStaffShiftContainerViews to remove container views for staff shifts

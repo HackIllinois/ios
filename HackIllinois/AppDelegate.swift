@@ -181,7 +181,7 @@ extension AppDelegate {
                     if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                         if appVersion.compare(apiVersion, options: .numeric) == .orderedAscending {
                             // App version is less than API version, prompt the user to update
-                            self.showUpdateAlert()
+//                            self.showUpdateAlert()
                         }
                     }
                 }
