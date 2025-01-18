@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -404,6 +404,10 @@
 		E1E4A5D8291C9BF700780BA1 /* HIOnboardingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HIOnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D71E2D312D3C63AB00494870 /* EventsFilterView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = EventsFilterView; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		9518277C1EA35AF100049F79 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -655,6 +659,7 @@
 		95A7D279203D4F54005EAEAF /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				D71E2D312D3C63AB00494870 /* EventsFilterView */,
 				95A7D280203D4F54005EAEAF /* TableView */,
 				95069260203EE14000D7C34C /* Animations */,
 				1C63EE672768078C00D60653 /* CarouselView */,
@@ -899,6 +904,9 @@
 			dependencies = (
 				D1ABA6672AC51B46008BE819 /* PBXTargetDependency */,
 				AC607EF3261CD6E300B88798 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D71E2D312D3C63AB00494870 /* EventsFilterView */,
 			);
 			name = HackIllinois;
 			packageProductDependencies = (
