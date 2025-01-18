@@ -1,3 +1,5 @@
+import UIKit
+
 //
 //  HIScheduleViewController.swift
 //  HackIllinois
@@ -13,7 +15,6 @@
 import Foundation
 import UIKit
 import CoreData
-import HIAPI
 
 class HIScheduleViewController: HIEventListViewController {
     // MARK: - Properties
@@ -78,9 +79,9 @@ class HIScheduleViewController: HIEventListViewController {
 
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
-        backgroundView.image = #imageLiteral(resourceName: "Background")
+        backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
         if UIDevice.current.userInterfaceIdiom == .pad {
-            backgroundView.image = #imageLiteral(resourceName: "Background")
+            backgroundView.image = #imageLiteral(resourceName: "BackgroundPad")
         }
     }
 }
@@ -99,12 +100,11 @@ extension HIScheduleViewController {
 
     @objc func didSelectFavoritesIcon(_ sender: UIBarButtonItem) {
         onlyFavorites = !onlyFavorites
-        let extractedExpr = #imageLiteral(resourceName: "Big Selected Bookmark")
-        sender.image = onlyFavorites ? extractedExpr : #imageLiteral(resourceName: "Big Unselected Bookmark")
+        sender.image = onlyFavorites ? #imageLiteral(resourceName: "Big Selected Bookmark") : #imageLiteral(resourceName: "Big Unselected Bookmark")
         if UIDevice.current.userInterfaceIdiom == .pad {
             sender.image = onlyFavorites ? #imageLiteral(resourceName: "BookmarkSelected") : #imageLiteral(resourceName: "BookmarkUnselected")
         }
-        if sender.image == extractedExpr {
+        if sender.image == #imageLiteral(resourceName: "Big Selected Bookmark") {
             super.setCustomTitle(customTitle: "SAVED EVENTS")
         } else {
             super.setCustomTitle(customTitle: "SCHEDULE")
@@ -119,7 +119,6 @@ extension HIScheduleViewController {
 
     func currentPredicate() -> NSPredicate {
         let currentTabPredicate = dataStore[currentTab].predicate
-
         if onlyFavorites {
             let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [currentTabPredicate, onlyFavoritesPredicate])
             return compoundPredicate
@@ -246,7 +245,7 @@ extension HIScheduleViewController {
     @objc func scheduleButtonTapped(_ sender: UIButton) {
         if onlyShifts {
             onlyShifts = false
-            backgroundView.image = #imageLiteral(resourceName: "Background")
+            backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
             labelColor = .white // Set label color to brown
             setStaffShiftsControl()
             // Call removeStaffShiftContainerViews to remove container views for staff shifts
@@ -260,7 +259,7 @@ extension HIScheduleViewController {
     @objc func shiftsButtonTapped(_ sender: UIButton) {
         if !onlyShifts {
             onlyShifts = !onlyShifts
-            backgroundView.image = #imageLiteral(resourceName: "Background")
+            backgroundView.image = #imageLiteral(resourceName: "Pink Background")
             hasSelectedShift = true
             labelColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1) // Set label color to brown
             setStaffShiftsControl()
@@ -352,8 +351,8 @@ extension HIScheduleViewController {
             // Add time, location, and description labels to shift cells
             // Time label set up
             var eventCellSpacing: CGFloat = 8.0
-            let locationImageName = (UIDevice.current.userInterfaceIdiom == .pad) ? "Location" : "LocationSign"
-            let timeImageName = (UIDevice.current.userInterfaceIdiom == .pad) ? "SandTimer" : "Clock"
+            let locationImageName = (UIDevice.current.userInterfaceIdiom == .pad) ? "VectorPad" : "LocationSign"
+            let timeImageName = (UIDevice.current.userInterfaceIdiom == .pad) ? "TimePad" : "Clock"
             var locationImageView = UIImageView(image: #imageLiteral(resourceName: "\(locationImageName)")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "\(timeImageName)"))
             let timeLabel = HILabel(style: .time)
             timeLabel.text = Formatter.simpleTime.string(from: staffShift.startTime) + " - " + Formatter.simpleTime.string(from: staffShift.endTime)

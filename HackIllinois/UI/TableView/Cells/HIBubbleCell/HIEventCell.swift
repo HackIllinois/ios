@@ -106,16 +106,16 @@ extension HIEventCell {
         lhs.favoritedButton.isActive = rhs.favorite
         var contentStackViewHeight: CGFloat = 0.0; var eventCellSpacing: CGFloat = 8.0
         var stackViewSpacing: CGFloat = 4.7; var bubbleConstant: CGFloat = 1.0
-        var locationImageView = UIImageView(image: #imageLiteral(resourceName: "LocationSign")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "Clock"))
-        var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Vector")); let titleLabel = HILabel(style: .event)
+        var locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
+        var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor")); let titleLabel = HILabel(style: .event)
         titleLabel.numberOfLines = 2; titleLabel.text = rhs.name
         lhs.headerView.addArrangedSubview(titleLabel)
         lhs.headerView.setCustomSpacing(9, after: titleLabel)
         if UIDevice.current.userInterfaceIdiom == .pad {
             eventCellSpacing = 12.0; stackViewSpacing = 15.0; bubbleConstant = 2.0
-            locationImageView = UIImageView(image: #imageLiteral(resourceName: "VectorPad"))
-            timeImageView = UIImageView(image: #imageLiteral(resourceName: "TimePad"))
-            sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "SponsorPad"))
+            locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location"))
+            timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
+            sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor"))
             lhs.headerView.setCustomSpacing(18, after: titleLabel)
         }
         titleLabel.constrain(width: lhs.contentView.frame.width - 120, height: (HILabel.heightForView(text: rhs.name, font: HIAppearance.Font.eventTitle!, width: lhs.contentView.frame.width - 137)) * bubbleConstant)

@@ -31,7 +31,7 @@ class HIScheduleSegmentedControl: HISegmentedControl {
 
     private var indicatorView = UIImageView(image: #imageLiteral(resourceName: "Indicator"))
     
-    private var selectedPotionView: UIImageView? // Keep track of the selected potion
+    private var selectedGreyBlockView: UIImageView? // Keep track of the selected potion
     
     let padConstant = (UIDevice.current.userInterfaceIdiom == .pad) ? 2.0 : 1
     // MARK: - Init
@@ -113,23 +113,32 @@ class HIScheduleSegmentedControl: HISegmentedControl {
         let view = UIView()
         let titleLabel = UILabel()
         let numberLabel = UILabel()
-        var potionView = UIImageView(image: #imageLiteral(resourceName: "Purple Potion"))
+        var greyBlockView = UIImageView(image: #imageLiteral(resourceName: "GreyBlock"))
         if UIDevice.current.userInterfaceIdiom == .pad {
-            potionView = UIImageView(image: #imageLiteral(resourceName: "PurplePotionPad"))
+            greyBlockView = UIImageView(image: #imageLiteral(resourceName: "GreyBlock"))
         }
+        
+        
         if index == selectedIndex {
             // If it's the selected index, set the potion view color to pink
             if UIDevice.current.userInterfaceIdiom == .pad {
-                potionView.image = #imageLiteral(resourceName: "PinkPotionPad")
+                greyBlockView.image = #imageLiteral(resourceName: "GreyBlock")
+                
             } else {
-                potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                
+                greyBlockView.image = #imageLiteral(resourceName: "GreyBlock")
             }
-            selectedPotionView = potionView
+            selectedGreyBlockView = greyBlockView
         }
+        
+        greyBlockView.translatesAutoresizingMaskIntoConstraints = false
+        greyBlockView.contentMode = .scaleAspectFit // Prevent stretching
+        greyBlockView.clipsToBounds = true
+        
         // Set up titleLabel and numberLabel
-        potionView.addSubview(titleLabel)
-        potionView.addSubview(numberLabel)
-        view.addSubview(potionView)
+        greyBlockView.addSubview(titleLabel)
+        greyBlockView.addSubview(numberLabel)
+        view.addSubview(greyBlockView)
         titleLabel.textAlignment = .center
         if UIDevice.current.userInterfaceIdiom == .pad {
             titleLabel.font = titleFontPad
@@ -145,15 +154,17 @@ class HIScheduleSegmentedControl: HISegmentedControl {
         numberLabel.textColor <- \.darkGreenText
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
-        potionView.translatesAutoresizingMaskIntoConstraints = false
+        greyBlockView.translatesAutoresizingMaskIntoConstraints = false
         var segmentedControlConstant = -10.0
         if UIDevice.current.userInterfaceIdiom == .pad {
             segmentedControlConstant = 0
         }
-        numberLabel.constrain(to: potionView, topInset: 30 * padConstant, trailingInset: 0, leadingInset: 0)
-        titleLabel.constrain(to: potionView, trailingInset: 0, bottomInset: 0, leadingInset: 0)
+        
+        numberLabel.constrain(to: greyBlockView, topInset: 20 * padConstant, trailingInset: 0, leadingInset: 0)
+        titleLabel.constrain(to: greyBlockView, trailingInset: 0, bottomInset: 0, leadingInset: 0)
         titleLabel.topAnchor.constraint(equalTo: numberLabel.bottomAnchor, constant: segmentedControlConstant).isActive = true
         titleLabel.heightAnchor.constraint(equalTo: numberLabel.heightAnchor).isActive = true
+        
 
         view.isUserInteractionEnabled = false
         titleLabel.isUserInteractionEnabled = false
@@ -168,21 +179,21 @@ class HIScheduleSegmentedControl: HISegmentedControl {
 
     override func didSetSelectedIndex(oldValue: Int) {
         if oldValue != selectedIndex {
-            selectedPotionView?.image = #imageLiteral(resourceName: "Purple Potion")
+            selectedGreyBlockView?.image = #imageLiteral(resourceName: "GreyBlock")
             if UIDevice.current.userInterfaceIdiom == .pad {
-                selectedPotionView?.image = #imageLiteral(resourceName: "PurplePotionPad")
+                selectedGreyBlockView?.image = #imageLiteral(resourceName: "GreyBlock")
             } else {
-                selectedPotionView?.image = #imageLiteral(resourceName: "Purple Potion")
+                selectedGreyBlockView?.image = #imageLiteral(resourceName: "GreyBlock")
             }
 
             // Update the color of the newly selected potion
-            if let potionView = views[selectedIndex].subviews.first as? UIImageView {
+            if let greyBlockView = views[selectedIndex].subviews.first as? UIImageView {
                 if UIDevice.current.userInterfaceIdiom == .pad {
-                    potionView.image = #imageLiteral(resourceName: "PinkPotionPad")
+                    greyBlockView.image = #imageLiteral(resourceName: "GreyBlock")
                 } else {
-                    potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                    greyBlockView.image = #imageLiteral(resourceName: "GreyBlock")
                 }
-                selectedPotionView = potionView
+                selectedGreyBlockView = greyBlockView
             }
             displayNewSelectedIndex()
             sendActions(for: .valueChanged)
@@ -190,13 +201,13 @@ class HIScheduleSegmentedControl: HISegmentedControl {
     }
     
     private func highlightSelectedPotion() {
-        if let potionView = views[selectedIndex].subviews.first as? UIImageView {
+        if let greyBlockView = views[selectedIndex].subviews.first as? UIImageView {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                selectedPotionView?.image = #imageLiteral(resourceName: "PinkPotionPad")
+                selectedGreyBlockView?.image = #imageLiteral(resourceName: "GreyBlock")
             } else {
-                potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                greyBlockView.image = #imageLiteral(resourceName: "Pink Potion")
             }
-            selectedPotionView = potionView
+            selectedGreyBlockView = greyBlockView
         }
     }
 
