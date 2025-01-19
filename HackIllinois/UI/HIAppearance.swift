@@ -112,8 +112,7 @@ struct HIAppearance: Equatable {
     private static let darkBrown = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1); private static let lightPink = #colorLiteral(red: 0.9215686275, green: 0.8235294118, blue: 0.8235294118, alpha: 1)
     private static let pink = #colorLiteral(red: 0.7921568627, green: 0.431372549, blue: 0.568627451, alpha: 1); private static let darkPink = #colorLiteral(red: 0.7882352941, green: 0.2039215686, blue: 0.3529411765, alpha: 1)
     private static let lightPurple = #colorLiteral(red: 0.662745098, green: 0.4666666667, blue: 0.6705882353, alpha: 1); private static let indigo = #colorLiteral(red: 0.3568627451, green: 0.3803921569, blue: 0.6078431373, alpha: 1)
-    private static let darknavy = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1); private static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-    private static let white = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1); private static let black = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    private static let darknavy = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1); private static let white = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1); private static let black = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
     private static let buttonPink = #colorLiteral(red: 0.862745098, green: 0.5411764706, blue: 0.662745098, alpha: 1); private static let buttonTeal = #colorLiteral(red: 0.6470588235, green: 0.8549019608, blue: 0.8352941176, alpha: 1)
     private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1); private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
     private static let transparent2 = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
@@ -126,6 +125,7 @@ struct HIAppearance: Equatable {
     public static let yellowOrange = #colorLiteral(red: 1.0, green: 0.6980392157, blue: 0.2431372549, alpha: 1) // #FFB23E
     public static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
     public static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
+    public static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
