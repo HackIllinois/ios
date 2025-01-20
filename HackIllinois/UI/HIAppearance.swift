@@ -126,6 +126,7 @@ struct HIAppearance: Equatable {
     public static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
     public static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
     public static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    public static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
     
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent

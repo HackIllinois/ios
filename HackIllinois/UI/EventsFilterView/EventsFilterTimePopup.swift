@@ -1,14 +1,14 @@
 //
-//  EventFilterPopup.swift
+//  EventsFilterTimePopup.swift
 //  HackIllinois
 //
-//  Created by Anushka Sankaran on 1/18/25.
+//  Created by Anushka Sankaran on 1/19/25.
 //  Copyright © 2025 HackIllinois. All rights reserved.
 //
 
 import SwiftUI
 
-struct EventFilterCategoryPopup: View {
+struct EventsFilterTimePopup: View {
     @Binding var allOptions: [String]
     @Binding var currentlySelected: [String]
     @Binding var closePopup: Bool
@@ -24,11 +24,11 @@ struct EventFilterCategoryPopup: View {
     }
     
     var body: some View {
-        CategoryFilter(allOptions: $allOptions, currentlySelected: $currentlySelected, tempSelected: $tempSelected, closePopup: $closePopup)
+        TimeFilter(allOptions: $allOptions, currentlySelected: $currentlySelected, tempSelected: $tempSelected, closePopup: $closePopup)
     }
 }
 
-struct CategoryFilter: View {
+struct TimeFilter: View {
     @Binding var allOptions: [String]
     @Binding var currentlySelected: [String]
     @Binding var tempSelected: [String]
@@ -36,7 +36,7 @@ struct CategoryFilter: View {
     var body: some View {
             ZStack {
                 // Image for the filter popup
-                Image("FilterPopupCategory")
+                Image("FilterPopupTime")
                     .resizable()
                     .scaledToFit()
                     .frame(width: UIScreen.main.bounds.width - 50) // Resize image width as needed
@@ -50,7 +50,7 @@ struct CategoryFilter: View {
                             closePopup = true
                         }
                 }
-                .frame(width: UIScreen.main.bounds.width - 50, height: (UIScreen.main.bounds.width - 50) * (251/309), alignment: .topLeading)
+                .frame(width: UIScreen.main.bounds.width - 50, height: (UIScreen.main.bounds.width - 50) * (227/309), alignment: .topLeading)
                 // Save and clear buttons
                 HStack {
                     // Clear button
@@ -80,48 +80,63 @@ struct CategoryFilter: View {
                         closePopup = true
                     }
                 }
-                .frame(width: UIScreen.main.bounds.width - 100, height: (UIScreen.main.bounds.width - 50) * (251/309) - 40, alignment: .bottomTrailing)
-                //
-                // ScrollView that sits on top of the image and spans its height
-                OptionsScroll(allOptions: $allOptions, tempSelected: $tempSelected)
-                .padding(.top, (UIScreen.main.bounds.width - 50) * (251/309)/14)
-                .frame(width: UIScreen.main.bounds.width - 125, height: (UIScreen.main.bounds.width - 50) * (251/309)/1.9)
+                .frame(width: UIScreen.main.bounds.width - 100, height: (UIScreen.main.bounds.width - 50) * (227/309) - 40, alignment: .bottomTrailing)
+                // Start of interval
+                HStack {
+                    HourPicker()
+                    PeriodIndicator()
+                }
+                .padding(.top, 55)
+                .padding(.trailing, 165)
+                // End of interval
+                HStack {
+                    HourPicker()
+                    PeriodIndicator()
+                }
+                .padding(.top, 55)
+                .padding(.leading, 165)
             }
         }
 }
 
-struct OptionsScroll: View {
-    @Binding var allOptions: [String]
-    @Binding var tempSelected: [String]
+struct PeriodIndicator: View {
     var body: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack(spacing: 16) {
-                // Example company items
-                ForEach(allOptions, id: \.self) { option in
-                    HStack(spacing: 8) {
-                        Image(systemName: tempSelected.contains(option) ? "checkmark.square" : "square") // Empty checkbox
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                            .symbolRenderingMode(.hierarchical)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(Color(HIAppearance.elephant))
-                        Text(option)
-                            .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 20)))
-                            .foregroundColor(Color(HIAppearance.elephant))
-                            .lineLimit(1)
-                    }
-                    .onTapGesture {
-                        print("Tapped: ", option)
-                        if tempSelected.contains(option) {
-                            tempSelected.removeAll { $0 == option } // Deselect
-                        } else {
-                            tempSelected.append(option)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
+        HStack {
+            Text("AM")
+                .foregroundColor(Color(HIAppearance.metallicCopper))
+                .padding(.trailing, -3)
+            Image(systemName: "arrowtriangle.down.fill")
+                .resizable()
+                .frame(width: 10, height: 6)
+                .foregroundColor(Color(HIAppearance.doveGray))
         }
+        .font(Font(HIAppearance.Font.eventButtonText ?? .systemFont(ofSize: 20)))
+        .overlay(
+            Rectangle()
+                .foregroundColor(Color(HIAppearance.doveGray))
+                .frame(height: 1)
+                .offset(y: 4), alignment: .bottom
+        )
+    }
+}
+
+struct HourPicker: View {
+    var body: some View {
+        HStack {
+            Text("00:00")
+                .foregroundColor(Color(HIAppearance.metallicCopper))
+                .padding(.trailing, -3)
+            Image(systemName: "arrowtriangle.down.fill")
+                .resizable()
+                .frame(width: 10, height: 6)
+                .foregroundColor(Color(HIAppearance.doveGray))
+        }
+        .font(Font(HIAppearance.Font.eventButtonText ?? .systemFont(ofSize: 20)))
+        .padding(4)
+        .overlay(
+            Rectangle()
+                .stroke(Color(HIAppearance.doveGray))
+        )
     }
 }
 
@@ -131,7 +146,7 @@ struct OptionsScroll: View {
         @State var currentlySelected = ["a"]
         @State var closePopup = false
         var body: some View {
-            EventFilterCategoryPopup(allOptions: $allOptions, currentlySelected: $currentlySelected, closePopup: $closePopup)
+            EventsFilterTimePopup(allOptions: $allOptions, currentlySelected: $currentlySelected, closePopup: $closePopup)
         }
     }
 
