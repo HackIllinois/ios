@@ -8,30 +8,48 @@
 
 import SwiftUI
 
-struct EventsFilterTimePopup: View {
-    @Binding var allOptions: [String]
-    @Binding var currentlySelected: [String]
-    @Binding var closePopup: Bool
+func convertUnixTimeToCST(unixTime: TimeInterval) -> String {
+    // Create a Date object from the Unix time
+    let date = Date(timeIntervalSince1970: unixTime)
     
-    @State private var tempSelected: [String]
-        
-    init(allOptions: Binding<[String]>, currentlySelected: Binding<[String]>, closePopup: Binding<Bool>) {
-        // Initialize the tempSelected state variable with the current selected options
-        _allOptions = allOptions
-        _currentlySelected = currentlySelected
-        _closePopup = closePopup
-        _tempSelected = State(initialValue: currentlySelected.wrappedValue)
+    // Set up the DateFormatter
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeZone = TimeZone(identifier: "America/Chicago") // CST timezone
+    dateFormatter.dateFormat = "h:mm a" // Hour and minute format
+    
+    // Convert the date to a formatted string
+    let formattedTime = dateFormatter.string(from: date)
+    return formattedTime
+}
+
+func parseCSTTime(unixTime: TimeInterval) -> (time: String, period: String) {
+    // Convert the Unix time to a formatted CST time string
+    let fullTime = convertUnixTimeToCST(unixTime: unixTime)
+    
+    // Split the string into the time and period (AM/PM) parts
+    let components = fullTime.split(separator: " ")
+    guard components.count == 2 else {
+        return (time: "Invalid", period: "Time") // Return a fallback in case of formatting issues
     }
     
+    let time = String(components[0]) // The 12-hour time part
+    let period = String(components[1]) // The AM/PM part
+    return (time: time, period: period)
+}
+
+struct EventsFilterTimePopup: View {
+    @Binding var startTime: TimeInterval
+    @Binding var endTime: TimeInterval
+    @Binding var closePopup: Bool
+    
     var body: some View {
-        TimeFilter(allOptions: $allOptions, currentlySelected: $currentlySelected, tempSelected: $tempSelected, closePopup: $closePopup)
+        TimeFilter(startTime: $startTime, endTime: $endTime, closePopup: $closePopup)
     }
 }
 
 struct TimeFilter: View {
-    @Binding var allOptions: [String]
-    @Binding var currentlySelected: [String]
-    @Binding var tempSelected: [String]
+    @Binding var startTime: TimeInterval
+    @Binding var endTime: TimeInterval
     @Binding var closePopup: Bool
     var body: some View {
             ZStack {
@@ -56,10 +74,10 @@ struct TimeFilter: View {
                     // Clear button
                     Text("Clear Filter")
                         .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 20)))
-                        .foregroundColor(Color(HIAppearance.elephant))
+                        .foregroundColor(Color(HIAppearance.metallicCopper))
                         .padding(.trailing, 5)
                         .onTapGesture {
-                            tempSelected = []
+                            print("Clear")
                         }
                     // Save button
                     HStack(spacing: 8) {
@@ -76,33 +94,39 @@ struct TimeFilter: View {
                     )
                     .fixedSize(horizontal: true, vertical: true)
                     .onTapGesture {
-                        currentlySelected = tempSelected
-                        closePopup = true
+                        print("Save")
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width - 100, height: (UIScreen.main.bounds.width - 50) * (227/309) - 40, alignment: .bottomTrailing)
-                // Start of interval
                 HStack {
-                    HourPicker()
-                    PeriodIndicator()
+                    // Start of interval
+                    let parsedStartTime = parseCSTTime(unixTime: startTime)
+                    HStack {
+                        HourPicker(hour: "\(parsedStartTime.time)")
+                        PeriodIndicator(meridian: "\(parsedStartTime.period)")
+                    }
+                    Text("to")
+                        .padding(.horizontal, 10)
+                        .foregroundColor(Color(HIAppearance.metallicCopper))
+                        .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 20)))
+                    // End of interval
+                    let parsedEndTime = parseCSTTime(unixTime: endTime)
+                    HStack {
+                        HourPicker(hour: "\(parsedEndTime.time)")
+                        PeriodIndicator(meridian: "\(parsedEndTime.period)")
+                    }
+                    
                 }
-                .padding(.top, 55)
-                .padding(.trailing, 165)
-                // End of interval
-                HStack {
-                    HourPicker()
-                    PeriodIndicator()
-                }
-                .padding(.top, 55)
-                .padding(.leading, 165)
+                .padding(.top, (UIScreen.main.bounds.width - 50) * (50/309))
             }
         }
 }
 
 struct PeriodIndicator: View {
+    let meridian: String
     var body: some View {
         HStack {
-            Text("AM")
+            Text(meridian)
                 .foregroundColor(Color(HIAppearance.metallicCopper))
                 .padding(.trailing, -3)
             Image(systemName: "arrowtriangle.down.fill")
@@ -121,9 +145,10 @@ struct PeriodIndicator: View {
 }
 
 struct HourPicker: View {
+    let hour: String
     var body: some View {
         HStack {
-            Text("00:00")
+            Text(hour)
                 .foregroundColor(Color(HIAppearance.metallicCopper))
                 .padding(.trailing, -3)
             Image(systemName: "arrowtriangle.down.fill")
@@ -142,11 +167,11 @@ struct HourPicker: View {
 
 #Preview {
     struct Preview: View {
-        @State var allOptions = ["a", "b", "c"]
-        @State var currentlySelected = ["a"]
+        @State var startTime: TimeInterval = 1740856500
+        @State var endTime: TimeInterval = 1740863700
         @State var closePopup = false
         var body: some View {
-            EventsFilterTimePopup(allOptions: $allOptions, currentlySelected: $currentlySelected, closePopup: $closePopup)
+            EventsFilterTimePopup(startTime: $startTime, endTime: $endTime, closePopup: $closePopup)
         }
     }
 
