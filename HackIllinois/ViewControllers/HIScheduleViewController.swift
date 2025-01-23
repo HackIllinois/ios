@@ -260,7 +260,7 @@ extension HIScheduleViewController {
     @objc func shiftsButtonTapped(_ sender: UIButton) {
         if !onlyShifts {
             onlyShifts = !onlyShifts
-            backgroundView.image = #imageLiteral(resourceName: "Background")
+            backgroundView.image = #imageLiteral(resourceName:"BackgroundShifts")
             hasSelectedShift = true
             labelColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1) // Set label color to brown
             setStaffShiftsControl()
@@ -489,3 +489,5 @@ extension HIScheduleViewController {
         return header
     }
 }
+
+
