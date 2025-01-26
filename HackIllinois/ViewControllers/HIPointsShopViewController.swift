@@ -21,7 +21,7 @@ class HIPointsShopViewController: HIBaseViewController {
 // MARK: - UITabBarItem Setup
 extension HIPointsShopViewController {
     override func setupTabBarItem() {
-        tabBarItem = UITabBarItem(title: "", image: #imageLiteral(resourceName: "shop"), selectedImage: #imageLiteral(resourceName: "shopSelected"))
+        tabBarItem = UITabBarItem(title: "", image: #imageLiteral(resourceName: "leaderboard"), selectedImage: #imageLiteral(resourceName: "leaderboard"))
     }
 }
 

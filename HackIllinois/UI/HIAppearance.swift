@@ -135,6 +135,8 @@ struct HIAppearance: Equatable {
     private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1)
     private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
     private static let transparent2 = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    private static let navBarYellow = #colorLiteral(red: 0.9603472352, green: 0.9405072331, blue: 0.8672463298, alpha: 1)
+    
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
     }
@@ -158,10 +160,10 @@ struct HIAppearance: Equatable {
         contentBackground: offWhite,
         overlay: #colorLiteral(red: 0.05882352941, green: 0.07058823529, blue: 0.1803921569, alpha: 0.33),
         frostedTint: #colorLiteral(red: 0, green: 0.3411764706, blue: 0.462745098, alpha: 0.6),
-        codePopupTab: white,
+        codePopupTab: navBarYellow,
         greenCodePopupTab: darkestGreen,
-        navbarBackground: darkGreen,
-        navbarTabTint: white,
+        navbarBackground: navBarYellow,
+        navbarTabTint: black,
         profileContainerTint: yellowWhite,
         preferredStatusBarStyle: statusBarBlack,
         scrollViewIndicatorStyle: .black,
@@ -235,10 +237,10 @@ struct HIAppearance: Equatable {
         contentBackground: offWhite,
         overlay: #colorLiteral(red: 0.05882352941, green: 0.07058823529, blue: 0.1803921569, alpha: 0.33),
         frostedTint: #colorLiteral(red: 0, green: 0.3411764706, blue: 0.462745098, alpha: 0.6),
-        codePopupTab: white,
+        codePopupTab: navBarYellow,
         greenCodePopupTab: darkestGreen,
-        navbarBackground: darkGreen,
-        navbarTabTint: white,
+        navbarBackground: navBarYellow,
+        navbarTabTint: black,
         profileContainerTint: yellowWhite,
         preferredStatusBarStyle: statusBarBlack,
         scrollViewIndicatorStyle: .black,

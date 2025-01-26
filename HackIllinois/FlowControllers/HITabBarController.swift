@@ -71,8 +71,8 @@ class HITabBarController: UITabBarController {
         let qrScannerPopupButton = UIButton()
         view.addSubview(qrScannerPopupButton)
         qrScannerPopupButton.translatesAutoresizingMaskIntoConstraints = false
-        qrScannerPopupButton.frame.size = CGSize(width: 54, height: 54)
-        qrScannerPopupButton.layer.cornerRadius = 28
+        qrScannerPopupButton.frame.size = CGSize(width: 75, height: 75)
+        qrScannerPopupButton.layer.cornerRadius = 38
         qrScannerPopupButton.center = CGPoint(x: view.center.x, y: 0)
         if self.selectedViewController is HIQRScannerSelection {
             qrScannerPopupButton.backgroundColor = (\HIAppearance.greenCodePopupTab).value
@@ -83,16 +83,16 @@ class HITabBarController: UITabBarController {
         qrScannerPopupButton.imageView?.contentMode = .scaleAspectFill
 
         // Button Shadow
-        qrScannerPopupButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+        qrScannerPopupButton.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.45).cgColor
         qrScannerPopupButton.layer.shadowOpacity = 1
-        qrScannerPopupButton.layer.shadowRadius = 15
+        qrScannerPopupButton.layer.shadowRadius = 20
         qrScannerPopupButton.layer.masksToBounds = false
         qrScannerPopupButton.layer.shadowOffset = CGSize(width: 0, height: 0)
 
         //QR Scanner PopupButton Constraints
         qrScannerPopupButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         qrScannerPopupButton.centerYAnchor.constraint(equalTo: tabBar.topAnchor, constant: 0).isActive = true
-        qrScannerPopupButton.constrain(width: 54, height: 54)
+        qrScannerPopupButton.constrain(width: 75, height: 75)
 
         //QR Scanner PopupAction
         qrScannerPopupButton.addTarget(self, action: #selector(qrScannerPopupButtonPressed(_:)), for: .touchUpInside)
@@ -123,8 +123,8 @@ class HITabBarController: UITabBarController {
     }
 
     func createPath() -> CGPath {
-        let radius: CGFloat = 32.0
-        let smallRadius: CGFloat = 8.0
+        let radius: CGFloat = 0.0 //32.0 Removing middle arc
+        let smallRadius: CGFloat = 0.0 //8.0
         let path = UIBezierPath()
 
         // start top left before rounded corner
