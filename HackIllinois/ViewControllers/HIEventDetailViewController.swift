@@ -45,10 +45,10 @@ class HIEventDetailViewController: HIBaseViewController, UIGestureRecognizerDele
     }
     private let eventTypeLabel = HILabel(style: .eventType)
     private let sponsorLabel = HILabel(style: .sponsor)
-    private let timeImageView = UIImageView(image: UIImage(named: "Clock"))
+    private let timeImageView = UIImageView(image: UIImage(named: "SandTimer"))
     private let timeLabel = HILabel(style: .description)
     private let locationLabel = HILabel(style: .location)
-    private let locationImageView = UIImageView(image: UIImage(named: "LocationSign"))
+    private let locationImageView = UIImageView(image: UIImage(named: "Location"))
     private let descriptionLabel = HILabel(style: .detailText)
     let pointsView = HIView { (view) in
         if UIDevice.current.userInterfaceIdiom == .pad {
