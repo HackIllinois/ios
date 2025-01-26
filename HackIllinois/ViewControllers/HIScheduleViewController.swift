@@ -192,10 +192,13 @@ extension HIScheduleViewController {
         super.viewDidLoad()
         guard let user = HIApplicationStateController.shared.user else { return }
         if !user.roles.contains(.STAFF) {
-            super.setCustomTitle(customTitle: "SCHEDULE")
-        } else if user.roles.contains(.STAFF) {
-            setStaffShiftsControl()
-        }
+                // Non-staff
+                super.setCustomTitle(customTitle: "SCHEDULE") // This is optional if you want a big title
+                setScheduleSavedControl() // <--- Add this
+            } else {
+                // Staff
+                setStaffShiftsControl()
+            }
     }
 }
 
@@ -420,6 +423,71 @@ extension HIScheduleViewController {
     }
 }
 
+// MARK: - Non-Staff Schedule/Saved Control Setup
+extension HIScheduleViewController {
+    @objc func setScheduleSavedControl() {
+        let customFontSize = UIDevice.current.userInterfaceIdiom == .pad ? 48 : 24
+        let customFont = UIFont(name: "MontserratRoman-Bold", size: CGFloat(customFontSize))
+
+        // 1) Create a horizontal stack to hold the buttons
+        let containerView = UIStackView()
+        containerView.axis = .horizontal
+        containerView.alignment = .center
+        containerView.distribution = .equalSpacing  // ensures even spacing
+        containerView.spacing = 40                  // adjust spacing to your liking
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        // 2) Create the "SCHEDULE" button
+        let scheduleButton = UIButton(type: .system)
+        scheduleButton.setTitle("SCHEDULE", for: .normal)
+        scheduleButton.titleLabel?.font = customFont
+        scheduleButton.setTitleColor(labelColor, for: .normal)
+        scheduleButton.addTarget(self, action: #selector(scheduleButtonTappedForNonStaff(_:)), for: .touchUpInside)
+
+        // 3) Create the "SAVED" button
+        let savedButton = UIButton(type: .system)
+        savedButton.setTitle("SAVED", for: .normal)
+        savedButton.titleLabel?.font = customFont
+        savedButton.setTitleColor(labelColor, for: .normal)
+        savedButton.addTarget(self, action: #selector(savedButtonTappedForNonStaff(_:)), for: .touchUpInside)
+
+        // 4) Add both buttons to the stack
+        containerView.addArrangedSubview(scheduleButton)
+        containerView.addArrangedSubview(savedButton)
+
+        // 5) Put the stack in the center of the nav bar
+        navigationItem.titleView = containerView
+
+        // OPTIONAL: Clear any leftover bar button items on the left/right
+        navigationItem.leftBarButtonItems = nil
+        navigationItem.rightBarButtonItems = nil
+    }
+    
+    @objc func scheduleButtonTappedForNonStaff(_ sender: UIButton) {
+        // Similar logic, but for non-staff
+        if onlyFavorites {
+            onlyFavorites = false
+            backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
+            labelColor = .white
+            setScheduleSavedControl()
+            updatePredicate()
+            animateReload()
+        }
+    }
+    
+    @objc func savedButtonTappedForNonStaff(_ sender: UIButton) {
+        if !onlyFavorites {
+            onlyFavorites = true
+            backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground") // Or a custom "Saved" background
+            labelColor = .white
+            setScheduleSavedControl()
+            updatePredicate()
+            animateReload()
+        }
+    }
+}
+
+    
 
 // MARK: - UINavigationItem Setup
 extension HIScheduleViewController {
