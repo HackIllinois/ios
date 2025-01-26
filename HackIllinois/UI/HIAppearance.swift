@@ -50,6 +50,7 @@ struct HIAppearance: Equatable {
     let buttonMagenta: UIColor
     let buttonDarkBlueGreen: UIColor
     let buttonDarkGreen: UIColor
+    let buttonOrange: UIColor
     let favoriteStarBackground: UIColor
     let segmentedBackground: UIColor
     let buttonYellow: UIColor
@@ -182,6 +183,7 @@ struct HIAppearance: Equatable {
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
         buttonDarkGreen: darkGreen,
+        buttonOrange: orange,
         favoriteStarBackground: yellowWhite,
         segmentedBackground: white,
         buttonYellow: bLightYellow,
@@ -259,6 +261,7 @@ struct HIAppearance: Equatable {
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
         buttonDarkGreen: darkGreen,
+        buttonOrange: orange,
         favoriteStarBackground: yellowWhite,
         segmentedBackground: white,
         buttonYellow: bLightYellow,
