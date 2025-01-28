@@ -175,54 +175,54 @@ extension HIHomeViewController {
         let hackEnd = HITimeDataSource.shared.eventTimes.hackEnd
         let projectShowcaseEnd = HITimeDataSource.shared.eventTimes.projectShowcaseEnd
         let closingCeremonyEnd = HITimeDataSource.shared.eventTimes.closingCeremonyEnd
-                
+
         if now < checkInStart {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_Start")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage1")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_Start")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage1")
              }
         } else if now < checkInEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_1")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage1")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_1")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage1")
              }
         } else if now < scavengerHuntEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_2")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage2")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_2")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage2")
              }
         } else if now < openingCeremonyEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_3")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage3")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_3")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage3")
              }
         } else if now < hackEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_4")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage4")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_4")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage4")
              }
         } else if now < projectShowcaseEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_5")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage5")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_5")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage5")
              }
         } else if now < closingCeremonyEnd {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_6")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage6")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_6")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage6")
              }
         } else {
              if UIDevice.current.userInterfaceIdiom == .pad {
-                 backgroundView.image = #imageLiteral(resourceName: "iPad_Home_Final")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage7")
              } else {
-                 backgroundView.image = #imageLiteral(resourceName: "Home_Final")
+                 backgroundView.image = #imageLiteral(resourceName:"HomePage7")
              }
         }
     }
