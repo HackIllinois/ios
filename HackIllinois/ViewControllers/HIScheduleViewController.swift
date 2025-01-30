@@ -78,7 +78,7 @@ class HIScheduleViewController: HIEventListViewController {
 
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
-        backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
+        backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
         if UIDevice.current.userInterfaceIdiom == .pad {
             backgroundView.image = #imageLiteral(resourceName: "BackgroundPad")
         }

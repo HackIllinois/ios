@@ -33,12 +33,13 @@ final class HITimeDataSource {
         eventEnd: Date(timeIntervalSince1970: 1708898400), // Sunday, February 25, 2024 4:00:00 PM CST
         hackStart: Date(timeIntervalSince1970: 1708736400), // Friday, February 23, 2024 7:00:00 PM CST
         hackEnd: Date(timeIntervalSince1970: 1708876800), // Sunday, February 25, 2024 10:00:00 AM CST
-        fridayStart: Date(timeIntervalSince1970: 1708668000), // Friday, February 23, 2024 12:00:00 AM CST
-        fridayEnd: Date(timeIntervalSince1970: 1708754399), // Friday, February 23, 2024 11:59:59 PM CST
-        saturdayStart: Date(timeIntervalSince1970: 1708754400), // Saturday, February 24, 2024 12:00:00 AM CST
-        saturdayEnd: Date(timeIntervalSince1970: 1708840799), // Saturday, February 24, 2024 11:59:59 PM CST
-        sundayStart: Date(timeIntervalSince1970: 1708840800), // Sunday, February 25, 2024 12:00:00 AM CST
-        sundayEnd: Date(timeIntervalSince1970: 1708927199) // Sunday, February 25, 2024 11:59:59 PM CST
+        // TODO: Need to get events + times for everything above
+        fridayStart: Date(timeIntervalSince1970: 1740722400), // Friday, February 28, 2025 12:00:00 AM CST
+        fridayEnd: Date(timeIntervalSince1970: 1740808799), // Friday, February 28, 2025 11:59:59 PM CST
+        saturdayStart: Date(timeIntervalSince1970: 1740808800), // Saturday, March 1, 2025 12:00:00 AM CST
+        saturdayEnd: Date(timeIntervalSince1970: 1740895199), // Saturday, March 1, 2025 11:59:59 PM CST
+        sundayStart: Date(timeIntervalSince1970: 1740895200), // Sunday, March 2, 2025 12:00:00 AM CST
+        sundayEnd: Date(timeIntervalSince1970: 1740981599) // Sunday, March 2, 2025 11:59:59 PM CST
     )
 
     var eventTimes = HITimeDataSource.defaultTimes
