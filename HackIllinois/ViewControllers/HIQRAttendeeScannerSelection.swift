@@ -35,38 +35,38 @@ class HIQRAttendeeScannerSelection: HIBaseViewController {
     }
     private let eventCheckInButton = HIButton {
         $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonPink
+        $0.backgroundHIColor = \.scannerButtonYellowOrange
         $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+        $0.layer.borderColor = #colorLiteral(red: 0.5294, green: 0.3373, blue: 0.0314, alpha: 1) // #875608
         // 3D Effect
         $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+        $0.layer.shadowColor = #colorLiteral(red: 0.5294, green: 0.3373, blue: 0.0314, alpha: 1)
         $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 12)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
     private let mentorCheckInButton = HIButton {
         $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonTeal
+        $0.backgroundHIColor = \.scannerButtonTealBlue
         $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+        $0.layer.borderColor = #colorLiteral(red: 0.0549, green: 0.2471, blue: 0.2549, alpha: 1) // #0E3F41
         // 3D Effect
         $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+        $0.layer.shadowColor = #colorLiteral(red: 0.0549, green: 0.2471, blue: 0.2549, alpha: 1)
         $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 12)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
     private let pointShopScanButton = HIButton {
         $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonYellow
+        $0.backgroundHIColor = \.scannerButtonOrangeBrown
         $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+        $0.layer.borderColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1) // #8C3713
         // 3D Effect
         $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+        $0.layer.shadowColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1)
         $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 10)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
     @objc dynamic override func setUpBackgroundView() {
@@ -143,6 +143,7 @@ extension HIQRAttendeeScannerSelection {
         closeButton.imageView?.contentMode = .scaleToFill
         let label = HILabel(style: .viewTitle)
         label.text = "SCANNER"
+        label.textHIColor = \.whiteText
         view.addSubview(label)
         label.centerYAnchor.constraint(equalTo: closeButton.centerYAnchor).isActive = true
         label.leadingAnchor.constraint(equalTo: closeButton.trailingAnchor, constant: 3).isActive = true
