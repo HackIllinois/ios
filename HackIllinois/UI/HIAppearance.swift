@@ -80,9 +80,9 @@ struct HIAppearance: Equatable {
     let countdownTextColor: UIColor
     let countdownBackground: UIColor
     let bannerBackground: UIColor
-    let scannerButtonPink: UIColor
-    let scannerButtonTeal: UIColor
-    let scannerButtonYellow: UIColor
+    let scannerButtonYellowOrange: UIColor
+    let scannerButtonTealBlue: UIColor
+    let scannerButtonOrangeBrown: UIColor
     let scannerButtonBorder: UIColor
     let scannerButtonShadow: UIColor
     let proBackground: UIColor
@@ -127,6 +127,9 @@ struct HIAppearance: Equatable {
     public static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
     public static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     public static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
+    public static let buttonYellowOrange = #colorLiteral(red: 0.8902, green: 0.6549, blue: 0.2824, alpha: 1) // #E3A748
+    public static let buttonTealBlue = #colorLiteral(red: 0.3686, green: 0.7098, blue: 0.7294, alpha: 1) // #5EB5BA
+    public static let buttonOrangeBrown = #colorLiteral(red: 0.7725, green: 0.4039, blue: 0.2471, alpha: 1) // #C5673F
     
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
@@ -205,9 +208,9 @@ struct HIAppearance: Equatable {
         countdownTextColor: brown,
         countdownBackground: orange,
         bannerBackground: lightYellow,
-        scannerButtonPink: buttonPink,
-        scannerButtonTeal: buttonTeal,
-        scannerButtonYellow: buttonYellow,
+        scannerButtonYellowOrange: buttonYellowOrange,
+        scannerButtonTealBlue: buttonTealBlue,
+        scannerButtonOrangeBrown: buttonOrangeBrown,
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
@@ -282,9 +285,9 @@ struct HIAppearance: Equatable {
         countdownTextColor: brown,
         countdownBackground: orange,
         bannerBackground: lightYellow,
-        scannerButtonPink: buttonPink,
-        scannerButtonTeal: buttonTeal,
-        scannerButtonYellow: buttonYellow,
+        scannerButtonYellowOrange: yellowOrange,
+        scannerButtonTealBlue: buttonTealBlue,
+        scannerButtonOrangeBrown: buttonOrangeBrown,
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
