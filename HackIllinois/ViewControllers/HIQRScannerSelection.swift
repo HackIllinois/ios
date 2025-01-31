@@ -61,7 +61,7 @@ class HIQRScannerSelection: HIBaseViewController {
         if UIDevice.current.userInterfaceIdiom == .pad {
             backgroundView.image = #imageLiteral(resourceName: "Pink Background")
         } else {
-            backgroundView.image = #imageLiteral(resourceName: "Staff")
+            backgroundView.image = #imageLiteral(resourceName: "scanner-menu")
         }
     }
 }

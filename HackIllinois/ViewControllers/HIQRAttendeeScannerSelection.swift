@@ -74,7 +74,7 @@ class HIQRAttendeeScannerSelection: HIBaseViewController {
         if UIDevice.current.userInterfaceIdiom == .pad {
             backgroundView.image = UIImage(named: "BackgroundPad")
         } else {
-            backgroundView.image = #imageLiteral(resourceName: "Attendee")
+            backgroundView.image = #imageLiteral(resourceName: "scanner-menu")
         }
     }
 }
