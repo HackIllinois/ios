@@ -135,15 +135,15 @@ extension HIEventCell {
             timeLabel.text = Formatter.simpleTime.string(from: rhs.startTime) + " - " + Formatter.simpleTime.string(from: rhs.endTime)
         }
         let pointsView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonBrown
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonBlue
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let eventTypeView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonPurple
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonSienna
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let proTypeView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.proBackground
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonPro
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let proLabel = HILabel(style: .pointsText); proLabel.text = "Pro"

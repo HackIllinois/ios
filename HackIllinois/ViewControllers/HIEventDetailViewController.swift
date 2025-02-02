@@ -40,7 +40,7 @@ class HIEventDetailViewController: HIBaseViewController, UIGestureRecognizerDele
         } else {
             view.layer.cornerRadius = 8
         }
-        view.backgroundHIColor = \.buttonPurple
+        view.backgroundHIColor = \.buttonSienna
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let eventTypeLabel = HILabel(style: .eventType)
@@ -56,7 +56,7 @@ class HIEventDetailViewController: HIBaseViewController, UIGestureRecognizerDele
         } else {
             view.layer.cornerRadius = 8
         }
-        view.backgroundHIColor = \.buttonBrown
+        view.backgroundHIColor = \.buttonBlue
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let pointsLabel = HILabel(style: .eventType)

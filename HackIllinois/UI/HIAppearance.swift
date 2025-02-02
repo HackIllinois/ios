@@ -44,8 +44,10 @@ struct HIAppearance: Equatable {
     let interestBackground: UIColor
     let buttonGreen: UIColor
     let buttonBrown: UIColor
+    let buttonBlue: UIColor
     let buttonLightPink: UIColor
     let buttonPurple: UIColor
+    let buttonSienna: UIColor
     let buttonDarkBlue: UIColor
     let buttonMagenta: UIColor
     let buttonDarkBlueGreen: UIColor
@@ -87,6 +89,7 @@ struct HIAppearance: Equatable {
     let scannerButtonBorder: UIColor
     let scannerButtonShadow: UIColor
     let proBackground: UIColor
+    let buttonPro: UIColor
     let eventCard: UIColor
     let clear: UIColor = .clear
     let black: UIColor = .black
@@ -129,6 +132,7 @@ struct HIAppearance: Equatable {
     public static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     public static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
     
+    
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
     }
@@ -170,8 +174,10 @@ struct HIAppearance: Equatable {
         interestBackground: orange,
         buttonGreen: yellowGreen,
         buttonBrown: lightBrown,
+        buttonBlue: neptune,
         buttonLightPink: other,
         buttonPurple: indigo,
+        buttonSienna: rawSienna,
         buttonDarkBlue: darkBlue,
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
@@ -213,6 +219,7 @@ struct HIAppearance: Equatable {
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
+        buttonPro: copper,
         eventCard: offWhite
     )
 
@@ -248,8 +255,10 @@ struct HIAppearance: Equatable {
         interestBackground: orange,
         buttonGreen: yellowGreen,
         buttonBrown: lightBrown,
+        buttonBlue: neptune,
         buttonLightPink: other,
         buttonPurple: indigo,
+        buttonSienna: rawSienna,
         buttonDarkBlue: darkBlue,
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
@@ -291,6 +300,7 @@ struct HIAppearance: Equatable {
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
+        buttonPro: copper,
         eventCard: offWhite
     )
 
