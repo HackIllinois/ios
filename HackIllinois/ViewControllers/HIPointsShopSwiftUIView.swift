@@ -70,10 +70,9 @@ struct HIPointShopSwiftUIView: View {
                         .offset(y: isIpad ? -42 : -38)
                         Spacer()
                     }
-                    Image("KnickKnacks")
-                        .resizable()
-                        .frame(width: isIpad ? 590 : 355, height:isIpad ? 185 :  105)
-                        .offset(y: -25)
+                    
+                    Spacer()
+                        .frame(height: 25)
                     
                     VStack(spacing: 0) {
                         CustomTopTabBar(tabIndex: $tabIndex)
@@ -155,12 +154,6 @@ struct PointShopItemCell: View {
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
     var body: some View {
         VStack(spacing: 0) {
-            //brown bar
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: UIScreen.main.bounds.width > 850 ? 800 : (isIpad ? 700 : 360), height: 10)
-                .background(Color(red: 0.4, green: 0.17, blue: 0.07))
-                .cornerRadius(1)
             //transparent pane
             ZStack {
                 Rectangle()
@@ -238,7 +231,7 @@ struct CustomTopTabBar: View {
             TabBarButton(text: "MERCH", isSelected: .constant(tabIndex == 0))
                 .onTapGesture { onButtonTapped(index: 0) }
             Spacer()
-                .frame(width: isIpad ? 100: 40)
+                .frame(width: isIpad ? 100: 30)
             TabBarButton(text: "RAFFLE", isSelected: .constant(tabIndex == 1))
                 .onTapGesture { onButtonTapped(index: 1) }
         }
@@ -256,21 +249,20 @@ struct TabBarButton: View {
     var body: some View {
         ZStack(alignment: .center) {
             if isSelected {
-                Rectangle()
-                    .fill(Color(red: 0.85, green: 0.25, blue: 0.47))
+                Image("PointShopTabSelected")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width > 850 ? 350 : (isIpad ? 295 : 155), height: isIpad ? 90: 50)
-                    .cornerRadius(10, corners: [.topLeft, .topRight])
             }else{
-                Rectangle()
-                    .fill(Color(red: 0.85, green: 0.25, blue: 0.47))
+                Image("PointShopTabUnselected")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width > 850 ? 350 : (isIpad ? 295 : 155), height: isIpad ? 90: 50)
-                    .cornerRadius(10, corners: [.topLeft, .topRight])
-                    .opacity(0)
             }
             Text(text)
-                .foregroundColor(.white)
+                .foregroundColor(Color(HIAppearance.metallicCopper))
                 .fontWeight(.heavy)
-                .font(.custom("MontserratRoman-SemiBold", size: UIDevice.current.userInterfaceIdiom == .pad ? 36 : 18))
+                .font(.custom("MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 36 : 16))
         }
     }
 }
