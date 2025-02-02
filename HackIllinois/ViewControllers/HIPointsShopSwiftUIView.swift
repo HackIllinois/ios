@@ -58,16 +58,16 @@ struct HIPointShopSwiftUIView: View {
                                 .frame(width: isIpad ? 40 : 25, height:isIpad ? 40 : 25)
                             
                             Text("\(coins)")
-                                .font(Font.custom("Montserrat", size: isIpad ? 26 : 16).weight(.bold))
-                                .foregroundColor(.white)
+                                .font(Font.custom("MontserratRoman-Bold", size: isIpad ? 26 : 16).weight(.bold))
+                                .foregroundColor(.black)
 
                         }
                         .padding(.horizontal, 11)
                         .padding(.vertical, 3)
-                        .background(Color(red: 0.1647, green: 0.1647, blue: 0.1647))
+                        .background(Color(red: 0.9607843137254902, green: 0.9411764705882353, blue: 0.8666666666666667))
                         .cornerRadius(1000)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .offset(y: isIpad ? -42 : -38)
+                        .offset(x: -25, y: -38)
                         Spacer()
                     }
                     
