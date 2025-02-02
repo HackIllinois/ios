@@ -45,7 +45,7 @@ struct HIPointShopSwiftUIView: View {
       //  NavigationStack{
 
         ZStack {
-            Image("PurpleBackground")
+            Image("PointShopBackground")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
                 
