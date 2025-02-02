@@ -57,18 +57,6 @@ class HIQRAttendeeScannerSelection: HIBaseViewController {
         $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
-    private let pointShopScanButton = HIButton {
-        $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonOrangeBrown
-        $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1) // #8C3713
-        // 3D Effect
-        $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1)
-        $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
-        $0.layer.shadowRadius = 0
-    }
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -94,7 +82,6 @@ extension HIQRAttendeeScannerSelection {
         } else if !user.roles.contains(.STAFF) {
             view.addSubview(eventCheckInButton)
             view.addSubview(mentorCheckInButton)
-            view.addSubview(pointShopScanButton)
             view.addSubview(closeButton)
             view.addSubview(label)
 
@@ -112,12 +99,6 @@ extension HIQRAttendeeScannerSelection {
             mentorCheckInButton.layer.cornerRadius = (UIDevice.current.userInterfaceIdiom == .pad) ? 30 : 15
             mentorCheckInButton.constrain(width: (UIDevice.current.userInterfaceIdiom == .pad) ? 500 : 290, height: (UIDevice.current.userInterfaceIdiom == .pad) ? 150 : 80)
 
-            pointShopScanButton.topAnchor.constraint(equalTo: mentorCheckInButton.bottomAnchor, constant: (UIDevice.current.userInterfaceIdiom == .pad) ? 100 : 50).isActive = true
-            pointShopScanButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            pointShopScanButton.addTarget(self, action: #selector(didSelectPointsShopButton(_:)), for: .touchUpInside)
-            pointShopScanButton.layer.cornerRadius = (UIDevice.current.userInterfaceIdiom == .pad) ? 30 : 15
-            pointShopScanButton.constrain(width: (UIDevice.current.userInterfaceIdiom == .pad) ? 500 : 290, height: (UIDevice.current.userInterfaceIdiom == .pad) ? 150 : 80)
-
             let eventCheckInLabel = HILabel(style: .QRSelection)
             eventCheckInLabel.text = "Event Check In"
             eventCheckInButton.addSubview(eventCheckInLabel)
@@ -129,12 +110,6 @@ extension HIQRAttendeeScannerSelection {
             mentorCheckInButton.addSubview(mentorCheckInLabel)
             mentorCheckInLabel.centerYAnchor.constraint(equalTo: mentorCheckInButton.centerYAnchor).isActive = true
             mentorCheckInLabel.centerXAnchor.constraint(equalTo: mentorCheckInButton.centerXAnchor).isActive = true
-
-            let pointsShopLabel = HILabel(style: .QRSelection)
-            pointsShopLabel.text = "Points Shop"
-            pointShopScanButton.addSubview(pointsShopLabel)
-            pointsShopLabel.centerYAnchor.constraint(equalTo: pointShopScanButton.centerYAnchor).isActive = true
-            pointsShopLabel.centerXAnchor.constraint(equalTo: pointShopScanButton.centerXAnchor).isActive = true
         }
         closeButton.addTarget(self, action: #selector(didSelectCloseButton(_:)), for: .touchUpInside)
         closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
@@ -204,15 +179,6 @@ extension HIQRAttendeeScannerSelection {
 extension HIQRAttendeeScannerSelection {
     @objc func didSelectMentorCheckInButton(_ sender: HIButton) {
         let scanQRCodePopup = HIScanMentorViewController()
-        scanQRCodePopup.modalPresentationStyle = .overFullScreen
-        scanQRCodePopup.modalTransitionStyle = .crossDissolve
-        self.present(scanQRCodePopup, animated: true, completion: nil)
-    }
-}
-
-extension HIQRAttendeeScannerSelection {
-    @objc func didSelectPointsShopButton(_ sender: HIButton) {
-        let scanQRCodePopup = HIScanPointsShopViewController()
         scanQRCodePopup.modalPresentationStyle = .overFullScreen
         scanQRCodePopup.modalTransitionStyle = .crossDissolve
         self.present(scanQRCodePopup, animated: true, completion: nil)
