@@ -14,7 +14,7 @@ import SwiftUI
 
 class HIOnboardingViewModel: ObservableObject {
     @Published var data: [CarouselData] = UIDevice.current.userInterfaceIdiom == .pad ? [
-        CarouselData(image: #imageLiteral(resourceName: "Onboarding0"), titleText: "Welcome", descriptionText: "Swipe to see what our app has to offer!"),
+        CarouselData(image: #imageLiteral(resourceName: "Onboarding0"), titleText: "Welcome!", descriptionText: "Swipe to see what our app has to offer!"),
         CarouselData(image: UIImage(named: "iPadOnboarding1"), titleText: "Countdown", descriptionText: "See how much time you have left to hack!"),
         CarouselData(image: UIImage(named: "iPadOnboarding2"), titleText: "Schedule", descriptionText: "See the times and details of all of our events."),
         CarouselData(image: UIImage(named: "iPadOnboarding3"), titleText: "Scanner", descriptionText: "Scan QR codes to obtain points and redeem items from the point shop."),
