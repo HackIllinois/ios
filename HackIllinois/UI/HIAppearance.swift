@@ -121,16 +121,16 @@ struct HIAppearance: Equatable {
     private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1); private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
     private static let transparent2 = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     // Hack 2025 color palette (color name + hex code)
-    public static let rawSienna = #colorLiteral(red: 0.8705882353, green: 0.5568627451, blue: 0.2705882353, alpha: 1) // #DE8E45
-    public static let neptune = #colorLiteral(red: 0.5176470588, green: 0.737254902, blue: 0.7254901961, alpha: 1) // #84BCB9
-    public static let lightningYellow = #colorLiteral(red: 0.9764705882, green: 0.7568627451, blue: 0.1490196078, alpha: 1) // #F9C126
-    public static let copper = #colorLiteral(red: 0.7725490196, green: 0.4039215686, blue: 0.2470588235, alpha: 1) // #C5673F
-    public static let metallicCopper = #colorLiteral(red: 0.4274509804, green: 0.1607843137, blue: 0.1019607843, alpha: 1) // #6D291A
-    public static let yellowOrange = #colorLiteral(red: 1.0, green: 0.6980392157, blue: 0.2431372549, alpha: 1) // #FFB23E
-    public static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
-    public static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
-    public static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-    public static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
+    private static let rawSienna = #colorLiteral(red: 0.8705882353, green: 0.5568627451, blue: 0.2705882353, alpha: 1) // #DE8E45
+    private static let neptune = #colorLiteral(red: 0.5176470588, green: 0.737254902, blue: 0.7254901961, alpha: 1) // #84BCB9
+    private static let lightningYellow = #colorLiteral(red: 0.9764705882, green: 0.7568627451, blue: 0.1490196078, alpha: 1) // #F9C126
+    private static let copper = #colorLiteral(red: 0.7725490196, green: 0.4039215686, blue: 0.2470588235, alpha: 1) // #C5673F
+    private static let metallicCopper = #colorLiteral(red: 0.4274509804, green: 0.1607843137, blue: 0.1019607843, alpha: 1) // #6D291A
+    private static let yellowOrange = #colorLiteral(red: 1.0, green: 0.6980392157, blue: 0.2431372549, alpha: 1) // #FFB23E
+    private static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
+    private static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
+    private static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    private static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
     
     
     
