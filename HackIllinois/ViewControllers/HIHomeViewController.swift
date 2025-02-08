@@ -69,9 +69,9 @@ extension HIHomeViewController {
         transparentImageView.alpha = 0
 
         if UIDevice.current.userInterfaceIdiom == .pad {
-            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsTransparent")
+            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsToggle")
         } else {
-            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsTransparent")
+            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsToggle")
         }
 
         // Add the UIImageView to the view hierarchy
