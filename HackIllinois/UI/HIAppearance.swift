@@ -133,6 +133,7 @@ struct HIAppearance: Equatable {
     public static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
     
     
+    
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
     }
@@ -381,8 +382,8 @@ struct HIAppearance: Equatable {
         
         // Home page countdown fonts
 //        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 48) // Hack 2023
-        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 42) // Hack 2024
-        static let newCountdownTextPad = UIFont(name: "MontserratRoman-Bold", size: 56) // Hack 2024
+        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 28) // Hack 2024
+        static let newCountdownTextPad = UIFont(name: "MontserratRoman-Bold", size: 42) // Hack 2024
         static let countdownText = UIFont(name: "MontserratRoman-Bold", size: 25)
         
         // Onboarding fonts

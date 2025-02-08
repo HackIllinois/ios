@@ -63,19 +63,27 @@ extension HIHomeViewController {
         setupRefreshControl()
         
         // Initialize the UIImageView
-        transparentImageView = UIImageView(frame: view.bounds)
-        transparentImageView.contentMode = .scaleAspectFill
+        transparentImageView = UIImageView()
+        transparentImageView.translatesAutoresizingMaskIntoConstraints = false // Enable Auto Layout
+        transparentImageView.contentMode = .scaleAspectFit
         transparentImageView.alpha = 0
-        
+
         if UIDevice.current.userInterfaceIdiom == .pad {
-            transparentImageView.image = UIImage(named: "iPad_Tags_Transparent")
+            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsTransparent")
         } else {
-            transparentImageView.image = UIImage(named: "Home_Tags_Transparent")
+            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsTransparent")
         }
-        // Add the UIImageView to your view hierarchy
+
+        // Add the UIImageView to the view hierarchy
         view.addSubview(transparentImageView)
-        view.bringSubviewToFront(transparentImageView)
+        
+        // Set Auto Layout constraints for desired size and position
+        NSLayoutConstraint.activate([
+            transparentImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            transparentImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
+        ])
     }
+
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -112,8 +120,8 @@ extension HIHomeViewController {
         }
         countdownFrameView.topAnchor.constraint(equalTo: bannerFrameView.bottomAnchor, constant: 7.5).isActive = true
         countdownFrameView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        let widthConstant: CGFloat = 329 * countdownFrameConstant
-        let heightConstant: CGFloat = 263 * countdownFrameConstant
+        let widthConstant: CGFloat = 280 * countdownFrameConstant
+        let heightConstant: CGFloat = 220 * countdownFrameConstant
         countdownFrameView.widthAnchor.constraint(equalToConstant: widthConstant).isActive = true
         countdownFrameView.heightAnchor.constraint(equalToConstant: heightConstant).isActive = true
         countdownFrameView.addSubview(countdownViewController.view)

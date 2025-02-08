@@ -59,7 +59,7 @@ class HIQRScannerSelection: HIBaseViewController {
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
         if UIDevice.current.userInterfaceIdiom == .pad {
-            backgroundView.image = #imageLiteral(resourceName: "Pink Background")
+            backgroundView.image = #imageLiteral(resourceName: "BackgroundShifts")
         } else {
             backgroundView.image = #imageLiteral(resourceName: "Staff")
         }

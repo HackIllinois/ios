@@ -109,6 +109,9 @@ extension HIEventCell {
         var locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
         var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor")); let titleLabel = HILabel(style: .event)
         titleLabel.numberOfLines = 2; titleLabel.text = rhs.name
+        
+        titleLabel.textColor = UIColor(red: 0x6D / 255.0, green: 0x29 / 255.0, blue: 0x1A / 255.0, alpha: 1.0)
+
         lhs.headerView.addArrangedSubview(titleLabel)
         lhs.headerView.setCustomSpacing(9, after: titleLabel)
         if UIDevice.current.userInterfaceIdiom == .pad {

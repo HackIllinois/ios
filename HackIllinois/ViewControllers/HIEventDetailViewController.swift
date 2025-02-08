@@ -215,6 +215,8 @@ extension HIEventDetailViewController {
         titleLabel.leadingAnchor.constraint(equalTo: closeButton.leadingAnchor).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12).isActive = true
         titleLabel.topAnchor.constraint(equalTo: upperContainerView.topAnchor).isActive = true
+        titleLabel.textColor = UIColor(red: 0x6D / 255.0, green: 0x29 / 255.0, blue: 0x1A / 255.0, alpha: 1.0)
+
     }
     func setupTime() {
         upperContainerView.addSubview(timeImageView)
