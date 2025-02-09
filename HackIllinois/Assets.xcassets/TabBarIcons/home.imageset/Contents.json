@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "home@1x.png",
+      "filename" : "Battle.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "home@2x.png",
+      "filename" : "Battle (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "home@3x.png",
+      "filename" : "Battle (2).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
