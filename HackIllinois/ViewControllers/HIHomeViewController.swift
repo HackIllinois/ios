@@ -67,11 +67,11 @@ extension HIHomeViewController {
         transparentImageView.translatesAutoresizingMaskIntoConstraints = false // Enable Auto Layout
         transparentImageView.contentMode = .scaleAspectFit
         transparentImageView.alpha = 0
-
+//        #imageLiteral(resourceName: "HomeTagsToggle")
         if UIDevice.current.userInterfaceIdiom == .pad {
-            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsToggle")
+            transparentImageView.image = #imageLiteral(resourceName:"HomeTagsToggle1")
         } else {
-            transparentImageView.image = #imageLiteral(resourceName: "HomeTagsToggle")
+            transparentImageView.image = #imageLiteral(resourceName:"HomeTagsToggle1")
         }
 
         // Add the UIImageView to the view hierarchy
@@ -80,7 +80,7 @@ extension HIHomeViewController {
         // Set Auto Layout constraints for desired size and position
         NSLayoutConstraint.activate([
             transparentImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            transparentImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30)
+            transparentImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60)
         ])
     }
 

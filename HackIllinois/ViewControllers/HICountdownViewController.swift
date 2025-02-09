@@ -151,7 +151,7 @@ extension HICountdownViewController {
         // Set up constraints
         NSLayoutConstraint.activate([
             
-            containerView.heightAnchor.constraint(equalToConstant: 140),
+            containerView.heightAnchor.constraint(equalToConstant: 150),
             containerView.widthAnchor.constraint(equalToConstant: 90),
             
             // Background image constraints
