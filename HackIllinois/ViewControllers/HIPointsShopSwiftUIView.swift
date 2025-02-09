@@ -41,14 +41,12 @@ class PointShopManager: ObservableObject {
 }
 
 struct HIPointShopSwiftUIView: View {
-    // Observe the singleton manager
     @ObservedObject var shopManager = PointShopManager.shared
 
-    @State private var profile = HIProfile()
-    @State var coins = 0
-    @State var tabIndex = 0
+    @State private var coins = 0
+    @State private var tabIndex = 0
     @Binding var title: String
-    @State var flowView = 0 // 0: point shop, 1: cart, 2: QR code
+    @State var flowView = 0
 
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
 
@@ -58,65 +56,68 @@ struct HIPointShopSwiftUIView: View {
                 Image("PointShopBackground")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
+
                 VStack {
-                    // Top-right coins
+                    // -- Example top bar with coins --
                     HStack {
+                        Spacer()
                         HStack(alignment: .center, spacing: 7) {
                             Image("Coin")
                                 .resizable()
                                 .frame(width: isIpad ? 40 : 25,
                                        height: isIpad ? 40 : 25)
                             Text("\(coins)")
-                                .font(Font.custom("MontserratRoman-Bold",
-                                                  size: isIpad ? 26 : 16).weight(.bold))
+                                .font(.system(size: isIpad ? 26 : 16).bold())
                                 .foregroundColor(.black)
                         }
                         .padding(.horizontal, 11)
                         .padding(.vertical, 3)
                         .background(Color(red: 0.96, green: 0.94, blue: 0.87))
                         .cornerRadius(1000)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
                         .offset(x: -25, y: -38)
-                        Spacer()
                     }
+                    .frame(height: 60) // Some spacing at top
 
-                    // Example: Show the items in a ScrollView
-                    ScrollView {
-                        VStack(spacing: 10) {
+                    // -- Your tab bar or other content here --
+                    CustomTopTabBar(tabIndex: $tabIndex)
+
+                    Spacer()
+
+                    // -- The shop items shown at the bottom --
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 16) {
                             ForEach(shopManager.items, id: \.name) { item in
                                 PointShopItemCell(item: item)
                             }
                         }
-                        .padding()
+                        .padding(.horizontal, 16)
                     }
+                    .padding(.bottom, 50) // Some bottom spacing
 
-                    // Tab bar & cart button
-                    ZStack {
-                        VStack(spacing: 0) {
-                            CustomTopTabBar(tabIndex: $tabIndex)
-                            Spacer()
-                        }
+                }
+                .onAppear {
+                    // If not fetched yet, do it here:
+                    // shopManager.preloadItems()
+
+                    getCoins { newCoins in
+                        coins = newCoins
+                    }
+                }
+
+                // -- Possibly overlay cart button in the corner, etc. --
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
                         Image("Cart")
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80)
-                            .padding(.bottom, 175)
-                            .padding(.trailing, 25)
+                            .frame(width: 60, height: 60)
+                            .padding()
                             .onTapGesture {
                                 title = "CART"
                                 flowView = 1
                             }
                     }
-                }
-            }
-            // You could also fetch items and coins here on appear if needed:
-            .onAppear {
-                // 1) If not already called in AppDelegate, fetch items:
-                // shopManager.preloadItems()
-
-                // 2) Get coins:
-                getCoins { newCoins in
-                    coins = newCoins
                 }
             }
         } else if flowView == 1 {
@@ -214,74 +215,51 @@ struct HIPointShopSwiftUIView: View {
 
 struct PointShopItemCell: View {
     let item: Item
-    let isIpad = UIDevice.current.userInterfaceIdiom == .pad
+
     var body: some View {
-        VStack(spacing: 0) {
-            //transparent pane
-            ZStack {
-                Rectangle()
-                    .fill(.white)
-                    .frame(width: UIScreen.main.bounds.width > 850 ? 790 : (isIpad ? 690 : 350), height: 157)
-                    .opacity(0.4)
-                HStack {
-                    Spacer()
-                        .frame(width: UIScreen.main.bounds.width > 850 ? 210 : (isIpad ? 120 : 30))
-                    //IMAGE
-                        Image(systemName: "Profile0")
-                            .data(url: URL(string: item.imageURL)!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 145, height: 145)
-                    Spacer()
+        ZStack {
+            // Translucent background
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.white.opacity(0.4))
 
-                    //bubble view
-                    VStack {
-                        HStack{
-                            Spacer()
-                                .frame(width:15)
-                            Text(item.name)
-                                .font(
-                                    Font.custom("Montserrat", size: 16)
-                                        .weight(.semibold)
-                                )
-                                .foregroundColor(Color(red: 0.05, green: 0.25, blue: 0.25))
-                                .multilineTextAlignment(.center)
-                                .lineLimit(nil)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: .infinity)
-                                .padding(.trailing, 20)
+            VStack(spacing: 4) {
+                // Item image
+                Image(systemName: "Profile0")
+                    .data(url: URL(string: item.imageURL)!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
 
-                        }
+                // Name
+                Text(item.name)
+                    .font(.caption)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
 
-                        HStack(alignment: .center, spacing: 7) {
-                            Image("Coin")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                            if(item.isRaffle) {
-                                Text("\(item.price)")
-                                    .font(Font.custom("Montserrat", size: 16).weight(.bold))
-                                    .foregroundColor(.white)
-                            } else {
-                                Group {
-                                    Text("\(item.price)")
-                                        .font(Font.custom("Montserrat", size: 16).weight(.bold))
-                                        .foregroundColor(.white) +
-                                    Text(" | \(item.quantity) Left")
-                                        .font(Font.custom("Montserrat", size: 16).weight(.regular))
-                                        .foregroundColor(.white)
-                                }
-                            }
-
-                        }
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 3)
-                        .background(Color(red: 0.05, green: 0.25, blue: 0.25).opacity(0.5))
-                        .cornerRadius(1000)
+                // Price + quantity
+                HStack(spacing: 4) {
+                    Image("Coin")
+                        .resizable()
+                        .frame(width: 15, height: 15)
+                    if item.isRaffle {
+                        Text("\(item.price)")
+                            .font(.footnote).bold()
+                            .foregroundColor(.white)
+                    } else {
+                        Text("\(item.price) | \(item.quantity) Left")
+                            .font(.footnote)
+                            .foregroundColor(.white)
                     }
-                    Spacer()
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.black.opacity(0.5))
+                .clipShape(Capsule())
             }
+            .padding()
         }
+        // Force a square cell
+        .frame(width: 120, height: 120)
     }
 }
 
