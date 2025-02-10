@@ -42,23 +42,25 @@ class PointShopManager: ObservableObject {
 
 struct HIPointShopSwiftUIView: View {
     @ObservedObject var shopManager = PointShopManager.shared
-
+    
     @State private var coins = 0
-    @State private var tabIndex = 0
+    @State var tabIndex = 0
     @Binding var title: String
     @State var flowView = 0
-
+    
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
 
     var body: some View {
         if flowView == 0 {
             ZStack {
+                // 1) Background
                 Image("PointShopBackground")
                     .resizable()
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
 
-                VStack {
-                    // -- Example top bar with coins --
+                // 2) TOP BAR (coins + tab) pinned to top
+                VStack(spacing: 0) {
+                    // Coins row (top-right)
                     HStack {
                         Spacer()
                         HStack(alignment: .center, spacing: 7) {
@@ -76,48 +78,64 @@ struct HIPointShopSwiftUIView: View {
                         .cornerRadius(1000)
                         .offset(x: -25, y: -38)
                     }
-                    .frame(height: 60) // Some spacing at top
-
-                    // -- Your tab bar or other content here --
+                    .frame(height: 60)
+                    
+                    // Tab bar
                     CustomTopTabBar(tabIndex: $tabIndex)
-
-                    Spacer()
-
-                    // -- The shop items shown at the bottom --
-                    ScrollView(.horizontal, showsIndicators: false) {
+                }
+                .frame(maxHeight: .infinity, alignment: .top)
+                
+                // 3) BOTTOM VSTACK: two rows pinned to bottom
+                VStack(spacing: 16) {
+                    // Row 1: first two items
+                    if shopManager.items.count >= 2 {
                         HStack(spacing: 16) {
-                            ForEach(shopManager.items, id: \.name) { item in
+                            ForEach(shopManager.items.prefix(2), id: \.name) { item in
                                 PointShopItemCell(item: item)
                             }
                         }
-                        .padding(.horizontal, 16)
                     }
-                    .padding(.bottom, 50) // Some bottom spacing
-
-                }
-                .onAppear {
-                    // If not fetched yet, do it here:
-                    // shopManager.preloadItems()
-
-                    getCoins { newCoins in
-                        coins = newCoins
+                    
+                    // Row 2: horizontal scroll for the rest
+                    if shopManager.items.count > 2 {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(shopManager.items.dropFirst(2), id: \.name) { item in
+                                    PointShopItemCell(item: item)
+                                }
+                            }
+                            .padding(.horizontal, 8)
+                        }
                     }
                 }
+                // Pin the VSTACK to the bottom of the screen
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(.bottom, 35) // Adjust as needed
 
-                // -- Possibly overlay cart button in the corner, etc. --
+                // 4) CART BUTTON pinned at the bottom-right
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
                         Image("Cart")
                             .resizable()
-                            .frame(width: 60, height: 60)
-                            .padding()
+                            .frame(width: 100, height: 60)
+                            .padding(.trailing, 20)
+                            .padding(.bottom, 20)
                             .onTapGesture {
                                 title = "CART"
                                 flowView = 1
                             }
                     }
+                }
+            }
+            .onAppear {
+                // Optionally fetch items if not done in AppDelegate
+                // shopManager.preloadItems()
+
+                // Fetch coins
+                getCoins { newCoins in
+                    coins = newCoins
                 }
             }
         } else if flowView == 1 {
@@ -196,20 +214,20 @@ struct HIPointShopSwiftUIView: View {
     }
     
     func getCoins(completion: @escaping (Int) -> Void) {
-        guard let user = HIApplicationStateController.shared.user else { return }
-        HIAPI.ProfileService.getUserProfile(userToken: user.token)
-            .onCompletion { result in
-                do {
-                    let (apiProfile, _) = try result.get()
-                    DispatchQueue.main.async {
-                        completion(apiProfile.coins)
+            guard let user = HIApplicationStateController.shared.user else { return }
+            HIAPI.ProfileService.getUserProfile(userToken: user.token)
+                .onCompletion { result in
+                    do {
+                        let (apiProfile, _) = try result.get()
+                        DispatchQueue.main.async {
+                            completion(apiProfile.coins)
+                        }
+                    } catch {
+                        print("Failed to reload coins with error: \(error)")
                     }
-                } catch {
-                    print("Failed to reload coins with error: \(error)")
                 }
-            }
-            .authorize(with: user)
-            .launch()
+                .authorize(with: user)
+                .launch()
     }
 }
 
@@ -218,8 +236,8 @@ struct PointShopItemCell: View {
 
     var body: some View {
         ZStack {
-            // Translucent background
-            RoundedRectangle(cornerRadius: 8)
+            // Use a rounded rectangle for the background
+            RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white.opacity(0.4))
 
             VStack(spacing: 4) {
@@ -260,6 +278,7 @@ struct PointShopItemCell: View {
         }
         // Force a square cell
         .frame(width: 120, height: 120)
+        .cornerRadius(12)
     }
 }
 
