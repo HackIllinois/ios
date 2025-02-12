@@ -1,3 +1,5 @@
+
+
 //
 //  HIAppearance.swift
 //  HackIllinois
@@ -97,8 +99,11 @@ struct HIAppearance: Equatable {
     private static let darkBlue = #colorLiteral(red: 0.05098039216, green: 0.2196078431, blue: 0.4862745098, alpha: 1); private static let magenta = #colorLiteral(red: 0.9960784314, green: 0.4392156863, blue: 0.5960784314, alpha: 1)
     private static let darkBlueGreen = #colorLiteral(red: 0.03137254902, green: 0.5450980392, blue: 0.7568627451, alpha: 1); private static let vegetarian = #colorLiteral(red: 0.2156862745, green: 0.8705882353, blue: 0.8039215686, alpha: 1)
     private static let vegan = #colorLiteral(red: 0.9882352941, green: 0.862745098, blue: 0.5607843137, alpha: 1); private static let glutenfree = #colorLiteral(red: 0.9764705882, green: 0.5843137255, blue: 0.3411764706, alpha: 1)
-    private static let lactoseintolerant = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1); private static let other = #colorLiteral(red: 0.9960784314, green: 0.6392156863, blue: 0.6666666667, alpha: 1); private static let none = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1)
-    private static let profileBaseText = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1); private static let yellowGreen = #colorLiteral(red: 0.7882352941, green: 0.8117647059, blue: 0.462745098, alpha: 1)
+    private static let lactoseintolerant = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    private static let other = #colorLiteral(red: 0.9960784314, green: 0.6392156863, blue: 0.6666666667, alpha: 1)
+    private static let none = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1)
+    private static let profileBaseText = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1)
+    private static let yellowGreen = #colorLiteral(red: 0.7882352941, green: 0.8117647059, blue: 0.462745098, alpha: 1)
     private static let green = #colorLiteral(red: 0.4705882353, green: 0.6745098039, blue: 0.2588235294, alpha: 1)
     // Hack 2024 color palette
     private static let icyBlue = #colorLiteral(red: 0.8235294118, green: 0.968627451, blue: 1, alpha: 1); private static let bLightYellow = #colorLiteral(red: 1, green: 0.9803921569, blue: 0.8, alpha: 1)
@@ -108,13 +113,22 @@ struct HIAppearance: Equatable {
     private static let lightBlue = #colorLiteral(red: 0.7176470588, green: 0.8392156863, blue: 0.8392156863, alpha: 1); private static let teal = #colorLiteral(red: 0.537254902, green: 0.7450980392, blue: 0.6666666667, alpha: 1)
     private static let medTeal = #colorLiteral(red: 0.4274509804, green: 0.6117647059, blue: 0.6274509804, alpha: 1); private static let darkGreen = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1)
     private static let darkestGreen = #colorLiteral(red: 0.02745098039, green: 0.1725490196, blue: 0.1803921569, alpha: 1); private static let lightBrown = #colorLiteral(red: 0.5882352941, green: 0.2980392157, blue: 0.1019607843, alpha: 1)
-    private static let medBrown = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1); private static let brown = #colorLiteral(red: 0.4, green: 0.168627451, blue: 0.07450980392, alpha: 1)
-    private static let darkBrown = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1); private static let lightPink = #colorLiteral(red: 0.9215686275, green: 0.8235294118, blue: 0.8235294118, alpha: 1)
-    private static let pink = #colorLiteral(red: 0.7921568627, green: 0.431372549, blue: 0.568627451, alpha: 1); private static let darkPink = #colorLiteral(red: 0.7882352941, green: 0.2039215686, blue: 0.3529411765, alpha: 1)
-    private static let lightPurple = #colorLiteral(red: 0.662745098, green: 0.4666666667, blue: 0.6705882353, alpha: 1); private static let indigo = #colorLiteral(red: 0.3568627451, green: 0.3803921569, blue: 0.6078431373, alpha: 1)
-    private static let darknavy = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1); private static let white = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1); private static let black = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-    private static let buttonPink = #colorLiteral(red: 0.862745098, green: 0.5411764706, blue: 0.662745098, alpha: 1); private static let buttonTeal = #colorLiteral(red: 0.6470588235, green: 0.8549019608, blue: 0.8352941176, alpha: 1)
-    private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1); private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
+    private static let medBrown = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+    private static let brown = #colorLiteral(red: 0.4, green: 0.168627451, blue: 0.07450980392, alpha: 1)
+    private static let darkBrown = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+    private static let lightPink = #colorLiteral(red: 0.9215686275, green: 0.8235294118, blue: 0.8235294118, alpha: 1)
+    private static let pink = #colorLiteral(red: 0.7921568627, green: 0.431372549, blue: 0.568627451, alpha: 1)
+    private static let darkPink = #colorLiteral(red: 0.7882352941, green: 0.2039215686, blue: 0.3529411765, alpha: 1)
+    private static let lightPurple = #colorLiteral(red: 0.662745098, green: 0.4666666667, blue: 0.6705882353, alpha: 1)
+    private static let indigo = #colorLiteral(red: 0.3568627451, green: 0.3803921569, blue: 0.6078431373, alpha: 1)
+    private static let darknavy = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1)
+    private static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    private static let white = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    private static let black = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+    private static let buttonPink = #colorLiteral(red: 0.862745098, green: 0.5411764706, blue: 0.662745098, alpha: 1)
+    private static let buttonTeal = #colorLiteral(red: 0.6470588235, green: 0.8549019608, blue: 0.8352941176, alpha: 1)
+    private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1)
+    private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
     private static let transparent2 = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     // Hack 2025 color palette (color name + hex code)
     public static let rawSienna = #colorLiteral(red: 0.8705882353, green: 0.5568627451, blue: 0.2705882353, alpha: 1) // #DE8E45
@@ -130,6 +144,7 @@ struct HIAppearance: Equatable {
     public static let buttonYellowOrange = #colorLiteral(red: 0.8902, green: 0.6549, blue: 0.2824, alpha: 1) // #E3A748
     public static let buttonTealBlue = #colorLiteral(red: 0.3686, green: 0.7098, blue: 0.7294, alpha: 1) // #5EB5BA
     public static let buttonOrangeBrown = #colorLiteral(red: 0.7725, green: 0.4039, blue: 0.2471, alpha: 1) // #C5673F
+    private static let navBarYellow = #colorLiteral(red: 0.9603472352, green: 0.9405072331, blue: 0.8672463298, alpha: 1)
     
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
@@ -154,10 +169,10 @@ struct HIAppearance: Equatable {
         contentBackground: offWhite,
         overlay: #colorLiteral(red: 0.05882352941, green: 0.07058823529, blue: 0.1803921569, alpha: 0.33),
         frostedTint: #colorLiteral(red: 0, green: 0.3411764706, blue: 0.462745098, alpha: 0.6),
-        codePopupTab: white,
+        codePopupTab: navBarYellow,
         greenCodePopupTab: darkestGreen,
-        navbarBackground: darkGreen,
-        navbarTabTint: white,
+        navbarBackground: navBarYellow,
+        navbarTabTint: black,
         profileContainerTint: yellowWhite,
         preferredStatusBarStyle: statusBarBlack,
         scrollViewIndicatorStyle: .black,
@@ -231,10 +246,10 @@ struct HIAppearance: Equatable {
         contentBackground: offWhite,
         overlay: #colorLiteral(red: 0.05882352941, green: 0.07058823529, blue: 0.1803921569, alpha: 0.33),
         frostedTint: #colorLiteral(red: 0, green: 0.3411764706, blue: 0.462745098, alpha: 0.6),
-        codePopupTab: white,
+        codePopupTab: navBarYellow,
         greenCodePopupTab: darkestGreen,
-        navbarBackground: darkGreen,
-        navbarTabTint: white,
+        navbarBackground: navBarYellow,
+        navbarTabTint: black,
         profileContainerTint: yellowWhite,
         preferredStatusBarStyle: statusBarBlack,
         scrollViewIndicatorStyle: .black,

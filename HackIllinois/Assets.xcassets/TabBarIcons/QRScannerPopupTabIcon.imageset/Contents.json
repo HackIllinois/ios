@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "qr-code.png",
+      "filename" : "Camera.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "qr-code2x.png",
+      "filename" : "Camera (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "qr-code3x.png",
+      "filename" : "Camera (2).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
