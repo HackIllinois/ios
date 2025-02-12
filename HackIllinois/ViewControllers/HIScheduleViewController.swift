@@ -78,9 +78,9 @@ class HIScheduleViewController: HIEventListViewController {
 
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
-        backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
+        backgroundView.image = #imageLiteral(resourceName: "Background")
         if UIDevice.current.userInterfaceIdiom == .pad {
-            backgroundView.image = #imageLiteral(resourceName: "BackgroundPad")
+            backgroundView.image = #imageLiteral(resourceName: "Background")
         }
     }
 }
@@ -176,7 +176,7 @@ extension HIScheduleViewController {
         tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: 17, left: 0, bottom: 0, right: 0)
         self.tableView = tableView
         
@@ -206,30 +206,158 @@ extension HIScheduleViewController {
         let customFontSize = UIDevice.current.userInterfaceIdiom == .pad ? 48 : 24
         let customFont = UIFont(name: "MontserratRoman-Bold", size: CGFloat(customFontSize))
 
-        // Create flexible space items to add space to the left
-        let flexibleSpaceLeft1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let flexibleSpaceLeft2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let flexibleSpaceLeft3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        let scheduleButton = UIBarButtonItem(title: "SCHEDULE", style: .plain, target: self, action: #selector(scheduleButtonTapped(_:)))
-        scheduleButton.setTitleTextAttributes([NSAttributedString.Key.font: customFont, NSAttributedString.Key.foregroundColor: labelColor], for: .normal)
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Add the flexible space items and custom button to the leftBarButtonItems array
-        navigationItem.leftBarButtonItems = [flexibleSpaceLeft1, flexibleSpaceLeft2, flexibleSpaceLeft3, scheduleButton]
+        let scheduleButton = UIButton(type: .system)
+        scheduleButton.setTitle("SCHEDULE", for: .normal)
+        scheduleButton.titleLabel?.font = customFont
+        scheduleButton.addTarget(self, action: #selector(scheduleButtonTapped(_:)), for: .touchUpInside)
 
-        // Create flexible space items to add space to the right
-        let flexibleSpaceRight1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let flexibleSpaceRight2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let shiftsButton = UIButton(type: .system)
+        shiftsButton.setTitle("SHIFTS", for: .normal)
+        shiftsButton.titleLabel?.font = customFont
+        shiftsButton.addTarget(self, action: #selector(shiftsButtonTapped(_:)), for: .touchUpInside)
 
-        // Create custom right bar button item
-        let customButton = UIBarButtonItem(title: "SHIFTS", style: .plain, target: self, action: #selector(shiftsButtonTapped(_:)))
-        customButton.setTitleTextAttributes([NSAttributedString.Key.font: customFont, NSAttributedString.Key.foregroundColor: labelColor], for: .normal)
+        stackView.addArrangedSubview(scheduleButton)
+        stackView.addArrangedSubview(shiftsButton)
+        containerView.addSubview(stackView)
 
-        // Add the flexible space items and custom button to the rightBarButtonItems array
-        navigationItem.rightBarButtonItems = [flexibleSpaceRight1, flexibleSpaceRight2, customButton]
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 40),
+            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -40)
+        ])
 
-        self.navigationItem.leftItemsSupplementBackButton = true
+        if let navBarWidth = navigationController?.navigationBar.frame.size.width {
+            containerView.widthAnchor.constraint(equalToConstant: navBarWidth).isActive = true
+        } else {
+            containerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+        }
+        containerView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+
+        // Underline View
+        let underlineView = UIView()
+        underlineView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(underlineView)
+
+        // Determine which button is active
+        let activeButton = onlyShifts ? shiftsButton : scheduleButton
+        let inactiveButton = onlyShifts ? scheduleButton : shiftsButton
+
+        // Style the active button (white text, underlined)
+        activeButton.setTitleColor(UIColor(red: 1.0, green: 0.956, blue: 0.890, alpha: 1.0), for: .normal)
+        underlineView.backgroundColor = activeButton.titleColor(for: .normal)
+        NSLayoutConstraint.activate([
+            underlineView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -2),
+            underlineView.heightAnchor.constraint(equalToConstant: 3),
+            underlineView.centerXAnchor.constraint(equalTo: activeButton.centerXAnchor),
+            underlineView.widthAnchor.constraint(equalTo: activeButton.widthAnchor, multiplier: 1.1)
+        ])
+
+        // Style the inactive button
+        inactiveButton.setTitleColor(UIColor(red: 0x0A / 255.0, green: 0x3A / 255.0, blue: 0x3C / 255.0, alpha: 1.0), for: .normal)
+
+        navigationItem.titleView = containerView
+        navigationItem.leftBarButtonItems = nil
+        navigationItem.rightBarButtonItems = nil
     }
+
+
+    @objc func setScheduleSavedControl() {
+        let customFontSize = UIDevice.current.userInterfaceIdiom == .pad ? 48 : 24
+        let customFont = UIFont(name: "MontserratRoman-Bold", size: CGFloat(customFontSize))
+
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .equalSpacing
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        let scheduleButton = UIButton(type: .system)
+        scheduleButton.setTitle("SCHEDULE", for: .normal)
+        scheduleButton.titleLabel?.font = customFont
+        scheduleButton.setTitleColor(labelColor, for: .normal)
+        scheduleButton.addTarget(self, action: #selector(scheduleButtonTappedForNonStaff(_:)), for: .touchUpInside)
+
+        let savedButton = UIButton(type: .system)
+        savedButton.setTitle("SAVED", for: .normal)
+        savedButton.titleLabel?.font = customFont
+        savedButton.setTitleColor(labelColor, for: .normal)
+        savedButton.addTarget(self, action: #selector(savedButtonTappedForNonStaff(_:)), for: .touchUpInside)
+
+        stackView.addArrangedSubview(scheduleButton)
+        stackView.addArrangedSubview(savedButton)
+        container.addSubview(stackView)
+
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: container.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 40),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -40)
+        ])
+
+        if let navBarWidth = navigationController?.navigationBar.frame.size.width {
+            container.widthAnchor.constraint(equalToConstant: navBarWidth).isActive = true
+        } else {
+            container.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+        }
+        container.heightAnchor.constraint(equalToConstant: 44).isActive = true
+
+        // Underline View
+        let underlineView = UIView()
+        let activeButton = onlyFavorites ? savedButton : scheduleButton
+
+        underlineView.backgroundColor = activeButton.titleColor(for: .normal)
+        underlineView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(underlineView)
+
+        NSLayoutConstraint.activate([
+            underlineView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -2),
+            underlineView.heightAnchor.constraint(equalToConstant: 3),
+            underlineView.centerXAnchor.constraint(equalTo: activeButton.centerXAnchor),
+            underlineView.widthAnchor.constraint(equalTo: activeButton.widthAnchor, multiplier: 1.1)
+        ])
+
+        navigationItem.titleView = container
+        navigationItem.leftBarButtonItems = nil
+        navigationItem.rightBarButtonItems = nil
+    }
+    
+    @objc func scheduleButtonTappedForNonStaff(_ sender: UIButton) {
+        if onlyFavorites {
+            onlyFavorites = false
+            backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
+            labelColor = .white
+            setScheduleSavedControl()
+            updatePredicate()
+            animateReload()
+        }
+    }
+
+    @objc func savedButtonTappedForNonStaff(_ sender: UIButton) {
+        if !onlyFavorites {
+            onlyFavorites = true
+            backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
+            labelColor = .white
+            setScheduleSavedControl()
+            updatePredicate()
+            animateReload()
+        }
+    }
+    
     
     func removeStaffShiftContainerViews() {
         // Iterate through all subviews and remove container views for staff shifts
@@ -244,7 +372,7 @@ extension HIScheduleViewController {
     @objc func scheduleButtonTapped(_ sender: UIButton) {
         if onlyShifts {
             onlyShifts = false
-            backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
+            backgroundView.image = #imageLiteral(resourceName: "Background")
             labelColor = .white // Set label color to brown
             setStaffShiftsControl()
             // Call removeStaffShiftContainerViews to remove container views for staff shifts
@@ -258,7 +386,7 @@ extension HIScheduleViewController {
     @objc func shiftsButtonTapped(_ sender: UIButton) {
         if !onlyShifts {
             onlyShifts = !onlyShifts
-            backgroundView.image = #imageLiteral(resourceName: "Pink Background")
+            backgroundView.image = #imageLiteral(resourceName: "BackgroundShifts")
             hasSelectedShift = true
             labelColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1) // Set label color to brown
             setStaffShiftsControl()
@@ -475,7 +603,7 @@ extension HIScheduleViewController {
             section < sections.count,
             let date = Formatter.coreData.date(from: sections[section].name) {
             header.titleLabel.text = Formatter.simpleTime.string(from: date)
-            header.titleLabel.textColor <- \.white
+            header.titleLabel.textColor = #colorLiteral(red: 0.4902, green: 0.2078, blue: 0.1451, alpha: 1)
             header.titleLabel.textAlignment = .center
             if UIDevice.current.userInterfaceIdiom == .pad {
                 header.titleLabel.font = HIAppearance.Font.timeIndicator

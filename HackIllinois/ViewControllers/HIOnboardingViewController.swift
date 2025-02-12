@@ -29,7 +29,14 @@ class HIOnboardingViewController: HIBaseViewController {
         $0.backgroundHIColor = \.buttonViewBackground
         $0.titleHIColor = \.whiteText
         $0.title = "Get Started"
-        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        
+        if #available(iOS 15.0, *) {
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+            $0.configuration = config
+        } else {
+            $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        }
     }
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()

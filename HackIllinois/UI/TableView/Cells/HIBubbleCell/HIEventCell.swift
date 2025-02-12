@@ -102,20 +102,23 @@ extension HIEventCell {
         }
         return height + 5
     }
+    // swiftlint:disable function_body_length
     static func <- (lhs: HIEventCell, rhs: Event) {
         lhs.favoritedButton.isActive = rhs.favorite
         var contentStackViewHeight: CGFloat = 0.0; var eventCellSpacing: CGFloat = 8.0
         var stackViewSpacing: CGFloat = 4.7; var bubbleConstant: CGFloat = 1.0
-        var locationImageView = UIImageView(image: #imageLiteral(resourceName: "LocationSign")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "Clock"))
-        var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Vector")); let titleLabel = HILabel(style: .event)
+        var locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
+        var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor")); let titleLabel = HILabel(style: .event)
         titleLabel.numberOfLines = 2; titleLabel.text = rhs.name
+        titleLabel.textColor = UIColor(red: 0x6D / 255.0, green: 0x29 / 255.0, blue: 0x1A / 255.0, alpha: 1.0)
+
         lhs.headerView.addArrangedSubview(titleLabel)
         lhs.headerView.setCustomSpacing(9, after: titleLabel)
         if UIDevice.current.userInterfaceIdiom == .pad {
             eventCellSpacing = 12.0; stackViewSpacing = 15.0; bubbleConstant = 2.0
-            locationImageView = UIImageView(image: #imageLiteral(resourceName: "VectorPad"))
-            timeImageView = UIImageView(image: #imageLiteral(resourceName: "TimePad"))
-            sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "SponsorPad"))
+            locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location"))
+            timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
+            sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor"))
             lhs.headerView.setCustomSpacing(18, after: titleLabel)
         }
         titleLabel.constrain(width: lhs.contentView.frame.width - 120, height: (HILabel.heightForView(text: rhs.name, font: HIAppearance.Font.eventTitle!, width: lhs.contentView.frame.width - 137)) * bubbleConstant)
@@ -128,6 +131,7 @@ extension HIEventCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         let timeLabel = HILabel(style: .time)
+        timeLabel.textColor = UIColor(red: 0x0D / 255.0, green: 0x3F / 255.0, blue: 0x41 / 255.0, alpha: 1.0) // Set time text to #0D3F41
         // We can check for async events by checking if the event start and end time is 1970-01-01 00:00:00 +0000
         if rhs.startTime.timeIntervalSince1970 == 0 || rhs.endTime.timeIntervalSince1970 == 0 {
             timeLabel.text = HIConstants.ASYNC_EVENT_TIME_TEXT
@@ -135,24 +139,27 @@ extension HIEventCell {
             timeLabel.text = Formatter.simpleTime.string(from: rhs.startTime) + " - " + Formatter.simpleTime.string(from: rhs.endTime)
         }
         let pointsView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonBrown
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonBlue
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let eventTypeView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonPurple
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonSienna
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let proTypeView = HIView { (view) in
-            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.proBackground
+            view.layer.cornerRadius = 10.5 * bubbleConstant; view.backgroundHIColor = \.buttonPro
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         let proLabel = HILabel(style: .pointsText); proLabel.text = "Pro"
+        proLabel.textColor = .black
         let pointsLabel = HILabel(style: .pointsText)
+        pointsLabel.textColor = .black
         upperContainerView.addSubview(pointsView)
         pointsView.addSubview(pointsLabel)
         pointsLabel.constrain(to: pointsView, topInset: 4, trailingInset: -8 * bubbleConstant, bottomInset: -4, leadingInset: 8 * bubbleConstant)
         pointsLabel.text = "+ \(rhs.points) pts"
         let typeLabel = HILabel(style: .pointsText)
+        typeLabel.textColor = .black
         lhs.headerView.addArrangedSubview(eventTypeView)
         eventTypeView.addSubview(typeLabel)
         typeLabel.constrain(to: eventTypeView, topInset: 4, trailingInset: -8, bottomInset: -4, leadingInset: 8)
@@ -173,6 +180,7 @@ extension HIEventCell {
         timeLabel.centerYAnchor.constraint(equalTo: timeImageView.centerYAnchor).isActive = true
         if !rhs.sponsor.isEmpty {
             let sponsorLabel = HILabel(style: .sponsor)
+            sponsorLabel.textColor = UIColor(red: 0x0D / 255.0, green: 0x3F / 255.0, blue: 0x41 / 255.0, alpha: 1.0) // Set location text to #0D3F41
             middleContainerView.addSubview(sponsorImageView)
             middleContainerView.addSubview(sponsorLabel)
             sponsorImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -183,6 +191,8 @@ extension HIEventCell {
             sponsorLabel.centerYAnchor.constraint(equalTo: sponsorImageView.centerYAnchor).isActive = true
         }
         let locationLabel = HILabel(style: .newLocation); locationLabel.text = "Online"
+        locationLabel.textColor = UIColor(red: 0x0D / 255.0, green: 0x3F / 255.0, blue: 0x41 / 255.0, alpha: 1.0) // Set location text to #0D3F41
+
         if rhs.locations.count > 0 {
             locationLabel.text = rhs.locations.map({ ($0 as AnyObject).name }).joined(separator: ", ")
         }
@@ -198,6 +208,7 @@ extension HIEventCell {
         locationLabel.leadingAnchor.constraint(equalTo: timeLabel.leadingAnchor).isActive = true
         locationLabel.centerYAnchor.constraint(equalTo: locationImageView.centerYAnchor).isActive = true
         let descriptionLabel = HILabel(style: .cellDescription)
+        descriptionLabel.textColor = UIColor(red: 0x0D / 255.0, green: 0x3F / 255.0, blue: 0x41 / 255.0, alpha: 1.0) // Set location text to #0D3F41
         descriptionLabel.numberOfLines = 2
         descriptionLabel.text = "\(rhs.info)"
         lhs.contentStackView.addArrangedSubview(descriptionLabel)
