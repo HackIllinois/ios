@@ -32,7 +32,7 @@ struct HICarouselSwiftUIView: View {
                         Image(uiImage: carouselData[index].image!)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 400)
+                            .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 475)
                         HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
                             .frame(width: 20, height: 20)
                             .padding(.top, 10)
