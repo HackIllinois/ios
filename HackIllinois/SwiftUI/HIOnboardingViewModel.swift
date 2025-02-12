@@ -24,9 +24,10 @@ class HIOnboardingViewModel: ObservableObject {
         CarouselData(image: #imageLiteral(resourceName: "Onboarding0"), titleText: "Welcome", descriptionText: "Swipe to see what our app has to offer!"),
         CarouselData(image: UIImage(named: "Onboarding1"), titleText: "Countdown", descriptionText: "See how much time you have left to hack!"),
         CarouselData(image: UIImage(named: "Onboarding2"), titleText: "Schedule", descriptionText: "See the times and details of all of our events."),
-        CarouselData(image: UIImage(named: "Onboarding3"), titleText: "Scanner", descriptionText: "Scan QR codes to obtain points and redeem items from the point shop."),
-        CarouselData(image: UIImage(named: "Onboarding4"), titleText: "Profile", descriptionText: "View your QR code, food wave, and other personal information."),
-        CarouselData(image: UIImage(named: "Onboarding5"), titleText: "Point Shop", descriptionText: "View the available prizes you can redeem using your earned coins!")
+        CarouselData(image: UIImage(named: "Onboarding3"), titleText: "Check In", descriptionText: "Quickly scan QR code to check in to events and earn points!"),
+        CarouselData(image: UIImage(named: "Onboarding4"), titleText: "Point Shop", descriptionText: "View the available prizes you can redeem using your earned coins!"),
+        CarouselData(image: UIImage(named: "Onboarding5"), titleText: "Cart", descriptionText: "Modify your prize inventory before redemption."),
+        CarouselData(image: UIImage(named: "Onboarding6"), titleText: "Scanner", descriptionText: "Scan QR codes and redeem items from the point shop.")
     ]
     @Published var shouldDisplayAnimationOnNextAppearance = true
 }

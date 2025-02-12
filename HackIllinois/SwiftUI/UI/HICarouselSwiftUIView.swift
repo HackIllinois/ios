@@ -32,22 +32,34 @@ struct HICarouselSwiftUIView: View {
                         Image(uiImage: carouselData[index].image!)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 475)
-                        HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
-                            .frame(width: 20, height: 20)
-                            .padding(.top, 10)
-                        Text(carouselData[index].descriptionText)
-                            .bold()
-                            .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 10)
+                            .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 450)
+                        VStack {
+                            HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
+                                .frame(width: 20, height: 20)
+                                .padding(.top, 15)
+                            Text(carouselData[index].descriptionText)
+                                .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 14)))
+                                .foregroundColor(.black)
+                                .frame(width: UIScreen.main.bounds.width - 125)
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical, 10)
+                            HITabIndicator(count: carouselData.count, current: $currentIndex)
+                                .padding(.bottom, 15)
+                        }
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 35)
+                                .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
+                                .shadow(radius: 7)
+                                .padding(10)
+                        )
                     }
                     .tag(index)
                     .padding(.horizontal, horizontalCarouselPadding)
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            HITabIndicator(count: carouselData.count, current: $currentIndex)
         }
         .frame(width: UIScreen.main.bounds.width)
         .padding(.horizontal, -horizontalCarouselPadding)
@@ -74,14 +86,14 @@ struct HITabIndicator: View {
                 ZStack {
                     if current == index {
                         Circle()
-                            .stroke(Color.white, lineWidth: 3)
-                            .background(Circle().fill(.white))
+                            .stroke(Color.black, lineWidth: 1)
+                            .background(Circle().fill(.black))
                     } else {
                         Circle()
                             .fill(Color.clear)
                             .overlay(
                                 Circle()
-                                    .stroke(Color.white, lineWidth: 3)
+                                    .stroke(Color.black, lineWidth: 1)
                             )
                     }
                 }.frame(width: 10, height: 10)
