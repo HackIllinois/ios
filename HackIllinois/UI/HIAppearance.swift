@@ -14,6 +14,7 @@
 
 import UIKit
 
+// swiftlint:disable type_body_length
 struct HIAppearance: Equatable {
     let neonCountdownText: UIColor
     let titleText: UIColor
@@ -144,9 +145,7 @@ struct HIAppearance: Equatable {
     private static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
     private static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
     private static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
-    
     private static let navBarYellow = #colorLiteral(red: 0.9603472352, green: 0.9405072331, blue: 0.8672463298, alpha: 1)
-    
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
     }

@@ -102,6 +102,7 @@ extension HIEventCell {
         }
         return height + 5
     }
+    // swiftlint:disable function_body_length
     static func <- (lhs: HIEventCell, rhs: Event) {
         lhs.favoritedButton.isActive = rhs.favorite
         var contentStackViewHeight: CGFloat = 0.0; var eventCellSpacing: CGFloat = 8.0
@@ -109,7 +110,6 @@ extension HIEventCell {
         var locationImageView = UIImageView(image: #imageLiteral(resourceName: "Location")); var timeImageView = UIImageView(image: #imageLiteral(resourceName: "SandTimer"))
         var sponsorImageView = UIImageView(image: #imageLiteral(resourceName: "Sponsor")); let titleLabel = HILabel(style: .event)
         titleLabel.numberOfLines = 2; titleLabel.text = rhs.name
-        
         titleLabel.textColor = UIColor(red: 0x6D / 255.0, green: 0x29 / 255.0, blue: 0x1A / 255.0, alpha: 1.0)
 
         lhs.headerView.addArrangedSubview(titleLabel)
@@ -132,7 +132,6 @@ extension HIEventCell {
         }
         let timeLabel = HILabel(style: .time)
         timeLabel.textColor = UIColor(red: 0x0D / 255.0, green: 0x3F / 255.0, blue: 0x41 / 255.0, alpha: 1.0) // Set time text to #0D3F41
-        
         // We can check for async events by checking if the event start and end time is 1970-01-01 00:00:00 +0000
         if rhs.startTime.timeIntervalSince1970 == 0 || rhs.endTime.timeIntervalSince1970 == 0 {
             timeLabel.text = HIConstants.ASYNC_EVENT_TIME_TEXT
