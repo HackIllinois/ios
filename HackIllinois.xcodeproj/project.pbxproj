@@ -85,7 +85,6 @@
 		95C18DC52009618C004784B5 /* HIHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C18DC42009618C004784B5 /* HIHomeViewController.swift */; };
 		95C18DCA20096539004784B5 /* HIEventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C18DC720096539004784B5 /* HIEventDetailViewController.swift */; };
 		95C18DCB20096539004784B5 /* HIScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C18DC820096539004784B5 /* HIScheduleViewController.swift */; };
-		95C18DCC20096539004784B5 /* HIEventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C18DC920096539004784B5 /* HIEventListViewController.swift */; };
 		95C3BE302008B99C0008ED79 /* HIBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C3BE2F2008B99C0008ED79 /* HIBaseViewController.swift */; };
 		95CA9230201E60D300C46037 /* UIImage+QRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CA922F201E60D300C46037 /* UIImage+QRCode.swift */; };
 		95CCEA1F203D6B3600E3E28C /* HINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CCEA1E203D6B3600E3E28C /* HINavigationController.swift */; };
@@ -157,6 +156,7 @@
 		D1F1463A2B605C57004E7FC9 /* Hack_Mushroom_Loading.json in Resources */ = {isa = PBXBuildFile; fileRef = D1F146392B605C57004E7FC9 /* Hack_Mushroom_Loading.json */; };
 		D3A309BC2211175200CBA351 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3A309BB2211175200CBA351 /* PassKit.framework */; };
 		D704DB322C73A8E200355019 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = D704DB312C73A8E200355019 /* URLImage */; };
+		DAACDC322D3B8F5E00D15118 /* HIEventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAACDC312D3B8F5E00D15118 /* HIEventListViewController.swift */; };
 		DF3706382925DDAA000B4278 /* GoogleMapsBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3706372925DDAA000B4278 /* GoogleMapsBase.framework */; };
 		DF37063B2925DDB8000B4278 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3706392925DDB7000B4278 /* GoogleMaps.framework */; };
 		DF37063C2925DDB8000B4278 /* GoogleMapsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF37063A2925DDB8000B4278 /* GoogleMapsCore.framework */; };
@@ -306,7 +306,6 @@
 		95C18DC42009618C004784B5 /* HIHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIHomeViewController.swift; sourceTree = "<group>"; };
 		95C18DC720096539004784B5 /* HIEventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HIEventDetailViewController.swift; sourceTree = "<group>"; };
 		95C18DC820096539004784B5 /* HIScheduleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HIScheduleViewController.swift; sourceTree = "<group>"; };
-		95C18DC920096539004784B5 /* HIEventListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HIEventListViewController.swift; sourceTree = "<group>"; };
 		95C3BE2F2008B99C0008ED79 /* HIBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HIBaseViewController.swift; sourceTree = "<group>"; };
 		95CA922F201E60D300C46037 /* UIImage+QRCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+QRCode.swift"; sourceTree = "<group>"; };
 		95CCEA1E203D6B3600E3E28C /* HINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HINavigationController.swift; sourceTree = "<group>"; };
@@ -376,6 +375,7 @@
 		D1F146392B605C57004E7FC9 /* Hack_Mushroom_Loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Hack_Mushroom_Loading.json; sourceTree = "<group>"; };
 		D3A309BA221116A600CBA351 /* HackIllinois.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HackIllinois.entitlements; sourceTree = "<group>"; };
 		D3A309BB2211175200CBA351 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
+		DAACDC312D3B8F5E00D15118 /* HIEventListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIEventListViewController.swift; sourceTree = "<group>"; };
 		DF3706372925DDAA000B4278 /* GoogleMapsBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsBase.framework; sourceTree = "<group>"; };
 		DF3706392925DDB7000B4278 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		DF37063A2925DDB8000B4278 /* GoogleMapsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMapsCore.framework; sourceTree = "<group>"; };
@@ -606,7 +606,7 @@
 				D14D3AE2295FBDA100EB7995 /* HIBannerViewController.swift */,
 				D158EC302B5A2D440003D799 /* HIQRAttendeeScannerSelection.swift */,
 				95C18DC720096539004784B5 /* HIEventDetailViewController.swift */,
-				95C18DC920096539004784B5 /* HIEventListViewController.swift */,
+				DAACDC312D3B8F5E00D15118 /* HIEventListViewController.swift */,
 				9515E43622093E1300BCAF92 /* HIEventScannerViewController.swift */,
 				95C18DC42009618C004784B5 /* HIHomeViewController.swift */,
 				954EE1D21FD0F1680078F39E /* HILoginSelectionViewController.swift */,
@@ -997,6 +997,7 @@
 				951E67F723C1C88200477703 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				D1D335152B81DEBA00BBB596 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				D704DB302C73A8E200355019 /* XCRemoteSwiftPackageReference "url-image" */,
+				DADFD71E2D3311C200F1CE5D /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 951827801EA35AF100049F79 /* Products */;
 			projectDirPath = "";
@@ -1092,6 +1093,7 @@
 				9521A6AA20191737009059C6 /* HIAnnouncementDataSource.swift in Sources */,
 				D19D4C932B794F9100376E1B /* HIScanMentorViewController.swift in Sources */,
 				95C18DCB20096539004784B5 /* HIScheduleViewController.swift in Sources */,
+				DAACDC322D3B8F5E00D15118 /* HIEventListViewController.swift in Sources */,
 				ACCB199D25F56DF100F88379 /* HIInterestCell.swift in Sources */,
 				95CCEA1F203D6B3600E3E28C /* HINavigationController.swift in Sources */,
 				957D7CAC1FC2940800C4332A /* HackIllinois.xcdatamodeld in Sources */,
@@ -1115,7 +1117,6 @@
 				1C9045D2274F048A00DDA74E /* HICarouselView.swift in Sources */,
 				AC3B621625E8611C002386A2 /* HIProfileDataSource.swift in Sources */,
 				BF0FDA3925F4DCCD003B5DB1 /* HIScheduleSegmentedControl.swift in Sources */,
-				95C18DCC20096539004784B5 /* HIEventListViewController.swift in Sources */,
 				95A7D28A203D4F54005EAEAF /* HIButton.swift in Sources */,
 				95A7D28E203D4F54005EAEAF /* HIView.swift in Sources */,
 				3CF8DB1323B419980035ECAE /* HIProjectCell.swift in Sources */,
@@ -1375,7 +1376,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2024.2.3;
+				MARKETING_VERSION = 2024.11.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -Xfrontend -warn-long-expression-type-checking=150";
 				PRODUCT_BUNDLE_IDENTIFIER = org.hackillinois.ios;
@@ -1407,7 +1408,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2024.2.3;
+				MARKETING_VERSION = 2024.11.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.hackillinois.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1629,6 +1630,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 3.1.1;
+			};
+		};
+		DADFD71E2D3311C200F1CE5D /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.57.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

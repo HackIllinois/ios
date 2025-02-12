@@ -21,7 +21,7 @@ class HIDateHeader: UITableViewHeaderFooterView {
     }
     let dateView = HIView { (view) in
         view.layer.cornerRadius = 15
-        view.backgroundHIColor = \.buttonDarkGreen
+        view.backgroundHIColor = \.buttonOrange
     }
 
     override init(reuseIdentifier: String?) {

@@ -31,7 +31,7 @@ class HIScheduleSegmentedControl: HISegmentedControl {
 
     private var indicatorView = UIImageView(image: #imageLiteral(resourceName: "Indicator"))
     
-    private var selectedPotionView: UIImageView? // Keep track of the selected potion
+    private var selectedVaseView: UIImageView? // Keep track of the selected vase
     
     let padConstant = (UIDevice.current.userInterfaceIdiom == .pad) ? 2.0 : 1
     // MARK: - Init
@@ -105,31 +105,52 @@ class HIScheduleSegmentedControl: HISegmentedControl {
         items.indices.forEach { setupViewForItem(at: $0) }
         constrain(views: views)
         
-        // Highlight the initially selected potion
-        highlightSelectedPotion()
+        // Highlight the initially selected vase
+        highlightSelectedVase()
     }
 
     private func setupViewForItem(at index: Int) {
         let view = UIView()
         let titleLabel = UILabel()
         let numberLabel = UILabel()
-        var potionView = UIImageView(image: #imageLiteral(resourceName: "Purple Potion"))
+        var vaseView = UIImageView(image: #imageLiteral(resourceName: "Vase"))
         if UIDevice.current.userInterfaceIdiom == .pad {
-            potionView = UIImageView(image: #imageLiteral(resourceName: "PurplePotionPad"))
+            vaseView = UIImageView(image: #imageLiteral(resourceName: "Vase"))
         }
+        
+        
         if index == selectedIndex {
-            // If it's the selected index, set the potion view color to pink
+            // If it's the selected index, set the vase color to clicked
             if UIDevice.current.userInterfaceIdiom == .pad {
-                potionView.image = #imageLiteral(resourceName: "PinkPotionPad")
+                vaseView = UIImageView(image: #imageLiteral(resourceName: "VaseClicked"))
+                
             } else {
-                potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                
+                vaseView = UIImageView(image: #imageLiteral(resourceName: "VaseClicked"))
             }
-            selectedPotionView = potionView
+            selectedVaseView = vaseView
         }
+        
+        vaseView.translatesAutoresizingMaskIntoConstraints = false
+        vaseView.contentMode = .scaleAspectFit // Prevent stretching
+        vaseView.clipsToBounds = true
+        
+        let dynamicWidth: CGFloat
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            dynamicWidth = UIScreen.main.bounds.width * 0.2 // 30% for iPads
+        } else {
+            dynamicWidth = UIScreen.main.bounds.width * 0.2 // 20% for iPhones
+        }
+        let dynamicHeight = dynamicWidth * (74 / 68.351) // Maintain aspect ratio
+        
+        vaseView.widthAnchor.constraint(equalToConstant: dynamicWidth).isActive = true
+        vaseView.heightAnchor.constraint(equalToConstant: dynamicHeight).isActive = true
+
+    
         // Set up titleLabel and numberLabel
-        potionView.addSubview(titleLabel)
-        potionView.addSubview(numberLabel)
-        view.addSubview(potionView)
+        vaseView.addSubview(titleLabel)
+        vaseView.addSubview(numberLabel)
+        view.addSubview(vaseView)
         titleLabel.textAlignment = .center
         if UIDevice.current.userInterfaceIdiom == .pad {
             titleLabel.font = titleFontPad
@@ -145,15 +166,17 @@ class HIScheduleSegmentedControl: HISegmentedControl {
         numberLabel.textColor <- \.darkGreenText
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
-        potionView.translatesAutoresizingMaskIntoConstraints = false
+        vaseView.translatesAutoresizingMaskIntoConstraints = false
         var segmentedControlConstant = -10.0
         if UIDevice.current.userInterfaceIdiom == .pad {
             segmentedControlConstant = 0
         }
-        numberLabel.constrain(to: potionView, topInset: 30 * padConstant, trailingInset: 0, leadingInset: 0)
-        titleLabel.constrain(to: potionView, trailingInset: 0, bottomInset: 0, leadingInset: 0)
+        
+        numberLabel.constrain(to: vaseView, topInset: 20 * padConstant, trailingInset: 0, leadingInset: 0)
+        titleLabel.constrain(to: vaseView, trailingInset: 0, bottomInset: 0, leadingInset: 0)
         titleLabel.topAnchor.constraint(equalTo: numberLabel.bottomAnchor, constant: segmentedControlConstant).isActive = true
         titleLabel.heightAnchor.constraint(equalTo: numberLabel.heightAnchor).isActive = true
+        
 
         view.isUserInteractionEnabled = false
         titleLabel.isUserInteractionEnabled = false
@@ -168,35 +191,35 @@ class HIScheduleSegmentedControl: HISegmentedControl {
 
     override func didSetSelectedIndex(oldValue: Int) {
         if oldValue != selectedIndex {
-            selectedPotionView?.image = #imageLiteral(resourceName: "Purple Potion")
+            selectedVaseView?.image = #imageLiteral(resourceName: "Vase")
             if UIDevice.current.userInterfaceIdiom == .pad {
-                selectedPotionView?.image = #imageLiteral(resourceName: "PurplePotionPad")
+                selectedVaseView?.image = #imageLiteral(resourceName: "Vase")
             } else {
-                selectedPotionView?.image = #imageLiteral(resourceName: "Purple Potion")
+                selectedVaseView?.image = #imageLiteral(resourceName: "Vase")
             }
 
-            // Update the color of the newly selected potion
-            if let potionView = views[selectedIndex].subviews.first as? UIImageView {
+            // Update the color of the newly selected vase
+            if let vaseView = views[selectedIndex].subviews.first as? UIImageView {
                 if UIDevice.current.userInterfaceIdiom == .pad {
-                    potionView.image = #imageLiteral(resourceName: "PinkPotionPad")
+                    vaseView.image = #imageLiteral(resourceName: "VaseClicked")
                 } else {
-                    potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                    vaseView.image = #imageLiteral(resourceName: "VaseClicked")
                 }
-                selectedPotionView = potionView
+                selectedVaseView = vaseView
             }
             displayNewSelectedIndex()
             sendActions(for: .valueChanged)
         }
     }
     
-    private func highlightSelectedPotion() {
-        if let potionView = views[selectedIndex].subviews.first as? UIImageView {
+    private func highlightSelectedVase() {
+        if let vaseView = views[selectedIndex].subviews.first as? UIImageView {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                selectedPotionView?.image = #imageLiteral(resourceName: "PinkPotionPad")
+                selectedVaseView?.image = #imageLiteral(resourceName: "VaseClicked")
             } else {
-                potionView.image = #imageLiteral(resourceName: "Pink Potion")
+                vaseView.image = #imageLiteral(resourceName: "VaseClicked")
             }
-            selectedPotionView = potionView
+            selectedVaseView = vaseView
         }
     }
 

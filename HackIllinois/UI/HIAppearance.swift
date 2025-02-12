@@ -14,6 +14,7 @@
 
 import UIKit
 
+// swiftlint:disable type_body_length
 struct HIAppearance: Equatable {
     let neonCountdownText: UIColor
     let titleText: UIColor
@@ -46,12 +47,15 @@ struct HIAppearance: Equatable {
     let interestBackground: UIColor
     let buttonGreen: UIColor
     let buttonBrown: UIColor
+    let buttonBlue: UIColor
     let buttonLightPink: UIColor
     let buttonPurple: UIColor
+    let buttonSienna: UIColor
     let buttonDarkBlue: UIColor
     let buttonMagenta: UIColor
     let buttonDarkBlueGreen: UIColor
     let buttonDarkGreen: UIColor
+    let buttonOrange: UIColor
     let favoriteStarBackground: UIColor
     let segmentedBackground: UIColor
     let buttonYellow: UIColor
@@ -88,6 +92,7 @@ struct HIAppearance: Equatable {
     let scannerButtonBorder: UIColor
     let scannerButtonShadow: UIColor
     let proBackground: UIColor
+    let buttonPro: UIColor
     let eventCard: UIColor
     let clear: UIColor = .clear
     let black: UIColor = .black
@@ -130,8 +135,17 @@ struct HIAppearance: Equatable {
     private static let buttonYellow = #colorLiteral(red: 1, green: 0.7882352941, blue: 0.3568627451, alpha: 1)
     private static let offWhite = #colorLiteral(red: 1, green: 0.9725490196, blue: 0.9607843137, alpha: 1)
     private static let transparent2 = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    // Hack 2025 color palette (color name + hex code)
+    private static let rawSienna = #colorLiteral(red: 0.8705882353, green: 0.5568627451, blue: 0.2705882353, alpha: 1) // #DE8E45
+    private static let neptune = #colorLiteral(red: 0.5176470588, green: 0.737254902, blue: 0.7254901961, alpha: 1) // #84BCB9
+    private static let lightningYellow = #colorLiteral(red: 0.9764705882, green: 0.7568627451, blue: 0.1490196078, alpha: 1) // #F9C126
+    private static let copper = #colorLiteral(red: 0.7725490196, green: 0.4039215686, blue: 0.2470588235, alpha: 1) // #C5673F
+    private static let metallicCopper = #colorLiteral(red: 0.4274509804, green: 0.1607843137, blue: 0.1019607843, alpha: 1) // #6D291A
+    private static let yellowOrange = #colorLiteral(red: 1.0, green: 0.6980392157, blue: 0.2431372549, alpha: 1) // #FFB23E
+    private static let muleFawn = #colorLiteral(red: 0.537254902, green: 0.2470588235, blue: 0.1843137255, alpha: 1) // #893F2F
+    private static let elephant = #colorLiteral(red: 0.05098039216, green: 0.2470588235, blue: 0.2549019608, alpha: 1) // #0D3F41
+    private static let doveGray = #colorLiteral(red: 0.4235294118, green: 0.4235294118, blue: 0.4235294118, alpha: 1) // #6C6C6C
     private static let navBarYellow = #colorLiteral(red: 0.9603472352, green: 0.9405072331, blue: 0.8672463298, alpha: 1)
-    
     private static var statusBarWhite: UIStatusBarStyle {
         return .lightContent
     }
@@ -173,12 +187,15 @@ struct HIAppearance: Equatable {
         interestBackground: orange,
         buttonGreen: yellowGreen,
         buttonBrown: lightBrown,
+        buttonBlue: neptune,
         buttonLightPink: other,
         buttonPurple: indigo,
+        buttonSienna: rawSienna,
         buttonDarkBlue: darkBlue,
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
         buttonDarkGreen: darkGreen,
+        buttonOrange: orange,
         favoriteStarBackground: yellowWhite,
         segmentedBackground: white,
         buttonYellow: bLightYellow,
@@ -215,6 +232,7 @@ struct HIAppearance: Equatable {
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
+        buttonPro: copper,
         eventCard: offWhite
     )
 
@@ -250,12 +268,15 @@ struct HIAppearance: Equatable {
         interestBackground: orange,
         buttonGreen: yellowGreen,
         buttonBrown: lightBrown,
+        buttonBlue: neptune,
         buttonLightPink: other,
         buttonPurple: indigo,
+        buttonSienna: rawSienna,
         buttonDarkBlue: darkBlue,
         buttonMagenta: magenta,
         buttonDarkBlueGreen: darkBlueGreen,
         buttonDarkGreen: darkGreen,
+        buttonOrange: orange,
         favoriteStarBackground: yellowWhite,
         segmentedBackground: white,
         buttonYellow: bLightYellow,
@@ -292,6 +313,7 @@ struct HIAppearance: Equatable {
         scannerButtonBorder: medBrown,
         scannerButtonShadow: darkBrown,
         proBackground: medTeal,
+        buttonPro: copper,
         eventCard: offWhite
     )
 
@@ -372,8 +394,8 @@ struct HIAppearance: Equatable {
         
         // Home page countdown fonts
 //        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 48) // Hack 2023
-        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 42) // Hack 2024
-        static let newCountdownTextPad = UIFont(name: "MontserratRoman-Bold", size: 56) // Hack 2024
+        static let newCountdownText = UIFont(name: "MontserratRoman-Bold", size: 28) // Hack 2024
+        static let newCountdownTextPad = UIFont(name: "MontserratRoman-Bold", size: 42) // Hack 2024
         static let countdownText = UIFont(name: "MontserratRoman-Bold", size: 25)
         
         // Onboarding fonts

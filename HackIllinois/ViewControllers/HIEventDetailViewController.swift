@@ -40,15 +40,15 @@ class HIEventDetailViewController: HIBaseViewController, UIGestureRecognizerDele
         } else {
             view.layer.cornerRadius = 8
         }
-        view.backgroundHIColor = \.buttonPurple
+        view.backgroundHIColor = \.buttonSienna
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let eventTypeLabel = HILabel(style: .eventType)
     private let sponsorLabel = HILabel(style: .sponsor)
-    private let timeImageView = UIImageView(image: UIImage(named: "Clock"))
+    private let timeImageView = UIImageView(image: UIImage(named: "SandTimer"))
     private let timeLabel = HILabel(style: .description)
     private let locationLabel = HILabel(style: .location)
-    private let locationImageView = UIImageView(image: UIImage(named: "LocationSign"))
+    private let locationImageView = UIImageView(image: UIImage(named: "Location"))
     private let descriptionLabel = HILabel(style: .detailText)
     let pointsView = HIView { (view) in
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -56,7 +56,7 @@ class HIEventDetailViewController: HIBaseViewController, UIGestureRecognizerDele
         } else {
             view.layer.cornerRadius = 8
         }
-        view.backgroundHIColor = \.buttonBrown
+        view.backgroundHIColor = \.buttonBlue
         view.translatesAutoresizingMaskIntoConstraints = false
     }
     private let pointsLabel = HILabel(style: .eventType)
@@ -215,6 +215,8 @@ extension HIEventDetailViewController {
         titleLabel.leadingAnchor.constraint(equalTo: closeButton.leadingAnchor).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12).isActive = true
         titleLabel.topAnchor.constraint(equalTo: upperContainerView.topAnchor).isActive = true
+        titleLabel.textColor = UIColor(red: 0x6D / 255.0, green: 0x29 / 255.0, blue: 0x1A / 255.0, alpha: 1.0)
+
     }
     func setupTime() {
         upperContainerView.addSubview(timeImageView)
