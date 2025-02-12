@@ -127,7 +127,6 @@ struct HIAppearance: Equatable {
     private static let lightPurple = #colorLiteral(red: 0.662745098, green: 0.4666666667, blue: 0.6705882353, alpha: 1)
     private static let indigo = #colorLiteral(red: 0.3568627451, green: 0.3803921569, blue: 0.6078431373, alpha: 1)
     private static let darknavy = #colorLiteral(red: 0.1137254902, green: 0.1490196078, blue: 0.2666666667, alpha: 1)
-    private static let transparent = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
     private static let white = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     private static let black = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
     private static let buttonPink = #colorLiteral(red: 0.862745098, green: 0.5411764706, blue: 0.662745098, alpha: 1)
