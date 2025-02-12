@@ -353,7 +353,7 @@ class HILabel: UILabel {
             font = HIAppearance.Font.locationText
             
         case .QRSelection:
-            textHIColor = \.viewTitleBrown
+            textHIColor = \.whiteText
             backgroundHIColor = \.clear
             font = HIAppearance.Font.QRSelection
         }
