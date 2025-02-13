@@ -23,47 +23,80 @@ struct HICarouselSwiftUIView: View {
     var carouselData: [CarouselData]
     @State private var currentIndex = 0
     var body: some View {
-        VStack {
-            Spacer()
-            TabView(selection: $currentIndex) {
-                ForEach(0..<carouselData.count, id: \.self) { index in
-                    VStack {
-                        Spacer()
-                        Image(uiImage: carouselData[index].image!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 450)
-                        VStack {
-                            HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
-                                .frame(width: 20, height: 20)
-                                .padding(.top, 15)
-                            Text(carouselData[index].descriptionText)
-                                .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 14)))
-                                .foregroundColor(.black)
-                                .frame(width: UIScreen.main.bounds.width - 125)
-                                .multilineTextAlignment(.center)
-                                .padding(.vertical, 10)
-                            HITabIndicator(count: carouselData.count, current: $currentIndex)
-                                .padding(.bottom, 15)
-                        }
-                        .padding(.horizontal, 40)
-                        .padding(.vertical, 10)
-                        .background(
-                            RoundedRectangle(cornerRadius: 35)
-                                .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
-                                .shadow(radius: 7)
-                                .padding(10)
-                        )
-                    }
-                    .tag(index)
-                    .padding(.horizontal, horizontalCarouselPadding)
-                }
+        ZStack {
+            VStack {
+                Spacer()
+                RoundedRectangle(cornerRadius: 35)
+                    .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
+                    .frame(width: UIScreen.main.bounds.width, height: 305)
+                    .shadow(radius: 7)
+                    .padding(10)
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .offset(y: 100)
+            
+            VStack {
+                VStack {
+                    Spacer()
+                    TabView(selection: $currentIndex) {
+                        ForEach(0..<carouselData.count, id: \.self) { index in
+                            VStack {
+                                Spacer()
+                                Image(uiImage: carouselData[index].image!)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 450)
+                                VStack {
+                                    HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
+                                        .frame(width: 20, height: 20)
+                                        .padding(.top, 15)
+                                    Text(carouselData[index].descriptionText)
+                                        .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 14)))
+                                        .foregroundColor(.black)
+                                        .frame(width: UIScreen.main.bounds.width - 125)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.vertical, 10)
+                                }
+                                .padding(.horizontal, 40)
+                                .padding(.top, 100)
+                            }
+                            .tag(index)
+                            .padding(.horizontal, horizontalCarouselPadding)
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                }
+                .frame(width: UIScreen.main.bounds.width)
+                .padding(.horizontal, -horizontalCarouselPadding)
+                .ignoresSafeArea()
+                HStack {
+                    Button {
+                        NotificationCenter.default.post(name: .getStarted, object: nil)
+                    }label: {
+                        Text("SKIP")
+                            .font(Font(HIAppearance.Font.profileTier ?? .systemFont(ofSize: 14)))
+                            .foregroundColor(.black)
+                            .tracking(2)
+                    }
+                    HITabIndicator(count: carouselData.count, current: $currentIndex)
+                        .padding(.trailing)
+                        .padding(.leading)
+                    if currentIndex < carouselData.count - 1 {
+                        Image("OnboardingNext")
+                            .onTapGesture {
+                                currentIndex += 1
+                            }
+                    } else {
+                        Button {
+                            NotificationCenter.default.post(name: .getStarted, object: nil)
+                        }label: {
+                            Image("OnboardingNext")
+                        }
+                    }
+                }
+                .padding(.top, 40)
+                .padding(.bottom, 20)
+            }
         }
-        .frame(width: UIScreen.main.bounds.width)
-        .padding(.horizontal, -horizontalCarouselPadding)
-        .ignoresSafeArea()
     }
     
     var horizontalCarouselPadding: CGFloat {

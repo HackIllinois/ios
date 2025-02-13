@@ -301,7 +301,7 @@ class HILabel: UILabel {
         case .onboardingTitle:
             textHIColor = \.black
             backgroundHIColor = \.clear
-            font = HIAppearance.Font.profileNumberFigure
+            font = HIAppearance.Font.scheduleSegmentedPad
             textAlignment = .center
             numberOfLines = 0
 

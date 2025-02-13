@@ -73,7 +73,7 @@ extension HIOnboardingViewController {
         let viewAlphaValue = shouldDisplayAnimationOnNextAppearance ? 0.0 : 1.0
 
         carouselView?.alpha = CGFloat(viewAlphaValue)
-        getStartedButton.alpha = CGFloat(viewAlphaValue)
+//        getStartedButton.alpha = CGFloat(viewAlphaValue)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -92,7 +92,7 @@ extension HIOnboardingViewController {
 
             animationView.play { _ in
                 // Smooth out background transition into login page
-                UIView.animate(withDuration: 1.0, animations: {self.animationView.alpha = 0.0; self.carouselView?.alpha = 1.0; self.getStartedButton.alpha = 1.0},
+                UIView.animate(withDuration: 1.0, animations: {self.animationView.alpha = 0.0; self.carouselView?.alpha = 1.0},
                 completion: { _ in
                     self.animationView.removeFromSuperview()
                 })
@@ -109,20 +109,20 @@ extension HIOnboardingViewController {
 
 private extension HIOnboardingViewController {
     func setupUI() {
-        getStartedButton.addTarget(self, action: #selector(didSelectGetStarted(_:)), for: .touchUpInside)
-        view.addSubview(getStartedButton)
-        getStartedButton.translatesAutoresizingMaskIntoConstraints = false
-        getStartedButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-        getStartedButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        getStartedButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.6).isActive = true
-        getStartedButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        getStartedButton.addTarget(self, action: #selector(didSelectGetStarted(_:)), for: .touchUpInside)
+//        view.addSubview(getStartedButton)
+//        getStartedButton.translatesAutoresizingMaskIntoConstraints = false
+//        getStartedButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+//        getStartedButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        getStartedButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.6).isActive = true
+//        getStartedButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         guard let carouselView = carouselView else { return }
         view.addSubview(carouselView)
         carouselView.translatesAutoresizingMaskIntoConstraints = false
         carouselView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
         carouselView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         carouselView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        carouselView.bottomAnchor.constraint(equalTo: getStartedButton.topAnchor).isActive = true
+//        carouselView.bottomAnchor.constraint(equalTo: getStartedButton.topAnchor).isActive = true
     }
 }
 

@@ -30,25 +30,7 @@ struct HIOnboardingView: View {
             } else {
                 VStack {
                     HICarouselSwiftUIView(carouselData: viewModel.data)
-                    Button {
-                        NotificationCenter.default.post(name: .getStarted, object: nil)
-                    }label: {
-                        Text("GET STARTED")
-                            .font(.title2.bold())
-                            .tracking(2)
-//                            .onAppear {
-//                                print("This screen height is \(UIScreen.main.bounds.height)")
-//                            }
-                    }
-                    .padding()
-                    .font(.title3.bold())
-                    .frame(width: 215, height: 40)
-                    .foregroundColor(.white)
-                    .background(Color.clear)
-                    .overlay(RoundedRectangle(cornerRadius: 50)
-                        .stroke(.white, lineWidth: 3))
-                    .padding(.top, 20)
-                    .padding(.bottom, UIScreen.main.bounds.height < 750 ? 10 : 75)
+                    
                     Spacer()
                 }
             }
