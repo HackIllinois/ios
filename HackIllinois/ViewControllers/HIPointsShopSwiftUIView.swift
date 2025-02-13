@@ -57,7 +57,7 @@ struct HIPointShopSwiftUIView: View {
                 Image("PointShopBackground")
                     .resizable()
                     .ignoresSafeArea()
-
+                
                 // 2) TOP BAR (coins + tab) pinned to top
                 VStack(spacing: 0) {
                     // Coins row (top-right)
@@ -111,24 +111,22 @@ struct HIPointShopSwiftUIView: View {
                 // Pin the VSTACK to the bottom of the screen
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 35) // Adjust as needed
-
-                // 4) CART BUTTON pinned at the bottom-right
+                
                 VStack {
-                    Spacer()
                     HStack {
-                        Spacer()
                         Image("Cart")
                             .resizable()
-                            .frame(width: 100, height: 60)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
+                            .frame(width: 85, height: 30)
                             .onTapGesture {
                                 title = "CART"
                                 flowView = 1
                             }
                     }
+                    .frame(height: 60)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
+        
             .onAppear {
                 // Optionally fetch items if not done in AppDelegate
                 // shopManager.preloadItems()
