@@ -20,6 +20,15 @@ class HILeaderboardCell: UITableViewCell {
     let nameLabel = HILabel(style: .leaderboardName)
     let rankLabel = HILabel(style: .leaderboardRank)
     let pointsLabel = HILabel(style: .leaderboardPoints)
+    
+    // iOS 16 TableView did not respect separator inset for
+    // first and last rows, add managed equivalent
+    let separatorView: UIView = {
+        let separatorView = UIView()
+        separatorView.backgroundColor = #colorLiteral(red: 0.04009541315, green: 0.1307413591, blue: 0.3802352191, alpha: 1)
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        return separatorView
+    }()
 
     var cellView = HIView {
         $0.clipsToBounds = true
@@ -33,14 +42,31 @@ class HILeaderboardCell: UITableViewCell {
         selectionStyle = .none
         backgroundColor = UIColor.clear
         contentView.addSubview(cellView)
-        cellView.constrain(to: safeAreaLayoutGuide, topInset: 0, trailingInset: 0, bottomInset: 0, leadingInset: 0)
+        
+        cellView.constrain(
+            to: safeAreaLayoutGuide,
+            topInset: 0,
+            trailingInset: -HILeaderboardCell.padding.right,
+            bottomInset: 0,
+            leadingInset: HILeaderboardCell.padding.left
+        )
+        
         cellView.addSubview(rankLabel)
         cellView.addSubview(pointsLabel)
         cellView.addSubview(nameLabel)
+        cellView.addSubview(separatorView)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) should not be used.")
+    }
+}
+
+// MARK: - Padding
+extension HILeaderboardCell {
+    static var padding: UIEdgeInsets {
+        let pad = (UIScreen.main.bounds.width * 0.15) / 2.0
+        return UIEdgeInsets(top: 0, left: pad, bottom: 0, right: pad)
     }
 }
 
@@ -51,9 +77,9 @@ extension HILeaderboardCell {
     }
 
     static func <- (lhs: HILeaderboardCell, rhs: LeaderboardProfile) {
-        var padConstant = 1.0
+        var padConstant = 25.0
         if UIDevice.current.userInterfaceIdiom == .pad {
-            padConstant = 2.0
+            padConstant = 50.0
         }
         lhs.rankLabel.textAlignment = .center
         lhs.pointsLabel.textAlignment = .center
@@ -67,23 +93,23 @@ extension HILeaderboardCell {
         lhs.nameLabel.textAlignment = .left
 
         lhs.rankLabel.centerYAnchor.constraint(equalTo: lhs.cellView.centerYAnchor).isActive = true
-        lhs.rankLabel.leadingAnchor.constraint(equalTo: lhs.cellView.leadingAnchor, constant: 25 * padConstant).isActive = true
-        lhs.rankLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-
+        lhs.rankLabel.leadingAnchor.constraint(equalTo: lhs.cellView.leadingAnchor, constant: padConstant).isActive = true
+        lhs.rankLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
         lhs.pointsLabel.centerYAnchor.constraint(equalTo: lhs.cellView.centerYAnchor).isActive = true
         lhs.pointsLabel.widthAnchor.constraint(equalTo: lhs.cellView.widthAnchor, multiplier: 0.24).isActive = true
         lhs.pointsLabel.trailingAnchor.constraint(equalTo: lhs.cellView.trailingAnchor, constant: -25).isActive = true
         lhs.pointsLabel.heightAnchor.constraint(equalTo: lhs.cellView.heightAnchor, multiplier: 0.38).isActive = true
 
         lhs.nameLabel.centerYAnchor.constraint(equalTo: lhs.cellView.centerYAnchor).isActive = true
-        lhs.nameLabel.leadingAnchor.constraint(equalTo: lhs.rankLabel.leadingAnchor, constant: 50 * padConstant).isActive = true
+        lhs.nameLabel.leadingAnchor.constraint(equalTo: lhs.rankLabel.trailingAnchor, constant: padConstant).isActive = true
+        lhs.nameLabel.trailingAnchor.constraint(equalTo: lhs.pointsLabel.leadingAnchor, constant: -10).isActive = true
+        lhs.nameLabel.numberOfLines = 1
         
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            lhs.nameLabel.constrain(width: lhs.contentView.frame.width, height: 40.0)
-        } else {
-            lhs.nameLabel.constrain(width: lhs.contentView.frame.width - 185, height: 20.0)
-            lhs.nameLabel.numberOfLines = 1
-        }
+        lhs.separatorView.leadingAnchor.constraint(equalTo: lhs.cellView.leadingAnchor).isActive = true
+        lhs.separatorView.trailingAnchor.constraint(equalTo: lhs.cellView.trailingAnchor).isActive = true
+        lhs.separatorView.bottomAnchor.constraint(equalTo: lhs.cellView.bottomAnchor).isActive = true
+        lhs.separatorView.heightAnchor.constraint(equalToConstant: 1/UIScreen.main.scale).isActive = true
     }
 }
 

@@ -16,6 +16,7 @@ import HIAPI
 import APIManager
 
 class HILeaderboardListViewController: HIBaseViewController {
+
 }
 
 // MARK: - UITableView Setup
@@ -24,6 +25,7 @@ extension HILeaderboardListViewController {
         if let tableView = tableView {
             tableView.register(HILeaderboardCell.self, forCellReuseIdentifier: HILeaderboardCell.identifier)
         }
+        
         super.setupTableView()
     }
 }
@@ -36,19 +38,22 @@ extension HILeaderboardListViewController {
             cell <- leaderboardProfile
             cell.indexPath = indexPath
             cell.rankLabel.text = "\((indexPath.row) + 1)"
-            cell.backgroundColor = #colorLiteral(red: 0.7882352941, green: 0.8235294118, blue: 0.8980392157, alpha: 1)
-            tableView.separatorStyle = .singleLine
-            tableView.separatorInset = UIEdgeInsets()
-            tableView.separatorColor = #colorLiteral(red: 0.04009541315, green: 0.1307413591, blue: 0.3802352191, alpha: 1)
+            cell.backgroundColor = .clear
+            
+            cell.cellView.backgroundColor = #colorLiteral(red: 0.7882352941, green: 0.8235294118, blue: 0.8980392157, alpha: 1)
+
             // Round certain corners based on row
             if indexPath.row == 0 {
-                cell.layer.cornerRadius = 20
-                cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+                cell.cellView.layer.cornerRadius = 20
+                cell.cellView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+                cell.separatorView.isHidden = false
             } else if indexPath.row == 9 {
-                cell.layer.cornerRadius = 20
-                cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                cell.cellView.layer.cornerRadius = 20
+                cell.cellView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                cell.separatorView.isHidden = true
             } else {
-                cell.layer.cornerRadius = 0
+                cell.cellView.layer.cornerRadius = 0
+                cell.separatorView.isHidden = false
             }
         }
 
