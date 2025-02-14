@@ -36,7 +36,7 @@ class HIProfileViewController: HIBaseViewController {
 
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
-        backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
+        backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
     }
     private var tiers: [Tier] = []
     private var ranking: Int = 0
@@ -92,7 +92,7 @@ extension HIProfileViewController {
         guard let user = HIApplicationStateController.shared.user else { return }
         var role = "General"
         if user.roles.contains(.PRO) {
-            role = "Knight"
+            role = "Olympian"
         }
         profileCardController = UIHostingController(rootView: HIProfileCardView(displayName: profile.displayName,
                                                                                 points: profile.points,
