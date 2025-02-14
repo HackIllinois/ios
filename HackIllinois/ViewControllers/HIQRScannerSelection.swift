@@ -35,33 +35,45 @@ class HIQRScannerSelection: HIBaseViewController {
     }
     private let meetingButton = HIButton {
         $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonPink
+        $0.backgroundHIColor = \.scannerButtonYellowOrange
         $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+        $0.layer.borderColor = #colorLiteral(red: 0.5294, green: 0.3373, blue: 0.0314, alpha: 1)
         // 3D Effect
         $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+        $0.layer.shadowColor = #colorLiteral(red: 0.5294, green: 0.3373, blue: 0.0314, alpha: 1)
         $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 12)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
     private let attendeeButton = HIButton {
         $0.tintHIColor = \.action
-        $0.backgroundHIColor = \.scannerButtonTeal
+        $0.backgroundHIColor = \.scannerButtonTealBlue
         $0.layer.borderWidth = 4.0
-        $0.layer.borderColor = #colorLiteral(red: 0.4588235294, green: 0.1960784314, blue: 0.07843137255, alpha: 1)
+        $0.layer.borderColor = #colorLiteral(red: 0.0549, green: 0.2471, blue: 0.2549, alpha: 1)
         $0.layer.masksToBounds = false
-        $0.layer.shadowColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
+        $0.layer.shadowColor = #colorLiteral(red: 0.0549, green: 0.2471, blue: 0.2549, alpha: 1)
         $0.layer.shadowOpacity = 1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 12)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
+        $0.layer.shadowRadius = 0
+    }
+    private let pointShopScanButton = HIButton {
+        $0.tintHIColor = \.action
+        $0.backgroundHIColor = \.scannerButtonOrangeBrown
+        $0.layer.borderWidth = 4.0
+        $0.layer.borderColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1) // #8C3713
+        // 3D Effect
+        $0.layer.masksToBounds = false
+        $0.layer.shadowColor = #colorLiteral(red: 0.5490, green: 0.2157, blue: 0.0745, alpha: 1)
+        $0.layer.shadowOpacity = 1
+        $0.layer.shadowOffset = CGSize(width: 0, height: 5)
         $0.layer.shadowRadius = 0
     }
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
         if UIDevice.current.userInterfaceIdiom == .pad {
-            backgroundView.image = #imageLiteral(resourceName: "Pink Background")
+            backgroundView.image = #imageLiteral(resourceName: "BackgroundShifts")
         } else {
-            backgroundView.image = #imageLiteral(resourceName: "Staff")
+            backgroundView.image = #imageLiteral(resourceName: "scanner-menu")
         }
     }
 }
@@ -86,6 +98,7 @@ extension HIQRScannerSelection {
         } else if user.roles.contains(.STAFF) {
             view.addSubview(meetingButton)
             view.addSubview(attendeeButton)
+            view.addSubview(pointShopScanButton)
             view.addSubview(closeButton)
             view.addSubview(label)
             // Add constraints for meetingButton and attendeeButton here
@@ -100,6 +113,13 @@ extension HIQRScannerSelection {
             attendeeButton.addTarget(self, action: #selector(didSelectAttendeeButton(_:)), for: .touchUpInside)
             attendeeButton.layer.cornerRadius = (UIDevice.current.userInterfaceIdiom == .pad) ? 30 : 15
             attendeeButton.constrain(width: (UIDevice.current.userInterfaceIdiom == .pad) ? 500 : 290, height: (UIDevice.current.userInterfaceIdiom == .pad) ? 150 : 80)
+            
+            pointShopScanButton.topAnchor.constraint(equalTo: attendeeButton.bottomAnchor, constant: (UIDevice.current.userInterfaceIdiom == .pad) ? 100 : 50).isActive = true
+            pointShopScanButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            pointShopScanButton.addTarget(self, action: #selector(didSelectPointsShopButton(_:)), for: .touchUpInside)
+            pointShopScanButton.layer.cornerRadius = (UIDevice.current.userInterfaceIdiom == .pad) ? 30 : 15
+            pointShopScanButton.constrain(width: (UIDevice.current.userInterfaceIdiom == .pad) ? 500 : 290, height: (UIDevice.current.userInterfaceIdiom == .pad) ? 150 : 80)
+            
             let meetingLabel = HILabel(style: .QRSelection)
             meetingLabel.text = "Meeting Attendance"
             meetingButton.addSubview(meetingLabel)
@@ -110,14 +130,21 @@ extension HIQRScannerSelection {
             attendeeButton.addSubview(attendanceLabel)
             attendanceLabel.centerYAnchor.constraint(equalTo: attendeeButton.centerYAnchor).isActive = true
             attendanceLabel.centerXAnchor.constraint(equalTo: attendeeButton.centerXAnchor).isActive = true
+            
+            let pointsShopLabel = HILabel(style: .QRSelection)
+            pointsShopLabel.text = "Points Shop"
+            pointShopScanButton.addSubview(pointsShopLabel)
+            pointsShopLabel.centerYAnchor.constraint(equalTo: pointShopScanButton.centerYAnchor).isActive = true
+            pointsShopLabel.centerXAnchor.constraint(equalTo: pointShopScanButton.centerXAnchor).isActive = true
         }
         closeButton.addTarget(self, action: #selector(didSelectCloseButton(_:)), for: .touchUpInside)
         closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         closeButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8).isActive = true
         closeButton.constrain(width: 60, height: 60)
         closeButton.imageView?.contentMode = .scaleToFill
-        let label = HILabel(style: (UIDevice.current.userInterfaceIdiom == .pad) ? .viewTitleBrown : .viewTitleBrown)
+        let label = HILabel(style: (UIDevice.current.userInterfaceIdiom == .pad) ? .viewTitle : .viewTitle)
         label.text = "SCANNER"
+        label.textHIColor = \.whiteText
         view.addSubview(label)
         label.centerYAnchor.constraint(equalTo: closeButton.centerYAnchor).isActive = true
         label.leadingAnchor.constraint(equalTo: closeButton.trailingAnchor, constant: 3).isActive = true
@@ -183,3 +210,13 @@ extension HIQRScannerSelection {
         self.present(scanQRCodePopup, animated: true, completion: nil)
     }
 }
+
+extension HIQRScannerSelection {
+    @objc func didSelectPointsShopButton(_ sender: HIButton) {
+        let scanQRCodePopup = HIScanPointsShopViewController()
+        scanQRCodePopup.modalPresentationStyle = .overFullScreen
+        scanQRCodePopup.modalTransitionStyle = .crossDissolve
+        self.present(scanQRCodePopup, animated: true, completion: nil)
+    }
+}
+

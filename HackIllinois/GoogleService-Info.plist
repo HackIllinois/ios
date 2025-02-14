@@ -26,6 +26,8 @@
 	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:848675954156:ios:d43e052424b30ef97f34c9</string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 	<key>DATABASE_URL</key>
 	<string>https://hackillinois-3787e-default-rtdb.firebaseio.com</string>
 </dict>

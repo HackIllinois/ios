@@ -42,12 +42,17 @@ extension HIBannerViewController {
     func bannerView(with label: HILabel) -> UIView {
         let bannerView = UIView()
         bannerView.addSubview(label)
+        
+        bannerView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        
         label.constrain(to: bannerView, topInset: 0, trailingInset: 0, bottomInset: 0, leadingInset: 0)
         label.widthAnchor.constraint(equalTo: bannerView.widthAnchor).isActive = true
 
         bannerView.layer.cornerRadius = 7.5
         bannerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        bannerView.backgroundColor = bannerBackground.value
+//        bannerView.backgroundColor = bannerBackground.value
+        bannerView.backgroundColor = UIColor(red: 224/255, green: 198/255, blue: 159/255, alpha: 1.0)  // #E0C69F
+
         
         return bannerView
     }

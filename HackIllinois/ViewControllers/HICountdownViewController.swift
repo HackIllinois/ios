@@ -23,6 +23,8 @@ class HICountdownViewController: UIViewController {
 
     // MARK: - Constants
     private let FRAMES_PER_TICK = 8
+    private let customCountdownBackground = UIColor(red: 224/255, green: 198/255, blue: 159/255, alpha: 1.0)  // #E0C69F
+
 
     // MARK: - Properties
     private let days = HILabel(style: .newCountdown)
@@ -93,6 +95,9 @@ extension HICountdownViewController {
 
         let countdownStackView = UIStackView()
         countdownStackView.distribution = .fillEqually
+        
+        countdownStackView.spacing = 12
+        
         countdownStackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(countdownStackView)
         countdownStackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -113,10 +118,19 @@ extension HICountdownViewController {
         countdownStackView.setCustomSpacing(countdownSpacingConstant, after: hoursContent)
         countdownStackView.setCustomSpacing(countdownSpacingConstant, after: minutesContent)
     }
+    
     func containerView(with labelString: String, and countDownView: HILabel) -> UIView {
-        countDownView.backgroundColor <- backgroundHIColor
+        let containerView = UIView()
+        
+        // Create background image view with combined asset
+        let backgroundImageView = UIImageView(image: #imageLiteral(resourceName: "CountdownPillar"))
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImageView.contentMode = .scaleToFill
+        
+        // Set up views
+        countDownView.backgroundColor = .clear  // Since we're using image background
         countDownView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let label = HILabel {
             $0.textHIColor = \.countdownTextColor
             $0.backgroundHIColor = \.clear
@@ -127,24 +141,39 @@ extension HICountdownViewController {
                 $0.font = HIAppearance.Font.glyph
             }
             $0.text = labelString
-            $0.text
         }
-
-        let containerView = UIView()
+        
+        // Add subviews
+        containerView.addSubview(backgroundImageView)
         containerView.addSubview(countDownView)
         containerView.addSubview(label)
-        countDownView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        countDownView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4).isActive = true
-        countDownView.bottomAnchor.constraint(equalTo: label.topAnchor, constant: 4).isActive = true
-        countDownView.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -8).isActive = true
-        label.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -8).isActive = true
-        label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        containerView.layer.cornerRadius = 7.5
-        containerView.backgroundColor = countdownBackground.value
+        
+        // Set up constraints
+        NSLayoutConstraint.activate([
+            
+            containerView.heightAnchor.constraint(equalToConstant: 150),
+            containerView.widthAnchor.constraint(equalToConstant: 90),
+            
+            // Background image constraints
+            backgroundImageView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            
+            // CountDownView constraints
+            countDownView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            countDownView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4),
+            countDownView.bottomAnchor.constraint(equalTo: label.topAnchor, constant: 4),
+            countDownView.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -8),
+            
+            // Label constraints
+            label.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -8),
+            label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
+        ])
         
         return containerView
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }

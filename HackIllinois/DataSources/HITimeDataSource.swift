@@ -18,21 +18,21 @@ final class HITimeDataSource {
     static var shared = HITimeDataSource()
 
     public static let defaultTimes = EventTimes(
-        checkInStart: Date(timeIntervalSince1970: 1708723800), // Friday, February 23, 2024 3:30:00 PM CST
-        checkInEnd: Date(timeIntervalSince1970: 1708725600), // Friday, February 23, 2024 4:00:00 PM CST
-        scavengerHuntStart: Date(timeIntervalSince1970: 1708725600), // Friday, February 23, 2024 4:00:00 PM CST
-        scavengerHuntEnd: Date(timeIntervalSince1970: 1708732800), // Friday, February 23, 2024 6:00:00 PM CST
-        openingCeremonyStart: Date(timeIntervalSince1970: 1708732800), // Friday, February 23, 2024 6:00:00 PM CST
-        openingCeremonyEnd: Date(timeIntervalSince1970: 1708736400), // Friday, February 23, 2024 7:00:00 PM CST
-        projectShowcaseStart: Date(timeIntervalSince1970: 1708880400), // Sunday, February 25, 2024 11:00:00 AM CST
-        projectShowcaseEnd: Date(timeIntervalSince1970: 1708894800), // Sunday, February 25, 2024 3:00:00 PM CST
-        closingCeremonyStart: Date(timeIntervalSince1970: 1708894800), // Sunday, February 25, 2024 3:00:00 PM CST
-        closingCeremonyEnd: Date(timeIntervalSince1970: 1708898400), // Sunday, February 25, 2024 4:00:00 PM CST
-        
-        eventStart: Date(timeIntervalSince1970: 1708732800), // Friday, February 23, 2024 6:00:00 PM CST
-        eventEnd: Date(timeIntervalSince1970: 1708898400), // Sunday, February 25, 2024 4:00:00 PM CST
-        hackStart: Date(timeIntervalSince1970: 1708736400), // Friday, February 23, 2024 7:00:00 PM CST
-        hackEnd: Date(timeIntervalSince1970: 1708876800), // Sunday, February 25, 2024 10:00:00 AM CST
+        checkInStart: Date(timeIntervalSince1970: 1740774600), // Friday, February 28, 2025 2:30:00 PM CST
+        checkInEnd: Date(timeIntervalSince1970: 1740783600), // Friday, February 28, 2025 5:00:00 PM CST
+        scavengerHuntStart: Date(timeIntervalSince1970: 1740776400), // Friday, February 28, 2024 3:00:00 PM CST
+        scavengerHuntEnd: Date(timeIntervalSince1970: 1740783600), // Friday, February 28, 2025 5:00:00 PM CST
+        openingCeremonyStart: Date(timeIntervalSince1970: 1740783600), // Friday, February 28, 2025 5:00:00 PM CST
+        openingCeremonyEnd: Date(timeIntervalSince1970: 1740787200), // Friday, February 28, 2025 6:00:00 PM CST
+        projectShowcaseStart: Date(timeIntervalSince1970: 1740927600), // Sunday, March 2, 2025 9:00:00 AM CST
+        projectShowcaseEnd: Date(timeIntervalSince1970: 1740942000), // Sunday, March 2, 2025 1:00:00 PM CST
+        closingCeremonyStart: Date(timeIntervalSince1970: 1740949200), // Sunday, March 2, 2025 3:00:00 PM CST
+        closingCeremonyEnd: Date(timeIntervalSince1970: 1740952800), // Sunday, March 2, 2025 4:00:00 PM CST
+               
+        eventStart: Date(timeIntervalSince1970: 1740774600), // Friday, February 28, 2025 2:30:00 PM CST
+        eventEnd: Date(timeIntervalSince1970: 1740952800), // Sunday, March 2, 2025 4:00:00 PM CST
+        hackStart: Date(timeIntervalSince1970: 1740787200), // Friday, February 28, 2025 6:00:00 PM CST
+        hackEnd: Date(timeIntervalSince1970: 1740920400), // Sunday, March 2, 2025 7:00:00 AM CST
         // TODO: Need to get events + times for everything above
         fridayStart: Date(timeIntervalSince1970: 1740722400), // Friday, February 28, 2025 12:00:00 AM CST
         fridayEnd: Date(timeIntervalSince1970: 1740808799), // Friday, February 28, 2025 11:59:59 PM CST
