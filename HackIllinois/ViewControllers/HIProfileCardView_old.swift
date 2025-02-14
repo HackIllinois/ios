@@ -62,59 +62,89 @@ struct HIProfileCardView: View {
 //    Factors used to change frame to alter based on device
     let padFactor = UIScreen.main.bounds.height/1366
     let phoneFactor = UIScreen.main.bounds.height/844
-    
-    // Screen size
-    let screenWidth = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
 
     var body: some View {
-        ZStack(alignment: .bottom) {  // Stack elements and anchor to bottom
-            // placeholders so the compiler doesn't get mad at long arithmetic within views
-            let height_adjustment_factor = (40 / 841) * screenHeight
-            
-            let flame_y = (521 / 841) * screenHeight - (screenHeight * (262 / 841)) / 2 - (screenHeight * (450 / 841)) / 2 + (13 / 841) * screenHeight + height_adjustment_factor
-            let pillar_y = (521 / 841) * screenHeight// Centered at the bottom
-            let orb_y = (521 / 841) * screenHeight - (screenHeight * (262 / 841)) / 2 - (screenHeight * (450 / 841)) - (screenHeight * (140.49 / 841)) / 2 + (13 / 841) * screenHeight + (140.49 / 841) * screenHeight + height_adjustment_factor
-            
-            Image("flame-vector")
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: screenWidth * (371.01 / 393),  // Scaled width
-                    height: screenHeight * (450 / 841)  // Scaled height
-                )
-                .position(
-                    x: screenWidth / 2,
-                    y: flame_y
-                ) // Position at the top of the pillar
-            // Pillar Image - Anchored at the bottom
-            Image("pillar-vector")
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: screenWidth * (361 / 393),  // Scaled width
-                    height: screenHeight * (262 / 841)  // Scaled height
-                )
-                .position(
-                    x: screenWidth / 2,
-                    y: pillar_y
-                )
-            
-            // Profile Orb - Stacked on top of the flame
-            Image("profile-orb")
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: screenWidth * (174.99 / 393),  // Scaled width
-                    height: screenHeight * (140.49 / 841)  // Scaled height
-                )
-                .position(
-                    x: screenWidth / 2,
-                    y: orb_y
-                ) // Positioned on top of the flame
-            
+        ScrollView {
+            ZStack {
+                ZStack(alignment: .top) {
+                    ZStack(alignment: .bottom) {
+                        Image("ProfileCardBackground")
+                            .resizable()
+                            .frame(width: UIDevice.current.userInterfaceIdiom == .pad ? 566.93*padFactor : 338*phoneFactor, height: UIDevice.current.userInterfaceIdiom == .pad ? 777.2*padFactor : 463.36*phoneFactor)
+                        ZStack {
+                            Image("ProfileBanner")
+                                .resizable()
+                                .frame(width: UIDevice.current.userInterfaceIdiom == .pad ? 395.7*padFactor : 235.91*phoneFactor, height: UIDevice.current.userInterfaceIdiom == .pad ? 137.71*padFactor : 82.1*phoneFactor)
+                            VStack(spacing: 0) {
+                                Text("Your Ranking")
+                                    .foregroundColor(.white)
+                                
+                                    .font(Font(HIAppearance.Font.profileSubtitle ?? .systemFont(ofSize: 20)))
+                                HStack(alignment: .bottom, spacing: UIDevice.current.userInterfaceIdiom == .pad ? 5*padFactor : 5*phoneFactor) {
+                                    Image("RankSymbol")
+                                    Text("\(rank != 0 ? "\(rank)" : "...")")
+                                                    .foregroundColor(.white)
+                                                    .font(Font(HIAppearance.Font.profileSubtitle ?? .systemFont(ofSize: 20)))
+                                                    .onAppear {
+                                                        // Call getRank and update the rank when it's available
+                                                        getRank { rank in
+                                                            self.rank = rank
+                                                        }
+                                                    }
+                                }
+                            }.padding(.bottom, isIpad ? 40*padFactor : 25*phoneFactor)
+                        }.alignmentGuide(.bottom) {dimensions in dimensions[.bottom] / 1.2 }
+                    }
+                    Image(uiImage: avatarUrl.load())
+                        .resizable()
+                        .frame(width: isIpad ? 249.92*padFactor : 149*phoneFactor, height: isIpad ? 286.4*padFactor : 170.75*phoneFactor)
+                        .alignmentGuide(.top) {dimensions in dimensions[VerticalAlignment.center] / 0.9 }
+                }
+                VStack(spacing: 0) {
+                    Spacer().frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 90*padFactor : (90*phoneFactor))
+                    Text(formatName())
+                        .font(Font(HIAppearance.Font.profileName ?? .systemFont(ofSize: 24)))
+                        .foregroundColor(Color((\HIAppearance.countdownTextColor).value))
+                        .padding(isIpad ? 32*padFactor : 16*phoneFactor)
+                    HStack(spacing: isIpad ? 16*padFactor : 8*phoneFactor) {
+                        Rectangle()
+                            .frame(width: isIpad ? 148*padFactor : 74*phoneFactor, height: isIpad ? 48*padFactor : 24*phoneFactor)
+                            .cornerRadius(isIpad ? 40*padFactor : 20*phoneFactor)
+                            .foregroundColor(Color(red: 226/255, green: 142/255, blue: 174/255))
+                            .overlay(
+                                Text(role)
+                                    .font(Font(HIAppearance.Font.profileSubtitle ?? .systemFont(ofSize: 12)))
+                                    .foregroundColor(Color(red: 1, green: 248/255, blue: 245/255))
+                            )
+
+                        Rectangle()
+                            .frame(width: isIpad ? 136*padFactor : 68*phoneFactor, height: isIpad ? 48*padFactor : 24*phoneFactor)
+                            .cornerRadius(isIpad ? 40*padFactor : 20*phoneFactor)
+                            .foregroundColor(
+                                (Color(red: 226/255, green: 142/255, blue: 174/255)))
+                            .overlay(
+                                Text("Wave \(foodWave)")
+                                    .font(Font(HIAppearance.Font.profileSubtitle ?? .systemFont(ofSize: 12)))
+                                    .foregroundColor((Color(red: 1, green: 248/255, blue: 245/255)))
+                            )
+                    }.padding(.bottom)
+                    Image(uiImage: UIImage(data: getQRCodeDate(text: qrInfo)!)!)
+                                                    .resizable()
+                                                    .frame(width: isIpad ? 371*padFactor : 221*phoneFactor, height: isIpad ? 371*padFactor : 221*phoneFactor)
+                                                    .padding(.bottom, 20*phoneFactor)
+                }
+                .padding(.top, isIpad ? 50*padFactor : 0)
+            }
+            .padding(.top, 24)
         }
-        .edgesIgnoringSafeArea(.bottom) // Extend to the bottom edge
+        .preferredColorScheme(.dark)
+        .onAppear {
+            startFetchingQR = true
+            QRFetchLoop()
+        }
+        .onDisappear {
+            startFetchingQR = false
+        }
     }
 
     func formatName() -> String {

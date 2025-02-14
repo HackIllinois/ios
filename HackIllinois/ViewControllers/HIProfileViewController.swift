@@ -36,7 +36,7 @@ class HIProfileViewController: HIBaseViewController {
 
     @objc dynamic override func setUpBackgroundView() {
         super.setUpBackgroundView()
-        backgroundView.image = #imageLiteral(resourceName: "PurpleBackground")
+        backgroundView.image = #imageLiteral(resourceName: "ScheduleBackground")
     }
     private var tiers: [Tier] = []
     private var ranking: Int = 0
