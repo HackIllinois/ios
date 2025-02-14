@@ -40,8 +40,39 @@ class PointShopManager: ObservableObject {
     }
 }
 
+class CartManager: ObservableObject {
+    /// Singleton instance
+    static let shared = CartManager()
+
+    /// Published array of items that will notify SwiftUI of changes
+    @Published var items: [CartItem] = []
+
+    private init() { }
+
+    /// Fetch items from the API and store them in `items`.
+    /// Publishing to `items` will automatically trigger UI updates in SwiftUI.
+    func preloadCartItems() {
+        HIAPI.ShopService.getCartItems()
+            .onCompletion { [weak self] result in
+                // Always hop back onto the main thread before changing any
+                // Published properties, as they must update the UI on main.
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    do {
+                        let (containedItem, _) = try result.get()
+                        self.items = containedItem.items
+                    } catch {
+                        print("Failed to preload point shop items with error: \(error)")
+                    }
+                }
+            }
+            .launch()
+    }
+}
+
 struct HIPointShopSwiftUIView: View {
     @ObservedObject var shopManager = PointShopManager.shared
+    @ObservedObject var cartManager = CartManager.shared
     
     @State private var coins = 0
     @State var tabIndex = 0
@@ -159,6 +190,7 @@ struct HIPointShopSwiftUIView: View {
                     .offset(x: -25, y: -38)
                     Spacer()
                 }
+                // Back button to go back to point shop
                 ZStack {
                     Circle()
                         .frame(width: 34)
@@ -171,6 +203,28 @@ struct HIPointShopSwiftUIView: View {
                     title = "Point Shop"
                     flowView = 0
                 }
+                // Cart scroll view
+                VStack(spacing: 16) {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        HStack(spacing: 16) {
+                            ForEach(cartManager.items, id: \.self) { item in
+                                VStack(spacing: 8) {
+                                    ForEach(item.additionalProperties.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                                        HStack {
+                                            Text(key) // Display the property key
+                                                .font(.headline)
+                                            Spacer()
+                                            Text("\(value)") // Display the property value
+                                                .font(.subheadline)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                    }
+                }
+                // Redeem button to go to QR
                 VStack {
                     Spacer()
                     Image("Redeem")
@@ -217,6 +271,22 @@ struct HIPointShopSwiftUIView: View {
                         shopManager.items = containedItem.items
                     } catch {
                         print("Failed to reload points shop: \(error)")
+                    }
+                }
+            }
+            .launch()
+    }
+    
+    func getCartItems() {
+        HIAPI.ShopService.getCartItems()
+            .onCompletion { result in
+                DispatchQueue.main.async {
+                    do {
+                        let (containedItem, _) = try result.get()
+                        // ✅ Update the manager’s items
+                        cartManager.items = containedItem.items
+                    } catch {
+                        print("Failed to reload cart: \(error)")
                     }
                 }
             }

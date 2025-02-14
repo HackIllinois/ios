@@ -18,6 +18,10 @@ public final class ShopService: BaseService {
         return APIRequest<ItemContainer>(service: self, endpoint: "shop/", headers: headers, method: .GET)
     }
     
+    public static func getCartItems() -> APIRequest<CartItemContainer> {
+        return APIRequest<CartItemContainer>(service: self, endpoint: "shop/cart/", headers: headers, method: .GET)
+    }
+    
     public static func redeemPrize(itemId: String, itemInstance: String, userToken: String) -> APIRequest<RedeemItem> {
         let jsonBody: [String: Any] = [
             "itemId": itemId,
