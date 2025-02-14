@@ -10,24 +10,30 @@ import Foundation
 import SwiftUI
 import HIAPI
 
-class PointShopManager {
+class PointShopManager: ObservableObject {
+    /// Singleton instance
     static let shared = PointShopManager()
 
-    var items: [Item] = []
+    /// Published array of items that will notify SwiftUI of changes
+    @Published var items: [Item] = []
 
-    private init() {
-        // Private initializer to enforce singleton pattern
-    }
+    private init() { }
 
+    /// Fetch items from the API and store them in `items`.
+    /// Publishing to `items` will automatically trigger UI updates in SwiftUI.
     func preloadItems() {
-        // Fetch and populate items
         HIAPI.ShopService.getAllItems()
-            .onCompletion { result in
-                do {
-                    let (containedItem, _) = try result.get()
-                    self.items = containedItem.items
-                } catch {
-                    print("Failed to preload point shop items with the error: \(error)")
+            .onCompletion { [weak self] result in
+                // Always hop back onto the main thread before changing any
+                // Published properties, as they must update the UI on main.
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    do {
+                        let (containedItem, _) = try result.get()
+                        self.items = containedItem.items
+                    } catch {
+                        print("Failed to preload point shop items with error: \(error)")
+                    }
                 }
             }
             .launch()
@@ -35,197 +41,254 @@ class PointShopManager {
 }
 
 struct HIPointShopSwiftUIView: View {
-    @State var items=[] as [Item]
-    @State private var profile = HIProfile()
-    @State var coins = 0
+    @ObservedObject var shopManager = PointShopManager.shared
+    
+    @State private var coins = 0
     @State var tabIndex = 0
+    @Binding var title: String
+    @State var flowView = 0
+    
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
 
     var body: some View {
-      //  NavigationStack{
-
-        ZStack {
-            Image("PurpleBackground")
-                .resizable()
-                .edgesIgnoringSafeArea(.all)
+        if flowView == 0 {
+            ZStack {
+                // 1) Background
+                Image("PointShopBackground")
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                VStack {
-                    HStack{
-                        
+                // 2) TOP BAR (coins + tab) pinned to top
+                VStack(spacing: 0) {
+                    // Coins row (top-right)
+                    HStack {
+                        Spacer()
                         HStack(alignment: .center, spacing: 7) {
                             Image("Coin")
                                 .resizable()
-                                .frame(width: isIpad ? 40 : 25, height:isIpad ? 40 : 25)
-                            
+                                .frame(width: isIpad ? 40 : 25,
+                                       height: isIpad ? 40 : 25)
                             Text("\(coins)")
-                                .font(Font.custom("Montserrat", size: isIpad ? 26 : 16).weight(.bold))
-                                .foregroundColor(.white)
-
+                                .font(.system(size: isIpad ? 26 : 16).bold())
+                                .foregroundColor(.black)
                         }
                         .padding(.horizontal, 11)
                         .padding(.vertical, 3)
-                        .background(Color(red: 0.1647, green: 0.1647, blue: 0.1647))
+                        .background(Color(red: 0.96, green: 0.94, blue: 0.87))
                         .cornerRadius(1000)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .offset(y: isIpad ? -42 : -38)
-                        Spacer()
+                        .offset(x: -25, y: -38)
                     }
-                    Image("KnickKnacks")
-                        .resizable()
-                        .frame(width: isIpad ? 590 : 355, height:isIpad ? 185 :  105)
-                        .offset(y: -25)
+                    .frame(height: 60)
                     
-                    VStack(spacing: 0) {
-                        CustomTopTabBar(tabIndex: $tabIndex)
-                        ScrollView(showsIndicators: false) {
-                            if tabIndex == 0 {
-                                VStack(spacing: 0) {
-                                    ForEach(PointShopManager.shared.items.filter { !$0.isRaffle }, id: \.self) { item in
-                                        PointShopItemCell(item: item)
-                                    }
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: UIScreen.main.bounds.width > 850 ? 800 : (isIpad ? 700 : 360), height: 10)
-                                        .background(Color(red: 0.4, green: 0.17, blue: 0.07))
-                                        .cornerRadius(1)
-                                }
-                                .onAppear {
-                                    getItems()
-                                    PointShopManager.shared.preloadItems()
-                                    getCoins{coins in
-                                             self.coins=coins}
-                                }
-                            } else {
-                                VStack(spacing: 0) {
-                                    ForEach(PointShopManager.shared.items.filter { $0.isRaffle }, id: \.self) { item in
-                                        PointShopItemCell(item: item)
-                                    }
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: UIScreen.main.bounds.width > 850 ? 800 : (isIpad ? 700 : 360), height: 10)
-                                        .background(Color(red: 0.4, green: 0.17, blue: 0.07))
-                                        .cornerRadius(1)
+                    // Tab bar
+                    CustomTopTabBar(tabIndex: $tabIndex)
+                }
+                .frame(maxHeight: .infinity, alignment: .top)
+                
+                // 3) BOTTOM VSTACK: two rows pinned to bottom
+                VStack(spacing: 16) {
+                    // Row 1: first two items
+                    if shopManager.items.count >= 2 {
+                        HStack(spacing: 16) {
+                            ForEach(shopManager.items.prefix(2), id: \.name) { item in
+                                PointShopItemCell(item: item)
+                            }
+                        }
+                    }
+                    
+                    // Row 2: horizontal scroll for the rest
+                    if shopManager.items.count > 2 {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(shopManager.items.dropFirst(2), id: \.name) { item in
+                                    PointShopItemCell(item: item)
                                 }
                             }
-                            Spacer()
+                            .padding(.horizontal, 8)
                         }
-                        .frame(width: UIScreen.main.bounds.width - 24, alignment: .center)
-                        .padding(.horizontal, 12)
                     }
                 }
+                // Pin the VSTACK to the bottom of the screen
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(.bottom, 35) // Adjust as needed
+                
+                VStack {
+                    HStack {
+                        Image("Cart")
+                            .resizable()
+                            .frame(width: 85, height: 30)
+                            .onTapGesture {
+                                title = "CART"
+                                flowView = 1
+                            }
+                    }
+                    .frame(height: 60)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
+        
+            .onAppear {
+                // Optionally fetch items if not done in AppDelegate
+                // shopManager.preloadItems()
+
+                // Fetch coins
+                getCoins { newCoins in
+                    coins = newCoins
+                }
+            }
+        } else if flowView == 1 {
+            ZStack {
+                Image("CartBackground")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                // Top right coins display
+                VStack {
+                    HStack(alignment: .center, spacing: 7) {
+                        Image("Coin")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                        Text("\(coins)")
+                            .font(Font.custom("MontserratRoman-Bold", size: isIpad ? 26 : 16).weight(.bold))
+                            .foregroundColor(.black)
+                    }
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 3)
+                    .background(Color(red: 0.9607843137254902, green: 0.9411764705882353, blue: 0.8666666666666667))
+                    .cornerRadius(1000)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .offset(x: -25, y: -38)
+                    Spacer()
+                }
+                ZStack {
+                    Circle()
+                        .frame(width: 34)
+                        .foregroundColor(Color(red: 139/255, green: 109/255, blue: 116/255))
+                    Image(systemName: "chevron.left")
+                        .bold()
+                }
+                .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.height - 250, alignment: .topLeading)
+                .onTapGesture {
+                    title = "Point Shop"
+                    flowView = 0
+                }
+                VStack {
+                    Spacer()
+                    Image("Redeem")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 119)
+                        .padding(.bottom, 90)
+                        .onTapGesture {
+                            title = ""
+                            flowView = 2
+                        }
+                }
+            }
+        } else {
+            ZStack {
+                Image("CartBackground")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                VStack {
+                    HStack {
+                        Image("PointShopBack")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 80)
+                            .onTapGesture {
+                                title = "POINT SHOP"
+                                flowView = 0
+                            }
+                            .padding(.leading, 35)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
     func getItems() {
         HIAPI.ShopService.getAllItems()
-            .onCompletion { [self] result in
-                do {
-                    let (containedItem, _) = try result.get()
-                    let apiItems = containedItem.items
-                    items=[]
-                    apiItems.forEach { apiItem in
-                        items.append(apiItem)
+            .onCompletion { result in
+                DispatchQueue.main.async {
+                    do {
+                        let (containedItem, _) = try result.get()
+                        // ✅ Update the manager’s items
+                        shopManager.items = containedItem.items
+                    } catch {
+                        print("Failed to reload points shop: \(error)")
                     }
-                } catch {
-                    print("Failed to reload points shop with the error: \(error)")
                 }
             }
             .launch()
     }
+    
     func getCoins(completion: @escaping (Int) -> Void) {
-        guard let user = HIApplicationStateController.shared.user else { return }
-        HIAPI.ProfileService.getUserProfile(userToken: user.token)
-        .onCompletion { result in
-            do {
-                let (apiProfile, _) = try result.get()
-                completion(apiProfile.coins)
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: .loginProfile, object: nil, userInfo: ["profile": self.profile])
+            guard let user = HIApplicationStateController.shared.user else { return }
+            HIAPI.ProfileService.getUserProfile(userToken: user.token)
+                .onCompletion { result in
+                    do {
+                        let (apiProfile, _) = try result.get()
+                        DispatchQueue.main.async {
+                            completion(apiProfile.coins)
+                        }
+                    } catch {
+                        print("Failed to reload coins with error: \(error)")
+                    }
                 }
-            } catch {
-                print("Failed to reload coins with the error: \(error)")
-            }
-        }
-        .authorize(with: user)
-        .launch()
+                .authorize(with: user)
+                .launch()
     }
 }
 
 struct PointShopItemCell: View {
     let item: Item
-    let isIpad = UIDevice.current.userInterfaceIdiom == .pad
+
     var body: some View {
-        VStack(spacing: 0) {
-            //brown bar
-            Rectangle()
-                .foregroundColor(.clear)
-                .frame(width: UIScreen.main.bounds.width > 850 ? 800 : (isIpad ? 700 : 360), height: 10)
-                .background(Color(red: 0.4, green: 0.17, blue: 0.07))
-                .cornerRadius(1)
-            //transparent pane
-            ZStack {
-                Rectangle()
-                    .fill(.white)
-                    .frame(width: UIScreen.main.bounds.width > 850 ? 790 : (isIpad ? 690 : 350), height: 157)
-                    .opacity(0.4)
-                HStack {
-                    Spacer()
-                        .frame(width: UIScreen.main.bounds.width > 850 ? 210 : (isIpad ? 120 : 30))
-                    //IMAGE
-                        Image(systemName: "Profile0")
-                            .data(url: URL(string: item.imageURL)!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 145, height: 145)
-                    Spacer()
+        ZStack {
+            // Use a rounded rectangle for the background
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.4))
 
-                    //bubble view
-                    VStack {
-                        HStack{
-                            Spacer()
-                                .frame(width:15)
-                            Text(item.name)
-                                .font(
-                                    Font.custom("Montserrat", size: 16)
-                                        .weight(.semibold)
-                                )
-                                .foregroundColor(Color(red: 0.05, green: 0.25, blue: 0.25))
-                                .multilineTextAlignment(.center)
-                                .lineLimit(nil)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .frame(maxWidth: .infinity)
-                                .padding(.trailing, 20)
+            VStack(spacing: 4) {
+                // Item image
+                Image(systemName: "Profile0")
+                    .data(url: URL(string: item.imageURL)!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
 
-                        }
+                // Name
+                Text(item.name)
+                    .font(.caption)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
 
-                        HStack(alignment: .center, spacing: 7) {
-                            Image("Coin")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                            if(item.isRaffle) {
-                                Text("\(item.price)")
-                                    .font(Font.custom("Montserrat", size: 16).weight(.bold))
-                                    .foregroundColor(.white)
-                            } else {
-                                Group {
-                                    Text("\(item.price)")
-                                        .font(Font.custom("Montserrat", size: 16).weight(.bold))
-                                        .foregroundColor(.white) +
-                                    Text(" | \(item.quantity) Left")
-                                        .font(Font.custom("Montserrat", size: 16).weight(.regular))
-                                        .foregroundColor(.white)
-                                }
-                            }
-
-                        }
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 3)
-                        .background(Color(red: 0.05, green: 0.25, blue: 0.25).opacity(0.5))
-                        .cornerRadius(1000)
+                // Price + quantity
+                HStack(spacing: 4) {
+                    Image("Coin")
+                        .resizable()
+                        .frame(width: 15, height: 15)
+                    if item.isRaffle {
+                        Text("\(item.price)")
+                            .font(.footnote).bold()
+                            .foregroundColor(.white)
+                    } else {
+                        Text("\(item.price) | \(item.quantity) Left")
+                            .font(.footnote)
+                            .foregroundColor(.white)
                     }
-                    Spacer()
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.black.opacity(0.5))
+                .clipShape(Capsule())
             }
+            .padding()
         }
+        // Force a square cell
+        .frame(width: 120, height: 120)
+        .cornerRadius(12)
     }
 }
 
@@ -238,7 +301,7 @@ struct CustomTopTabBar: View {
             TabBarButton(text: "MERCH", isSelected: .constant(tabIndex == 0))
                 .onTapGesture { onButtonTapped(index: 0) }
             Spacer()
-                .frame(width: isIpad ? 100: 40)
+                .frame(width: isIpad ? 100: 30)
             TabBarButton(text: "RAFFLE", isSelected: .constant(tabIndex == 1))
                 .onTapGesture { onButtonTapped(index: 1) }
         }
@@ -256,21 +319,20 @@ struct TabBarButton: View {
     var body: some View {
         ZStack(alignment: .center) {
             if isSelected {
-                Rectangle()
-                    .fill(Color(red: 0.85, green: 0.25, blue: 0.47))
+                Image("PointShopTabSelected")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width > 850 ? 350 : (isIpad ? 295 : 155), height: isIpad ? 90: 50)
-                    .cornerRadius(10, corners: [.topLeft, .topRight])
             }else{
-                Rectangle()
-                    .fill(Color(red: 0.85, green: 0.25, blue: 0.47))
+                Image("PointShopTabUnselected")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: UIScreen.main.bounds.width > 850 ? 350 : (isIpad ? 295 : 155), height: isIpad ? 90: 50)
-                    .cornerRadius(10, corners: [.topLeft, .topRight])
-                    .opacity(0)
             }
             Text(text)
-                .foregroundColor(.white)
+                .foregroundColor(Color(HIAppearance.metallicCopper))
                 .fontWeight(.heavy)
-                .font(.custom("MontserratRoman-SemiBold", size: UIDevice.current.userInterfaceIdiom == .pad ? 36 : 18))
+                .font(.custom("MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 36 : 16))
         }
     }
 }

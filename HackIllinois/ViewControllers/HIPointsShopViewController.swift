@@ -16,6 +16,7 @@ import SwiftUI
 class HIPointsShopViewController: HIBaseViewController {
     // MARK: - Properties
     private var profile = HIProfile()
+    private var titleBinding = "POINT SHOP"
 }
 
 // MARK: - UITabBarItem Setup
@@ -29,8 +30,14 @@ extension HIPointsShopViewController {
 extension HIPointsShopViewController {
     override func loadView() {
         super.loadView()
-        let swiftUIView = HIPointShopSwiftUIView()
-            let hostingController = UIHostingController(rootView: swiftUIView)
+        let swiftUIView = HIPointShopSwiftUIView(title: Binding(
+            get: { self.titleBinding },
+            set: { newValue in
+                self.titleBinding = newValue
+                self.setCustomTitle(customTitle: newValue)
+            }
+        ))
+        let hostingController = UIHostingController(rootView: swiftUIView)
         addChild(hostingController)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(hostingController.view)
