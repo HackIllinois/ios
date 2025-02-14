@@ -92,7 +92,7 @@ extension HIProfileViewController {
         guard let user = HIApplicationStateController.shared.user else { return }
         var role = "General"
         if user.roles.contains(.PRO) {
-            role = "Knight"
+            role = "Olympian"
         }
         profileCardController = UIHostingController(rootView: HIProfileCardView(displayName: profile.displayName,
                                                                                 points: profile.points,
