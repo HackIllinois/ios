@@ -66,15 +66,41 @@ struct HIProfileCardView: View {
     // Screen size
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
-
+    
+    
     var body: some View {
+        // Y coordinate position calculation placeholders so the compiler doesn't get mad at long arithmetic within views
+        let height_adjustment_factor = (40 / 841) * screenHeight
+        
+        let name_spacing = (screenHeight * (210 / 841)) / 2 + (15 / 841) * screenHeight // Scaled 15px spacing
+
+        // Base Y coordinate
+        let base_y = (521 / 841) * screenHeight
+
+        // Half heights for stacking calculations
+        let half_pillar_height = (screenHeight * (262 / 841)) / 2
+        let half_flame_height = (screenHeight * (450 / 841)) / 2
+        let half_orb_height = (screenHeight * (140.49 / 841)) / 2
+        let half_qr_height = (screenHeight * (210 / 841)) / 2
+        
+        let full_flame_height = (screenHeight * (450 / 841))
+        let full_orb_height = ( 140.49 / 841) * screenHeight
+
+        // Additional offsets
+        let flame_offset = (13 / 841) * screenHeight
+        let qr_offset = (210 / 841) * screenHeight
+
+        // Calculated positions
+        let flame_y = base_y - half_pillar_height - half_flame_height + flame_offset + height_adjustment_factor
+        let pillar_y = base_y // Centered at the bottom
+        let orb_y = base_y - half_pillar_height - full_flame_height - half_orb_height + flame_offset + full_orb_height + height_adjustment_factor
+        let qr_y = base_y - half_pillar_height - half_flame_height - half_qr_height + qr_offset
+        let name_y = qr_y - name_spacing
+
+
+        
         ZStack(alignment: .bottom) {  // Stack elements and anchor to bottom
-            // placeholders so the compiler doesn't get mad at long arithmetic within views
-            let height_adjustment_factor = (40 / 841) * screenHeight
             
-            let flame_y = (521 / 841) * screenHeight - (screenHeight * (262 / 841)) / 2 - (screenHeight * (450 / 841)) / 2 + (13 / 841) * screenHeight + height_adjustment_factor
-            let pillar_y = (521 / 841) * screenHeight// Centered at the bottom
-            let orb_y = (521 / 841) * screenHeight - (screenHeight * (262 / 841)) / 2 - (screenHeight * (450 / 841)) - (screenHeight * (140.49 / 841)) / 2 + (13 / 841) * screenHeight + (140.49 / 841) * screenHeight + height_adjustment_factor
             
             Image("flame-vector")
                 .resizable()
@@ -113,6 +139,74 @@ struct HIProfileCardView: View {
                     y: orb_y
                 ) // Positioned on top of the flame
             
+            // Name Label - Positioned Above the QR Code
+            Text("LeBron James")
+                .font(Font(HIAppearance.Font.profileName ?? .systemFont(ofSize: 22))) // Adjust font size as needed
+                .foregroundColor(Color.black) // White text color
+                .multilineTextAlignment(.center)
+                .position(
+                    x: screenWidth / 2,
+                    y: name_y
+                )
+            
+            // QR Code - Positioned inside the Flame
+            if let qrCodeData = getQRCodeDate(text: qrInfo), let qrCodeImage = UIImage(data: qrCodeData) {
+                Image(uiImage: qrCodeImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(
+                        width: screenWidth * (208 / 393),  // Scaled width
+                        height: screenHeight * (210 / 841)  // Scaled height
+                    )
+                    .position(
+                        x: screenWidth / 2,
+                        y: qr_y
+                    ) // Centered inside the flame
+            }
+
+            
+            // VStack for User Information inside the pillar
+            VStack(spacing: screenHeight * (10 / 841)) {
+                // HStack for Role and Wave labels
+                HStack(spacing: screenWidth * (10 / 393)) {
+                    Text(role)
+                        .font(Font(HIAppearance.Font.profileTier ?? .systemFont(ofSize: 18)))
+                        .foregroundColor(.white)
+                        .frame(width: screenWidth * (120 / 393), height: screenHeight * (38 / 841))
+                        .background(Color(red: 217/255, green: 217/255, blue: 217/255).opacity(0.5))
+                        .cornerRadius(12)
+
+                    Text("Wave \(foodWave)")
+                        .font(Font(HIAppearance.Font.profileTier ?? .systemFont(ofSize: 18)))
+                        .foregroundColor(.white)
+                        .frame(width: screenWidth * (120 / 393), height: screenHeight * (38 / 841))
+                        .background(Color(red: 217/255, green: 217/255, blue: 217/255).opacity(0.5))
+                        .cornerRadius(12)
+                }
+
+                // HStack for Rank Label (Text + Rank Value)
+                HStack(spacing: screenWidth * (20 / 393)) {
+                    Text("Rank")
+                        .font(Font(HIAppearance.Font.profileTier ?? .systemFont(ofSize: 18)))
+                        .foregroundColor(.white)
+
+                    Text("\(rank)")
+                        .font(Font(HIAppearance.Font.profileRank ?? .systemFont(ofSize: 16)))
+                        .foregroundColor(Color(red: 97/255, green: 37/255, blue: 71/255)) // Updated color
+                        .frame(width: screenWidth * (84.5 / 393), height: screenHeight * (27.26 / 841))
+                        .background(
+                            Image("profile-rank-label-background") // Use imported image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: screenWidth * (84.5 / 393), height: screenHeight * (27.26 / 841)) // Match dimensions
+                        )
+                }
+
+            }
+            .position(
+                x: screenWidth / 2,
+                y: (591 / 841) * screenHeight - (screenHeight * (262 / 841)) / 2 + (55 / 841) * screenHeight // Position based on Figma
+            )
         }
         .edgesIgnoringSafeArea(.bottom) // Extend to the bottom edge
     }
@@ -141,8 +235,9 @@ struct HIProfileCardView: View {
         // Change color of QR code
         guard let colorFilter = CIFilter(name: "CIFalseColor") else { return nil }
         colorFilter.setValue(filter.outputImage, forKey: "inputImage")
-        colorFilter.setValue(CIColor(red: 1, green: 248/255, blue: 245/255), forKey: "inputColor1") // Background off-white
-        colorFilter.setValue(CIColor(red: 102/255, green: 43/255, blue: 19/255), forKey: "inputColor0") // Barcode brown
+        colorFilter.setValue(CIColor(red: 0, green: 0, blue: 0, alpha: 0), forKey: "inputColor1") // Background transparent
+        colorFilter.setValue(CIColor(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667), forKey: "inputColor0") // Barcode brown
+        
         
         guard let ciimage = colorFilter.outputImage else { return nil }
         let transform = CGAffineTransform(scaleX: 10, y: 10)

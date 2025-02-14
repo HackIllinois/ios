@@ -358,7 +358,7 @@ struct HIAppearance: Equatable {
         static let loginSelection = UIFont(name: "MontserratRoman-SemiBold", size: UIDevice.current.userInterfaceIdiom == .pad ? 26: 16)
         
         // Profile-related fonts
-        static let profileName = UIFont(name: "MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 20)
+        static let profileName = UIFont(name: "MontserratRoman-SemiBold", size: UIDevice.current.userInterfaceIdiom == .pad ? 40 : 22)
         static let profileSubtitle = UIFont(name: "MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 24 : 12)
         static let profileDietaryRestrictions = UIFont(name: "MontserratRoman-SemiBold", size: UIDevice.current.userInterfaceIdiom == .pad ? 32 : 16)
         static let profileDietaryRestrictionsLabel = UIFont(name: "MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 24 : 12)
@@ -366,6 +366,7 @@ struct HIAppearance: Equatable {
         static let profileNumberFigure = UIFont(name: "MontserratRoman-SemiBold", size: 24)
         static let profileUsername = UIFont(name: "MontserratRoman-Bold", size: 16)
         static let profileInterests = UIFont(name: "MontserratRoman-SemiBold", size: 14)
+        static let profileRank = UIFont(name: "MontserratRoman-Bold", size: 16)
         
         // QR code fonts
         static let QRCheckInFont = UIFont(name: "MontserratRoman-SemiBold", size: 14)
