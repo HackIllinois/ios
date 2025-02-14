@@ -159,6 +159,18 @@ struct HIPointShopSwiftUIView: View {
                     .offset(x: -25, y: -38)
                     Spacer()
                 }
+                ZStack {
+                    Circle()
+                        .frame(width: 34)
+                        .foregroundColor(Color(red: 139/255, green: 109/255, blue: 116/255))
+                    Image(systemName: "chevron.left")
+                        .bold()
+                }
+                .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.height - 250, alignment: .topLeading)
+                .onTapGesture {
+                    title = "Point Shop"
+                    flowView = 0
+                }
                 VStack {
                     Spacer()
                     Image("Redeem")
