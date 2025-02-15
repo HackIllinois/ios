@@ -43,4 +43,16 @@ public final class ShopService: BaseService {
 
         return APIRequest<AddCartItem>(service: self, endpoint: "shop/cart/\(itemId)/", headers: headers, method: .DELETE)
     }
+    
+    public static func redeemCart(userToken: String) -> APIRequest<AddCartItem> {
+        let headers: HTTPParameters = ["Authorization": userToken]
+
+        return APIRequest<AddCartItem>(service: self, endpoint: "shop/cart/redeem/", headers: headers, method: .POST)
+    }
+    
+    public static func getQR(userToken: String) -> APIRequest<QRItem> {
+        let headers: HTTPParameters = ["Authorization": userToken]
+
+        return APIRequest<QRItem>(service: self, endpoint: "shop/cart/qr/", headers: headers, method: .GET)
+    }
 }

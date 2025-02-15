@@ -83,6 +83,7 @@ struct HIPointShopSwiftUIView: View {
     @State var tabIndex = 0
     @Binding var title: String
     @State var flowView = 0
+    @State var qrCode = ""
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
 
@@ -214,6 +215,9 @@ struct HIPointShopSwiftUIView: View {
                         .frame(width: 119)
                         .padding(.bottom, 90)
                         .onTapGesture {
+                            getQR { _ in
+                                print("QR code received")
+                            }
                             title = ""
                             flowView = 2
                         }
@@ -257,6 +261,11 @@ struct HIPointShopSwiftUIView: View {
                     }
                     Spacer()
                 }
+                Image(systemName: "Profile0")
+                    .data(url: URL(string: qrCode)!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
             }
         }
     }
@@ -307,6 +316,22 @@ struct HIPointShopSwiftUIView: View {
                 }
                 .authorize(with: user)
                 .launch()
+    }
+    
+    func getQR(completion: @escaping (String) -> Void) {
+        guard let user = HIApplicationStateController.shared.user else { return }
+        HIAPI.ShopService.getQR(userToken: user.token)
+            .onCompletion { result in
+                do {
+                    let (codeResult, _) = try result.get()
+                    qrCode = codeResult.QRCode ?? ""
+                    print(qrCode)
+                } catch {
+                    print("Failed to get QR: \(error)")
+                }
+            }
+            .authorize(with: user)
+            .launch()
     }
 }
 

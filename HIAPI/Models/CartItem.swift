@@ -25,8 +25,14 @@ public struct CartItemContainer: Decodable, APIReturnable {
 }
 
 public struct AddCartItem: Codable, APIReturnable {
-    public let items: [String: Int]? // Return itemName upon success
+    public let items: [String: Int]? // Return items upon success
     public let userId: String?
+    public let error: String?
+    public let message: String?
+}
+
+public struct QRItem: Codable, APIReturnable {
+    public let QRCode: String? // Return qr code upon success
     public let error: String?
     public let message: String?
 }
