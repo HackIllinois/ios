@@ -10,17 +10,13 @@ import Foundation
 import APIManager
 
 public struct CartItemContainer: Decodable, APIReturnable {
-    public let items: [CartItem]
+    public let items: [String: Int]
     public let userId: String
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let itemsDict = try container.decode([String: Int].self, forKey: .items)
+        self.items = try container.decode([String: Int].self, forKey: .items)
         self.userId = try container.decode(String.self, forKey: .userId)
-
-        self.items = itemsDict.map { key, value in
-            CartItem(additionalProperties: [key: value])
-        }
     }
     
     private enum CodingKeys: String, CodingKey {
@@ -28,6 +24,9 @@ public struct CartItemContainer: Decodable, APIReturnable {
     }
 }
 
-public struct CartItem: Codable, Hashable {
-    public let additionalProperties: [String: Int]
+public struct AddCartItem: Codable, APIReturnable {
+    public let items: [String: Int]? // Return itemName upon success
+    public let userId: String?
+    public let error: String?
+    public let message: String?
 }

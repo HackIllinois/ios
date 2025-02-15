@@ -32,9 +32,15 @@ public final class ShopService: BaseService {
         return APIRequest<RedeemItem>(service: self, endpoint: "shop/item/buy/", body: jsonBody, headers: headers, method: .POST)
     }
     
-    public static func addToCart(itemId: String, userToken: String) -> APIRequest<RedeemItem> {
+    public static func addToCart(itemId: String, userToken: String) -> APIRequest<AddCartItem> {
         let headers: HTTPParameters = ["Authorization": userToken]
 
-        return APIRequest<RedeemItem>(service: self, endpoint: "shop/cart/\(itemId)/", headers: headers, method: .POST)
+        return APIRequest<AddCartItem>(service: self, endpoint: "shop/cart/\(itemId)/", headers: headers, method: .POST)
+    }
+    
+    public static func removeFromCart(itemId: String, userToken: String) -> APIRequest<AddCartItem> {
+        let headers: HTTPParameters = ["Authorization": userToken]
+
+        return APIRequest<AddCartItem>(service: self, endpoint: "shop/cart/\(itemId)/", headers: headers, method: .DELETE)
     }
 }

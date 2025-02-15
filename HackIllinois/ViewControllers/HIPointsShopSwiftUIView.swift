@@ -47,7 +47,7 @@ class CartManager: ObservableObject {
     static let shared = CartManager()
 
     /// Published array of items that will notify SwiftUI of changes
-    @Published var items: [CartItem] = []
+    @Published var items: [String: Int] = [:]
 
     private init() {
         preloadCartItems()
@@ -225,8 +225,8 @@ struct HIPointShopSwiftUIView: View {
                             GridItem(.flexible(), spacing: 5),
                             GridItem(.flexible(), spacing: 5)
                         ], spacing: 16) {
-                            ForEach(cartManager.items, id: \.self) { item in
-                                CartItemCell(cartItem: item, item: findItem(by: item.additionalProperties.keys.first ?? "", in: shopManager.items)!)
+                            ForEach(Array(cartManager.items.keys).sorted { $0 > $1 }, id: \.self) { key in
+                                CartItemCell(count: cartManager.items[key] ?? 0, item: findItem(by: key, in: shopManager.items)!)
                             }
                         }
                     }
@@ -382,7 +382,7 @@ struct PointShopItemCell: View {
 }
 
 struct CartItemCell: View {
-    let cartItem: CartItem
+    let count: Int
     let item: Item
 
     var body: some View {
@@ -408,16 +408,29 @@ struct CartItemCell: View {
 
                 // Price + quantity
                 HStack(spacing: 4) {
-                    Image(systemName: "minus")
-                    Text(" | \(cartItem.additionalProperties.values.first ?? 0) | ")
-                        .font(.footnote).bold()
-                        .foregroundColor(.black)
-                    Image(systemName: "plus")
-                        .onTapGesture {
-                            addItemToCart(itemId: cartItem.additionalProperties.keys.first ?? "") { itemName in
-                                print("Added \(itemName) to cart")
-                            }
+                    Button(action: {
+                        removeItemFromCart(itemId: item.itemId) { itemName in
+                            print("Removed \(itemName) from cart")
                         }
+                    }) {
+                        Image(systemName: "minus")
+                            .foregroundColor(.black)
+                            .frame(width: 6, height: 6)
+                            .padding(.leading, 3)
+                    }
+                    Text(" | \(count) | ")
+                        .foregroundColor(.black)
+                        .font(Font.custom("Montserrat", size: 18).weight(.bold))
+                    Button(action: {
+                        addItemToCart(itemId: item.itemId) { itemName in
+                            print("Added \(itemName) to cart")
+                        }
+                    }) {
+                        Image(systemName: "plus")
+                            .foregroundColor(.black)
+                            .frame(width: 6, height: 6)
+                            .padding(.trailing, 3)
+                    }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
@@ -438,7 +451,22 @@ func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
         .onCompletion { result in
             do {
                 let (codeResult, _) = try result.get()
-                print(codeResult)
+                CartManager.shared.items = codeResult.items ?? CartManager.shared.items
+            } catch {
+                print("Failed to add to cart: \(error)")
+            }
+        }
+        .authorize(with: user)
+        .launch()
+}
+
+func removeItemFromCart(itemId: String, completion: @escaping (String) -> Void) {
+    guard let user = HIApplicationStateController.shared.user else { return }
+    HIAPI.ShopService.removeFromCart(itemId: itemId, userToken: user.token)
+        .onCompletion { result in
+            do {
+                let (codeResult, _) = try result.get()
+                CartManager.shared.items = codeResult.items ?? CartManager.shared.items
             } catch {
                 print("Failed to add to cart: \(error)")
             }
