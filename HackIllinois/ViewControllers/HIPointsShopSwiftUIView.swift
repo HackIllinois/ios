@@ -17,7 +17,9 @@ class PointShopManager: ObservableObject {
     /// Published array of items that will notify SwiftUI of changes
     @Published var items: [Item] = []
 
-    private init() { }
+    private init() {
+        preloadItems()
+    }
 
     /// Fetch items from the API and store them in `items`.
     /// Publishing to `items` will automatically trigger UI updates in SwiftUI.
@@ -200,7 +202,7 @@ struct HIPointShopSwiftUIView: View {
                 }
                 .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.height - 250, alignment: .topLeading)
                 .onTapGesture {
-                    title = "Point Shop"
+                    title = "POINT SHOP"
                     flowView = 0
                 }
                 // Cart scroll view
@@ -312,27 +314,29 @@ struct HIPointShopSwiftUIView: View {
 }
 
 struct PointShopItemCell: View {
+    @ObservedObject var shopManager = PointShopManager.shared
     let item: Item
 
     var body: some View {
         ZStack {
             // Use a rounded rectangle for the background
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white.opacity(0.4))
+                .fill(Color(red:139/255,green:109/255,blue:117/255).opacity(0.89))
 
             VStack(spacing: 4) {
+                // Name
+                Text(item.name)
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 75)
+                
                 // Item image
                 Image(systemName: "Profile0")
                     .data(url: URL(string: item.imageURL)!)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-
-                // Name
-                Text(item.name)
-                    .font(.caption)
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.center)
 
                 // Price + quantity
                 HStack(spacing: 4) {
@@ -342,23 +346,58 @@ struct PointShopItemCell: View {
                     if item.isRaffle {
                         Text("\(item.price)")
                             .font(.footnote).bold()
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     } else {
                         Text("\(item.price) | \(item.quantity) Left")
                             .font(.footnote)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
                     }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(Color.black.opacity(0.5))
+                .background(Color(red:245/255, green:240/255, blue:221/255))
                 .clipShape(Capsule())
             }
             .padding()
         }
         // Force a square cell
-        .frame(width: 120, height: 120)
+        .frame(width: 140, height: 140)
         .cornerRadius(12)
+        .overlay(
+            // Add button in the top right corner
+            Button(action: {
+                addItemToCart(itemId: item.itemId) { itemName in
+                    print("Added \(itemName) to cart")
+                }
+            }) {
+                ZStack {
+                    Circle()
+                        .frame(width: 18)
+                        .foregroundColor(.white)
+                    Image(systemName: "plus")
+                        .foregroundColor(.black)
+                }
+                .padding(6)
+            },
+            alignment: .topTrailing
+        )
+    }
+    
+    func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
+        guard let user = HIApplicationStateController.shared.user else { return }
+        HIAPI.ShopService.addToCart(itemId: itemId, userToken: user.token)
+            .onCompletion { result in
+                do {
+                    let (redeemItem, _) = try result.get()
+                    DispatchQueue.main.async {
+                        completion(redeemItem.itemName!)
+                    }
+                } catch {
+                    print("Failed to add to cart: \(error)")
+                }
+            }
+            .authorize(with: user)
+            .launch()
     }
 }
 

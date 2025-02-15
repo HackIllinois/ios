@@ -31,4 +31,10 @@ public final class ShopService: BaseService {
 
         return APIRequest<RedeemItem>(service: self, endpoint: "shop/item/buy/", body: jsonBody, headers: headers, method: .POST)
     }
+    
+    public static func addToCart(itemId: String, userToken: String) -> APIRequest<RedeemItem> {
+        let headers: HTTPParameters = ["Authorization": userToken]
+
+        return APIRequest<RedeemItem>(service: self, endpoint: "shop/item/\(itemId)/", headers: headers, method: .POST)
+    }
 }

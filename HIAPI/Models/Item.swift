@@ -20,12 +20,14 @@ public struct ItemContainer: Decodable, APIReturnable {
 
 public struct Item: Codable, Hashable {
     internal enum CodingKeys: String, CodingKey {
+        case itemId
         case name
         case price
         case isRaffle
         case quantity
         case imageURL
     }
+    public let itemId: String
     public let name: String
     public let price: Int
     public let isRaffle: Bool
