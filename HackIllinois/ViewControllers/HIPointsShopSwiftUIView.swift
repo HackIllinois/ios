@@ -49,7 +49,9 @@ class CartManager: ObservableObject {
     /// Published array of items that will notify SwiftUI of changes
     @Published var items: [CartItem] = []
 
-    private init() { }
+    private init() {
+        preloadCartItems()
+    }
 
     /// Fetch items from the API and store them in `items`.
     /// Publishing to `items` will automatically trigger UI updates in SwiftUI.
@@ -64,10 +66,11 @@ class CartManager: ObservableObject {
                         let (containedItem, _) = try result.get()
                         self.items = containedItem.items
                     } catch {
-                        print("Failed to preload point shop items with error: \(error)")
+                        print("Failed to preload cart items with error: \(error)")
                     }
                 }
             }
+            .authorize(with: HIApplicationStateController.shared.user)
             .launch()
     }
 }
@@ -161,9 +164,6 @@ struct HIPointShopSwiftUIView: View {
             }
         
             .onAppear {
-                // Optionally fetch items if not done in AppDelegate
-                // shopManager.preloadItems()
-
                 // Fetch coins
                 getCoins { newCoins in
                     coins = newCoins
@@ -205,27 +205,6 @@ struct HIPointShopSwiftUIView: View {
                     title = "POINT SHOP"
                     flowView = 0
                 }
-                // Cart scroll view
-                VStack(spacing: 16) {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(cartManager.items, id: \.self) { item in
-                                VStack(spacing: 8) {
-                                    ForEach(item.additionalProperties.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
-                                        HStack {
-                                            Text(key) // Display the property key
-                                                .font(.headline)
-                                            Spacer()
-                                            Text("\(value)") // Display the property value
-                                                .font(.subheadline)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 8)
-                    }
-                }
                 // Redeem button to go to QR
                 VStack {
                     Spacer()
@@ -239,6 +218,24 @@ struct HIPointShopSwiftUIView: View {
                             flowView = 2
                         }
                 }
+                
+                VStack(spacing: 5) {
+                    ScrollView {
+                        LazyVGrid(columns: [
+                            GridItem(.flexible(), spacing: 5),
+                            GridItem(.flexible(), spacing: 5)
+                        ], spacing: 16) {
+                            ForEach(cartManager.items, id: \.self) { item in
+                                CartItemCell(cartItem: item, item: findItem(by: item.additionalProperties.keys.first ?? "", in: shopManager.items)!)
+                            }
+                        }
+                    }
+                }
+                .frame(height: 500)
+                .padding(.bottom, 60)
+            }
+            .onAppear {
+                CartManager.shared.preloadCartItems()
             }
         } else {
             ZStack {
@@ -302,7 +299,7 @@ struct HIPointShopSwiftUIView: View {
                     do {
                         let (apiProfile, _) = try result.get()
                         DispatchQueue.main.async {
-                            completion(apiProfile.coins)
+                            completion(apiProfile.points)
                         }
                     } catch {
                         print("Failed to reload coins with error: \(error)")
@@ -382,23 +379,72 @@ struct PointShopItemCell: View {
             alignment: .topTrailing
         )
     }
-    
-    func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
-        guard let user = HIApplicationStateController.shared.user else { return }
-        HIAPI.ShopService.addToCart(itemId: itemId, userToken: user.token)
-            .onCompletion { result in
-                do {
-                    let (redeemItem, _) = try result.get()
-                    DispatchQueue.main.async {
-                        completion(redeemItem.itemName!)
-                    }
-                } catch {
-                    print("Failed to add to cart: \(error)")
+}
+
+struct CartItemCell: View {
+    let cartItem: CartItem
+    let item: Item
+
+    var body: some View {
+        ZStack {
+            // Use a rounded rectangle for the background
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(red:139/255,green:109/255,blue:117/255).opacity(0.89))
+
+            VStack(spacing: 4) {
+                // Name
+                Text(item.name)
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 75)
+                
+                // Item image
+                Image(systemName: "Profile0")
+                    .data(url: URL(string: item.imageURL)!)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
+
+                // Price + quantity
+                HStack(spacing: 4) {
+                    Image(systemName: "minus")
+                    Text(" | \(cartItem.additionalProperties.values.first ?? 0) | ")
+                        .font(.footnote).bold()
+                        .foregroundColor(.black)
+                    Image(systemName: "plus")
+                        .onTapGesture {
+                            addItemToCart(itemId: cartItem.additionalProperties.keys.first ?? "") { itemName in
+                                print("Added \(itemName) to cart")
+                            }
+                        }
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color(red:245/255, green:240/255, blue:221/255))
+                .clipShape(Capsule())
             }
-            .authorize(with: user)
-            .launch()
+            .padding()
+        }
+        // Force a square cell
+        .frame(width: 140, height: 140)
+        .cornerRadius(12)
     }
+}
+
+func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
+    guard let user = HIApplicationStateController.shared.user else { return }
+    HIAPI.ShopService.addToCart(itemId: itemId, userToken: user.token)
+        .onCompletion { result in
+            do {
+                let (codeResult, _) = try result.get()
+                print(codeResult)
+            } catch {
+                print("Failed to add to cart: \(error)")
+            }
+        }
+        .authorize(with: user)
+        .launch()
 }
 
 struct CustomTopTabBar: View {
@@ -419,6 +465,10 @@ struct CustomTopTabBar: View {
     private func onButtonTapped(index: Int) {
         withAnimation { tabIndex = index }
     }
+}
+
+func findItem(by itemId: String, in shopItems: [Item]) -> Item? {
+    return shopItems.first(where: { $0.itemId == itemId })
 }
 
 struct TabBarButton: View {
