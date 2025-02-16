@@ -129,12 +129,19 @@ extension HIScheduleViewController {
     }
 
     func animateReload() {
+        try? fetchedResultsController.performFetch()
+        
         if onlyShifts {
-            // If in shifts view, just clear the table view
+            // Clear schedule events
             tableView?.reloadData()
+            
+            // Make sure shifts are displayed if we have them
+            if hasSelectedShift && !staffShifts.isEmpty {
+                removeStaffShiftContainerViews()  // Clear old shift views
+                setUpShiftCells()  // Re-display current shifts
+            }
         } else {
             // Normal reload for schedule view
-            try? fetchedResultsController.performFetch()
             animateTableViewReload()
             if let tableView = tableView, !tableView.visibleCells.isEmpty {
                 tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
