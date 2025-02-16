@@ -55,7 +55,11 @@ extension HIProfileViewController {
 
     override func loadView() {
         super.loadView()
-        guard let user = HIApplicationStateController.shared.user else { return }
+        guard let user = HIApplicationStateController.shared.user else {
+            print("DEBUG: User is nil - Can't fetch profile")
+            return
+        }
+        print("DEBUG: User Token \(user.token)")
         if HIApplicationStateController.shared.isGuest || user.roles.contains(.STAFF) {
             layoutErrorView()
         } else {
@@ -179,7 +183,9 @@ extension HIProfileViewController {
         HIAPI.ProfileService.getUserProfile(userToken: user.token)
         .onCompletion { [weak self] result in
             do {
+                
                 let (apiProfile, _) = try result.get()
+                print("DEBUG: Full Profile Response - \(apiProfile)")
                 print(apiProfile)
                 self?.profile.userId = apiProfile.userId
                 self?.profile.displayName = apiProfile.displayName

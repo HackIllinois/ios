@@ -96,10 +96,21 @@ struct HIProfileCardView: View {
         let orb_y = base_y - half_pillar_height - full_flame_height - half_orb_height + flame_offset + full_orb_height + height_adjustment_factor
         let qr_y = base_y - half_pillar_height - half_flame_height - half_qr_height + qr_offset
         let name_y = qr_y - name_spacing
+        let avatar_y = orb_y
 
 
         
         ZStack(alignment: .bottom) {  // Stack elements and anchor to bottom
+//            Text("Debug Logs - Check Console")
+//                        .onAppear {
+//                            print("DEBUG: User Profile Information:")
+//                            print("Display Name: \(displayName)")
+//                            print("Points: \(points)")
+//                            print("Tier: \(tier)")
+//                            print("Food Wave: \(foodWave)")
+//                            print("Avatar URL: \(avatarUrl)")
+//                            print("Role: \(role)")
+//                        }
             
             
             Image("flame-vector")
@@ -139,8 +150,21 @@ struct HIProfileCardView: View {
                     y: orb_y
                 ) // Positioned on top of the flame
             
+            // Avatar Image - Positioned in the center of the profile orb
+            Image(uiImage: avatarUrl.load())
+                .resizable()
+                .scaledToFit()
+                .frame(width: screenWidth * (88.82 / 393), height: screenHeight * (86.91 / 841))
+                .clipShape(Circle())
+//                .overlay(
+//                        Circle()
+//                            .stroke(Color.red, lineWidth: 3) // Add a red outline to test the positioning of the avatar
+//                    )
+                .position(x: screenWidth / 2, y: avatar_y)
+            
+            
             // Name Label - Positioned Above the QR Code
-            Text("LeBron James")
+            Text(displayName)
                 .font(Font(HIAppearance.Font.profileName ?? .systemFont(ofSize: 22))) // Adjust font size as needed
                 .foregroundColor(Color.black) // White text color
                 .multilineTextAlignment(.center)
