@@ -17,9 +17,7 @@ class PointShopManager: ObservableObject {
     /// Published array of items that will notify SwiftUI of changes
     @Published var items: [Item] = []
 
-    private init() {
-        preloadItems()
-    }
+    private init() { }
 
     /// Fetch items from the API and store them in `items`.
     /// Publishing to `items` will automatically trigger UI updates in SwiftUI.
@@ -83,7 +81,9 @@ struct HIPointShopSwiftUIView: View {
     @State var tabIndex = 0
     @Binding var title: String
     @State var flowView = 0
-    @State var qrCode = ""
+    @State var startFetchingQR = false
+    @State var loading = true
+    @State var qrCode = "hackillinois://user?userToken=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
 
@@ -163,12 +163,12 @@ struct HIPointShopSwiftUIView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
-        
             .onAppear {
                 // Fetch coins
                 getCoins { newCoins in
                     coins = newCoins
                 }
+                shopManager.preloadItems()
             }
         } else if flowView == 1 {
             ZStack {
@@ -215,9 +215,7 @@ struct HIPointShopSwiftUIView: View {
                         .frame(width: 119)
                         .padding(.bottom, 90)
                         .onTapGesture {
-                            getQR { _ in
-                                print("QR code received")
-                            }
+                            startFetchingQR = true
                             title = ""
                             flowView = 2
                         }
@@ -239,7 +237,7 @@ struct HIPointShopSwiftUIView: View {
                 .padding(.bottom, 60)
             }
             .onAppear {
-                CartManager.shared.preloadCartItems()
+                cartManager.preloadCartItems()
             }
         } else {
             ZStack {
@@ -253,6 +251,7 @@ struct HIPointShopSwiftUIView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 80)
                             .onTapGesture {
+                                startFetchingQR = false
                                 title = "POINT SHOP"
                                 flowView = 0
                             }
@@ -261,11 +260,17 @@ struct HIPointShopSwiftUIView: View {
                     }
                     Spacer()
                 }
-                Image(systemName: "Profile0")
-                    .data(url: URL(string: qrCode)!)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60)
+                VStack {
+                    Text("SCAN HERE TO COMPLETE PURCHASE")
+                        .padding(.bottom, 50)
+                        .multilineTextAlignment(.center)
+                        .frame(width: 250)
+                        .font(Font.custom("Montserrat", size: 24).weight(.bold))
+                    Image(uiImage: UIImage(data: getQRCodeDate(text: qrCode)!)!)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 250, height: 250)
+                }
             }
         }
     }
@@ -301,12 +306,24 @@ struct HIPointShopSwiftUIView: View {
             .launch()
     }
     
+    func QRFetchLoop() {
+        if startFetchingQR {
+            getQRInfo() { _ in
+                print("QR code received")
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
+                QRFetchLoop()
+            }
+        }
+    }
+    
     func getCoins(completion: @escaping (Int) -> Void) {
             guard let user = HIApplicationStateController.shared.user else { return }
             HIAPI.ProfileService.getUserProfile(userToken: user.token)
                 .onCompletion { result in
                     do {
                         let (apiProfile, _) = try result.get()
+                        print(user.token)
                         DispatchQueue.main.async {
                             completion(apiProfile.points)
                         }
@@ -318,20 +335,39 @@ struct HIPointShopSwiftUIView: View {
                 .launch()
     }
     
-    func getQR(completion: @escaping (String) -> Void) {
+    func getQRInfo(completion: @escaping (Int) -> Void) {
         guard let user = HIApplicationStateController.shared.user else { return }
         HIAPI.ShopService.getQR(userToken: user.token)
             .onCompletion { result in
                 do {
-                    let (codeResult, _) = try result.get()
-                    qrCode = codeResult.QRCode ?? ""
-                    print(qrCode)
+                    let (qr, _) = try result.get()
+                    DispatchQueue.main.async {
+                        self.qrCode = qr.QRCode!
+                    }
                 } catch {
-                    print("Failed to get QR: \(error)")
+                    print("An error has occurred \(error)")
                 }
             }
             .authorize(with: user)
             .launch()
+    }
+    
+    func getQRCodeDate(text: String) -> Data? {
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        let data = text.data(using: .ascii, allowLossyConversion: false)
+        filter.setValue(data, forKey: "inputMessage")
+        
+        // Change color of QR code
+        guard let colorFilter = CIFilter(name: "CIFalseColor") else { return nil }
+        colorFilter.setValue(filter.outputImage, forKey: "inputImage")
+        colorFilter.setValue(CIColor(red: 1, green: 1, blue: 1), forKey: "inputColor1") // Background off-white
+        colorFilter.setValue(CIColor(red: 0, green: 0, blue: 0), forKey: "inputColor0") // Barcode brown
+        
+        guard let ciimage = colorFilter.outputImage else { return nil }
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        let scaledCIImage = ciimage.transformed(by: transform)
+        let uiimage = UIImage(ciImage: scaledCIImage)
+        return uiimage.pngData()!
     }
 }
 
