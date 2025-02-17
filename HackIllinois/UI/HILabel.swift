@@ -195,7 +195,7 @@ class HILabel: UILabel {
             font = HIAppearance.Font.loginTitle
 
         case .welcomeTitle:
-            textHIColor = \.loginSelectionText
+            textHIColor = \.black
             backgroundHIColor = \.clear
             font = HIAppearance.Font.welcomeTitle
 
@@ -292,16 +292,16 @@ class HILabel: UILabel {
             numberOfLines = 0
 
         case .onboardingDescription:
-            textHIColor = \.baseText
+            textHIColor = \.black
             backgroundHIColor = \.clear
-            font = HIAppearance.Font.onboardingDescription
+            font = HIAppearance.Font.profileNumberFigure
             textAlignment = .center
             numberOfLines = 0
 
         case .onboardingTitle:
-            textHIColor = \.whiteText
+            textHIColor = \.black
             backgroundHIColor = \.clear
-            font = HIAppearance.Font.onboardingTitle
+            font = HIAppearance.Font.scheduleSegmentedPad
             textAlignment = .center
             numberOfLines = 0
 
