@@ -117,23 +117,35 @@ extension HIScheduleViewController {
     }
 
     func currentPredicate() -> NSPredicate {
-        let currentTabPredicate = dataStore[currentTab].predicate
-        if onlyFavorites {
-            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [currentTabPredicate, onlyFavoritesPredicate])
-            return compoundPredicate
-        } else if onlyShifts {
-            let noEventsPredicate = NSPredicate(value: false)
-            return noEventsPredicate
+        if onlyShifts {
+            // Return a predicate that matches no events when in shifts view
+            return NSPredicate(value: false)
+        } else if onlyFavorites {
+            let currentTabPredicate = dataStore[currentTab].predicate
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [currentTabPredicate, onlyFavoritesPredicate])
         } else {
-            return currentTabPredicate
+            return dataStore[currentTab].predicate
         }
     }
 
     func animateReload() {
         try? fetchedResultsController.performFetch()
-        animateTableViewReload()
-        if let tableView = tableView, !tableView.visibleCells.isEmpty {
-            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        
+        if onlyShifts {
+            // Clear schedule events
+            tableView?.reloadData()
+            
+            // Make sure shifts are displayed if we have them
+            if hasSelectedShift && !staffShifts.isEmpty {
+                removeStaffShiftContainerViews()  // Clear old shift views
+                setUpShiftCells()  // Re-display current shifts
+            }
+        } else {
+            // Normal reload for schedule view
+            animateTableViewReload()
+            if let tableView = tableView, !tableView.visibleCells.isEmpty {
+                tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            }
         }
     }
 }
@@ -368,45 +380,31 @@ extension HIScheduleViewController {
         }
     }
     
-    // Actions for left and right buttons
-    @objc func scheduleButtonTapped(_ sender: UIButton) {
-        if onlyShifts {
-            onlyShifts = false
-            backgroundView.image = #imageLiteral(resourceName: "Background")
-            labelColor = .white // Set label color to brown
-            setStaffShiftsControl()
-            // Call removeStaffShiftContainerViews to remove container views for staff shifts
-            hasSelectedShift = false
-            removeStaffShiftContainerViews()
-            updatePredicate()
-            animateReload()
-        }
-    }
-
     @objc func shiftsButtonTapped(_ sender: UIButton) {
         if !onlyShifts {
-            onlyShifts = !onlyShifts
+            onlyShifts = true
             backgroundView.image = #imageLiteral(resourceName: "BackgroundShifts")
             hasSelectedShift = true
-            labelColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1) // Set label color to brown
+            labelColor = #colorLiteral(red: 0.337254902, green: 0.1411764706, blue: 0.06666666667, alpha: 1)
             setStaffShiftsControl()
-
+            
+            // First clear all existing events
+            removeStaffShiftContainerViews()
+            updatePredicate()
+            try? fetchedResultsController.performFetch()
+            tableView?.reloadData()
+            
             guard let user = HIApplicationStateController.shared.user else { return }
-
+            
             HIAPI.StaffService.getStaffShift(userToken: user.token)
                 .onCompletion { result in
                     do {
                         let (staffShifts, _) = try result.get()
                         self.staffShifts = staffShifts.shifts
-
+                        
                         DispatchQueue.main.async {
-                            // Set up shift cells
                             self.setUpShiftCells()
-                            // Update predicate and animate reload
-                            self.updatePredicate()
-                            self.animateReload()
                         }
-
                     } catch {
                         print("An error has occurred in getting staff shifts \(error)")
                     }
@@ -414,7 +412,24 @@ extension HIScheduleViewController {
                 .launch()
         }
     }
-    
+
+    @objc func scheduleButtonTapped(_ sender: UIButton) {
+        if onlyShifts {
+            onlyShifts = false
+            backgroundView.image = #imageLiteral(resourceName: "Background")
+            labelColor = .white
+            setStaffShiftsControl()
+            
+            // Clear shifts view
+            hasSelectedShift = false
+            removeStaffShiftContainerViews()
+            
+            // Restore schedule view
+            updatePredicate()
+            try? fetchedResultsController.performFetch()
+            tableView?.reloadData()
+        }
+    }
     func setUpShiftCells() {
         // Get filtered events by date
         let sundayStart = HITimeDataSource.shared.eventTimes.sundayStart
