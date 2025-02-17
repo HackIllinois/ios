@@ -86,6 +86,7 @@ struct HIPointShopSwiftUIView: View {
     @State var qrCode = "hackillinois://user?userToken=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
+    @State var currItems = []
 
     var body: some View {
         if flowView == 0 {
@@ -124,20 +125,21 @@ struct HIPointShopSwiftUIView: View {
                 
                 // 3) BOTTOM VSTACK: two rows pinned to bottom
                 VStack(spacing: 16) {
-                    // Row 1: first two items
-                    if shopManager.items.count >= 2 {
+                    let listedItems = filterShopItems(shopItems: shopManager.items, index: tabIndex)
+                    
+                    if listedItems.count >= 2 {
                         HStack(spacing: 16) {
-                            ForEach(shopManager.items.prefix(2), id: \.name) { item in
+                            ForEach(listedItems.prefix(2), id: \.name) { item in
                                 PointShopItemCell(item: item)
                             }
                         }
                     }
                     
                     // Row 2: horizontal scroll for the rest
-                    if shopManager.items.count > 2 {
+                    if listedItems.count > 2 {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
-                                ForEach(shopManager.items.dropFirst(2), id: \.name) { item in
+                                ForEach(listedItems.dropFirst(2), id: \.name) { item in
                                     PointShopItemCell(item: item)
                                 }
                             }
@@ -558,6 +560,10 @@ struct CustomTopTabBar: View {
 
 func findItem(by itemId: String, in shopItems: [Item]) -> Item? {
     return shopItems.first(where: { $0.itemId == itemId })
+}
+
+func filterShopItems(shopItems: [Item], index: Int) -> [Item] {
+    return shopItems.filter { $0.isRaffle == (index == 1) }
 }
 
 struct TabBarButton: View {
