@@ -195,7 +195,7 @@ class HILabel: UILabel {
             font = HIAppearance.Font.loginTitle
 
         case .welcomeTitle:
-            textHIColor = \.loginSelectionText
+            textHIColor = \.black
             backgroundHIColor = \.clear
             font = HIAppearance.Font.welcomeTitle
 

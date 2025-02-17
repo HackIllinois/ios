@@ -22,13 +22,15 @@ struct CarouselData: Hashable {
 struct HICarouselSwiftUIView: View {
     var carouselData: [CarouselData]
     @State private var currentIndex = 0
+    let resizeFactor = [(UIScreen.main.bounds.width/428), (UIScreen.main.bounds.height/926)]
+    
     var body: some View {
         ZStack {
             VStack {
                 Spacer()
                 RoundedRectangle(cornerRadius: 35)
                     .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
-                    .frame(width: UIScreen.main.bounds.width, height: 305)
+                    .frame(width: UIScreen.main.bounds.width, height: 325 * resizeFactor[1])
                     .shadow(radius: 7)
                     .padding(10)
             }
@@ -44,20 +46,20 @@ struct HICarouselSwiftUIView: View {
                                 Image(uiImage: carouselData[index].image!)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(height: UIDevice.current.userInterfaceIdiom == .pad ? 600: 450)
+                                    .frame(height: 450*resizeFactor[1])
                                 VStack {
                                     HILableSUI(text: carouselData[index].titleText, style: .onboardingTitle)
-                                        .frame(width: 20, height: 20)
-                                        .padding(.top, 15)
+                                        .frame(width: 20 * resizeFactor[0], height: 20 * resizeFactor[0])
+                                        .padding(.top, 15 * resizeFactor[1])
                                     Text(carouselData[index].descriptionText)
                                         .font(Font(HIAppearance.Font.navigationSubtitle ?? .systemFont(ofSize: 14)))
                                         .foregroundColor(.black)
-                                        .frame(width: UIScreen.main.bounds.width - 125)
+                                        .frame(width: UIScreen.main.bounds.width - 125 * resizeFactor[0])
                                         .multilineTextAlignment(.center)
                                         .padding(.vertical, 10)
                                 }
-                                .padding(.horizontal, 40)
-                                .padding(.top, 100)
+                                .padding(.horizontal, 40 * resizeFactor[0])
+                                .padding(.top, 100 * resizeFactor[1])
                             }
                             .tag(index)
                             .padding(.horizontal, horizontalCarouselPadding)
@@ -93,8 +95,8 @@ struct HICarouselSwiftUIView: View {
                         }
                     }
                 }
-                .padding(.top, 40)
-                .padding(.bottom, 20)
+                .padding(.top, 40 * resizeFactor[1])
+                .padding(.bottom, 20 * resizeFactor[1])
             }
         }
     }

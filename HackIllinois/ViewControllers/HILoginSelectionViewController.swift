@@ -132,12 +132,12 @@ extension HILoginSelectionViewController {
             if indexPath.row == 0 {
                 titleCell.textLabel?.text = "LOGIN"
                 titleCell.textLabel?.font = HIAppearance.Font.loginTitle
-                titleCell.textLabel?.textColor = (\HIAppearance.loginTitleBackground).value
+                titleCell.textLabel?.textColor = .black
 
             } else {
                 titleCell.textLabel?.text = "- OR -"
                 titleCell.textLabel?.font = HIAppearance.Font.loginOrTitle
-                titleCell.textLabel?.textColor = (\HIAppearance.loginSelectionText).value
+                titleCell.textLabel?.textColor = .black
             }
             return titleCell
         }
@@ -151,14 +151,15 @@ extension HILoginSelectionViewController {
                 cell.titleLabel.text = HIAPI.AuthService.OAuthProvider.all[0].displayName
                 cell.defaultColor = (\HIAppearance.attendeeBackground).value
                 cell.titleLabel.layer.borderColor = (\HIAppearance.attendeeBackground).value.cgColor
-                cell.activeTextColor = (\HIAppearance.attendeeBackground).value
+                cell.defaultTextColor = .white
+                cell.activeTextColor = .white
             } else if indexPath.row > 2 { //After "- OR -" cell roles
                 cell.titleLabel.text = HIAPI.AuthService.OAuthProvider.all[indexPath.row - 2].displayName
                 cell.defaultColor = .clear
                 cell.titleLabel.layer.borderColor = (\HIAppearance.loginDefault).value.cgColor
-                cell.activeTextColor = (\HIAppearance.loginDefault).value
+                cell.defaultTextColor = .black
+                cell.activeTextColor = .black
             }
-            cell.defaultTextColor = (\HIAppearance.attendeeText).value
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
             cell.titleLabel.layer.cornerRadius = cell.frame.height*(3/8)

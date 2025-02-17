@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Onboarding.png",
+      "filename" : "HackIllinois Login Logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Onboarding (1).png",
+      "filename" : "HackIllinois Login Logo (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Onboarding (2).png",
+      "filename" : "HackIllinois Login Logo (2).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
