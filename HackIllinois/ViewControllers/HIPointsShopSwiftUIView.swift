@@ -86,7 +86,7 @@ struct HIPointShopSwiftUIView: View {
     @State var qrCode = "hackillinois://user?userToken=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
-    @State var currItems = []
+    let resizeFactor = [(UIScreen.main.bounds.width/428), (UIScreen.main.bounds.height/926)] // sizing done based on iPhone 13 pro max, resizing factor to modify spacing [width, height]
 
     var body: some View {
         if flowView == 0 {
@@ -96,32 +96,27 @@ struct HIPointShopSwiftUIView: View {
                     .resizable()
                     .ignoresSafeArea()
                 
-                // 2) TOP BAR (coins + tab) pinned to top
-                VStack(spacing: 0) {
-                    // Coins row (top-right)
-                    HStack {
-                        Spacer()
-                        HStack(alignment: .center, spacing: 7) {
-                            Image("Coin")
-                                .resizable()
-                                .frame(width: isIpad ? 40 : 25,
-                                       height: isIpad ? 40 : 25)
-                            Text("\(coins)")
-                                .font(.system(size: isIpad ? 26 : 16).bold())
-                                .foregroundColor(.black)
-                        }
-                        .padding(.horizontal, 11)
-                        .padding(.vertical, 3)
-                        .background(Color(red: 0.96, green: 0.94, blue: 0.87))
-                        .cornerRadius(1000)
-                        .offset(x: -25, y: -38)
+                // 2) Coins display + tab bar
+                VStack {
+                    HStack(alignment: .center, spacing: 7) {
+                        Image("Coin")
+                            .resizable()
+                            .frame(width: 25 * resizeFactor[0], height: 25 * resizeFactor[0])
+                        Text("\(coins)")
+                            .font(Font.custom("MontserratRoman-Bold", size: isIpad ? 26 : 16).weight(.bold))
+                            .foregroundColor(.black)
                     }
-                    .frame(height: 60)
-                    
-                    // Tab bar
-                    CustomTopTabBar(tabIndex: $tabIndex)
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 3)
+                    .background(Color(red: 0.9607843137254902, green: 0.9411764705882353, blue: 0.8666666666666667))
+                    .cornerRadius(1000)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .offset(x: -25, y: -38)
+                    Spacer()
                 }
-                .frame(maxHeight: .infinity, alignment: .top)
+                
+                CustomTopTabBar(tabIndex: $tabIndex)
+                    .offset(y: -240 * (UIScreen.main.bounds.height/852))
                 
                 // 3) BOTTOM VSTACK: two rows pinned to bottom
                 VStack(spacing: 16) {
@@ -155,13 +150,13 @@ struct HIPointShopSwiftUIView: View {
                     HStack {
                         Image("Cart")
                             .resizable()
-                            .frame(width: 85, height: 30)
+                            .frame(width: 85 * resizeFactor[0], height: 30 * resizeFactor[1])
                             .onTapGesture {
                                 title = "CART"
                                 flowView = 1
                             }
                     }
-                    .frame(height: 60)
+                    .frame(height: 60 * resizeFactor[1])
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
@@ -182,7 +177,7 @@ struct HIPointShopSwiftUIView: View {
                     HStack(alignment: .center, spacing: 7) {
                         Image("Coin")
                             .resizable()
-                            .frame(width: 25, height: 25)
+                            .frame(width: 25 * resizeFactor[0], height: 25 * resizeFactor[0])
                         Text("\(coins)")
                             .font(Font.custom("MontserratRoman-Bold", size: isIpad ? 26 : 16).weight(.bold))
                             .foregroundColor(.black)
@@ -198,12 +193,12 @@ struct HIPointShopSwiftUIView: View {
                 // Back button to go back to point shop
                 ZStack {
                     Circle()
-                        .frame(width: 34)
+                        .frame(width: 34 * resizeFactor[0])
                         .foregroundColor(Color(red: 139/255, green: 109/255, blue: 116/255))
                     Image(systemName: "chevron.left")
                         .bold()
                 }
-                .frame(width: UIScreen.main.bounds.width - 50, height: UIScreen.main.bounds.height - 250, alignment: .topLeading)
+                .frame(width: UIScreen.main.bounds.width - 50 * resizeFactor[0], height: UIScreen.main.bounds.height - 250 * resizeFactor[1], alignment: .topLeading)
                 .onTapGesture {
                     title = "POINT SHOP"
                     flowView = 0
@@ -235,8 +230,8 @@ struct HIPointShopSwiftUIView: View {
                         }
                     }
                 }
-                .frame(height: 500)
-                .padding(.bottom, 60)
+                .frame(height: 500 * resizeFactor[1])
+                .padding(.bottom, 60 * resizeFactor[0])
             }
             .onAppear {
                 cartManager.preloadCartItems()
@@ -251,7 +246,7 @@ struct HIPointShopSwiftUIView: View {
                         Image("PointShopBack")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 80)
+                            .frame(width: 80 * resizeFactor[0])
                             .onTapGesture {
                                 startFetchingQR = false
                                 title = "POINT SHOP"
@@ -266,12 +261,12 @@ struct HIPointShopSwiftUIView: View {
                     Text("SCAN HERE TO COMPLETE PURCHASE")
                         .padding(.bottom, 50)
                         .multilineTextAlignment(.center)
-                        .frame(width: 250)
+                        .frame(width: 250 * resizeFactor[0])
                         .font(Font.custom("Montserrat", size: 24).weight(.bold))
                     Image(uiImage: UIImage(data: getQRCodeDate(text: qrCode)!)!)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 250, height: 250)
+                        .frame(width: 250 * resizeFactor[0], height: 250 * resizeFactor[0])
                 }
             }
         }
@@ -389,14 +384,14 @@ struct PointShopItemCell: View {
                     .font(.caption)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
-                    .frame(width: 75)
+                    .frame(width: 75 * (UIScreen.main.bounds.width/428))
                 
                 // Item image
                 Image(systemName: "Profile0")
                     .data(url: URL(string: item.imageURL)!)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 60, height: 60)
+                    .frame(width: 60 * (UIScreen.main.bounds.width/428), height: 60 * (UIScreen.main.bounds.width/428))
 
                 // Price + quantity
                 HStack(spacing: 4) {
@@ -421,7 +416,7 @@ struct PointShopItemCell: View {
             .padding()
         }
         // Force a square cell
-        .frame(width: 140, height: 140)
+        .frame(width: 140 * (UIScreen.main.bounds.width/428), height: 140 * (UIScreen.main.bounds.width/428))
         .cornerRadius(12)
         .overlay(
             // Add button in the top right corner
@@ -432,7 +427,7 @@ struct PointShopItemCell: View {
             }) {
                 ZStack {
                     Circle()
-                        .frame(width: 18)
+                        .frame(width: 18 * (UIScreen.main.bounds.width/428))
                         .foregroundColor(.white)
                     Image(systemName: "plus")
                         .foregroundColor(.black)
@@ -460,14 +455,14 @@ struct CartItemCell: View {
                     .font(.caption)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
-                    .frame(width: 75)
+                    .frame(width: 75 * (UIScreen.main.bounds.width/428))
                 
                 // Item image
                 Image(systemName: "Profile0")
                     .data(url: URL(string: item.imageURL)!)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 60, height: 60)
+                    .frame(width: 60 * (UIScreen.main.bounds.width/428), height: 60 * (UIScreen.main.bounds.width/428))
 
                 // Price + quantity
                 HStack(spacing: 4) {
@@ -503,7 +498,7 @@ struct CartItemCell: View {
             .padding()
         }
         // Force a square cell
-        .frame(width: 140, height: 140)
+        .frame(width: 140 * (UIScreen.main.bounds.width/428), height: 140 * (UIScreen.main.bounds.width/428))
         .cornerRadius(12)
     }
 }
