@@ -449,7 +449,7 @@ struct PointShopItemCell: View {
         .overlay(
             // Add button in the top right corner
             Button(action: {
-                addItemToCart(showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
+                addItemToCart(view: 0, showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
                     print("Added \(itemName) to cart")
                 }
             }) {
@@ -505,12 +505,17 @@ struct CartItemCell: View {
                             .foregroundColor(.black)
                             .frame(width: 6, height: 6)
                             .padding(.leading, 3)
+                            .background(
+                                Rectangle()
+                                    .frame(width: 6, height: 6)
+                                    .foregroundColor(Color(.white).opacity(0))
+                            )
                     }
                     Text(" | \(count) | ")
                         .foregroundColor(.black)
                         .font(Font.custom("Montserrat", size: 18).weight(.bold))
                     Button(action: {
-                        addItemToCart(showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
+                        addItemToCart(view: 1, showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
                             print("Added \(itemName) to cart")
                         }
                     }) {
@@ -518,6 +523,11 @@ struct CartItemCell: View {
                             .foregroundColor(.black)
                             .frame(width: 6, height: 6)
                             .padding(.trailing, 3)
+                            .background(
+                                Rectangle()
+                                    .frame(width: 6, height: 6)
+                                    .foregroundColor(Color(.white).opacity(0))
+                            )
                     }
                 }
                 .padding(.horizontal, 8)
@@ -533,13 +543,18 @@ struct CartItemCell: View {
     }
 }
 
-func addItemToCart(showError: Binding<Bool>, errorMessage: Binding<[String]>, itemId: String, completion: @escaping (String) -> Void) {
+func addItemToCart(view: Int, showError: Binding<Bool>, errorMessage: Binding<[String]>, itemId: String, completion: @escaping (String) -> Void) {
     guard let user = HIApplicationStateController.shared.user else { return }
     HIAPI.ShopService.addToCart(itemId: itemId, userToken: user.token)
         .onCompletion { result in
             do {
                 let (codeResult, _) = try result.get()
                 CartManager.shared.items = codeResult.items ?? CartManager.shared.items
+                if view == 0 { // Points shop --> want popup
+                    let itemName = findItem(by: itemId, in: PointShopManager.shared.items)?.name
+                    errorMessage.wrappedValue = ["SUCCESS!", "\(itemName ?? "Item") added to cart."]
+                    showError.wrappedValue = true
+                }
             } catch {
                 print("Failed to add to cart: \(error)")
                 let errorDescription = "\(error)"
@@ -663,6 +678,7 @@ struct ErrorPopup: View {
                             .frame(width: (300 - 16) * (UIScreen.main.bounds.width/393))
                     )
                     .padding(.bottom, 8 * UIScreen.main.bounds.width/393)
+                    .padding(.top, 10)
             }
             .frame(width: 300 * (UIScreen.main.bounds.width/393))
             .background(
