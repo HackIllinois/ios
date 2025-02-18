@@ -271,38 +271,29 @@ extension HIScanPointsShopViewController: AVCaptureMetadataOutputObjectsDelegate
         let meta = metadataObjects.first as? AVMetadataMachineReadableCodeObject
         let code = meta?.stringValue ?? ""
         guard let user = HIApplicationStateController.shared.user else { return }
-        if let rangeItemId = code.range(of: "itemId="), let rangeInstance = code.range(of: "&instance=") {
-            let itemId = code[rangeItemId.upperBound..<rangeInstance.lowerBound]
-            var instance = code[rangeInstance.upperBound...]
-            if instance.last == "\"" {
-                instance.removeLast()
-            }
-            print(instance)
-            respondingToQRCodeFound = false
-            HIAPI.ShopService.redeemPrize(itemId: String(itemId), itemInstance: String(instance), userToken: user.token)
-                .onCompletion { result in
-                    do {
-                        let (codeResult, _) = try result.get()
-                        let status = codeResult.error
-                        let itemName = codeResult.itemName
-                        NSLog(status ?? "Success")
-                        DispatchQueue.main.async {
-                            self.handlePointsShopAlert(status: status ?? "Success", itemName: itemName ?? "")
-                        }
-                    } catch {
-                        NSLog("Error info: \(error)")
-                        DispatchQueue.main.async { [self] in
-                            self.handlePointsShopAlert(status: "\(error)", itemName: "")
-                        }
+        respondingToQRCodeFound = false
+        HIAPI.ShopService.redeemCart(qrCode: code, userToken: user.token)
+            .onCompletion { result in
+                do {
+                    let (codeResult, _) = try result.get()
+                    let status = codeResult.error
+                    let itemName = "Hello"
+                    NSLog(status ?? "Success")
+                    DispatchQueue.main.async {
+                        self.handlePointsShopAlert(status: status ?? "Success", itemName: itemName)
                     }
-                    sleep(2)
+                } catch {
+                    NSLog("Error info: \(error)")
+                    DispatchQueue.main.async { [self] in
+                        self.handlePointsShopAlert(status: "\(error)", itemName: "")
+                    }
                 }
-                .authorize(with: HIApplicationStateController.shared.user)
-                .launch()
-        } else {
-            self.handlePointsShopAlert(status: "Error", itemName: "")
-        }
+                sleep(2)
+            }
+            .authorize(with: HIApplicationStateController.shared.user)
+            .launch()
     }
+    
     func decode(_ token: String) -> [String: AnyObject]? {
         let string = token.components(separatedBy: ".")
         if string.count == 1 { return nil }

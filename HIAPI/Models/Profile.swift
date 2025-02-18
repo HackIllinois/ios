@@ -25,22 +25,24 @@ public struct ProfileContainer: Decodable, APIReturnable {
 
 public struct Profile: Codable, APIReturnable {
     internal enum CodingKeys: String, CodingKey {
+        case _id
         case userId
-        case displayName
-        case points
-        case foodWave
         case discordTag
+        case displayName
+        case foodWave
+        case points
+        case pointsAccumulated
         case avatarUrl
-        case coins
     }
 
+    public let _id: String
     public let userId: String
-    public let displayName: String
-    public let points: Int
-    public let foodWave: Int
     public let discordTag: String
+    public let displayName: String
+    public let foodWave: Int
+    public let points: Int
+    public let pointsAccumulated: Int
     public let avatarUrl: String
-    public let coins: Int
 }
 
 public struct Ranking: Codable, APIReturnable {
