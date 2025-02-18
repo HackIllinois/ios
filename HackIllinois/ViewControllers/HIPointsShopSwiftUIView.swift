@@ -83,7 +83,7 @@ struct HIPointShopSwiftUIView: View {
     @State var flowView = 0
     @State var startFetchingQR = false
     @State var loading = true
-    @State var qrCode = "hackillinois://user?userToken=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+    @State var qrCode = ""
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
     let resizeFactor = [(UIScreen.main.bounds.width/428), (UIScreen.main.bounds.height/926)] // sizing done based on iPhone 13 pro max, resizing factor to modify spacing [width, height]
@@ -261,7 +261,7 @@ struct HIPointShopSwiftUIView: View {
                     }
                     Spacer()
                 }
-                if startFetchingQR {
+                if !qrCode.isEmpty {
                     VStack {
                         Text("SCAN HERE TO COMPLETE PURCHASE")
                             .padding(.bottom, 50)
@@ -278,6 +278,7 @@ struct HIPointShopSwiftUIView: View {
             .overlay(showError ? ErrorPopup(title: errorMessage[0], description: errorMessage[1], show: $showError) : nil)
             .onDisappear {
                 startFetchingQR = false
+                qrCode = ""
             }
         }
     }
