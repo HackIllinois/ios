@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import APIManager
 import HIAPI
 
 class PointShopManager: ObservableObject {
@@ -83,7 +84,7 @@ struct HIPointShopSwiftUIView: View {
     @State var flowView = 0
     @State var startFetchingQR = false
     @State var loading = true
-    @State var qrCode = ""
+    @State var qrCode = "hackillinois://user?userToken=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
     let resizeFactor = [(UIScreen.main.bounds.width/428), (UIScreen.main.bounds.height/926)] // sizing done based on iPhone 13 pro max, resizing factor to modify spacing [width, height]
@@ -263,7 +264,7 @@ struct HIPointShopSwiftUIView: View {
                     }
                     Spacer()
                 }
-                if !qrCode.isEmpty {
+                if startFetchingQR {
                     VStack {
                         Text("SCAN HERE TO COMPLETE PURCHASE")
                             .padding(.bottom, 50)
@@ -280,7 +281,6 @@ struct HIPointShopSwiftUIView: View {
             .overlay(showError ? ErrorPopup(title: errorMessage[0], description: errorMessage[1], show: $showError) : nil)
             .onDisappear {
                 startFetchingQR = false
-                qrCode = ""
             }
         }
     }
@@ -363,22 +363,22 @@ struct HIPointShopSwiftUIView: View {
                     DispatchQueue.main.async {
                         self.qrCode = qr.QRCode!
                     }
-                } catch {
-                    let errorDescription = "\(error)"
-                    if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
-                        print("Error code: \(codeString)")
-                        if codeString == "400" {
-                            errorMessage = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
-                        } else if codeString == "402" {
-                            errorMessage = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
-                        } else if codeString == "404" {
-                            errorMessage = ["NOT FOUND", "Failed to find item."]
-                        } else if codeString == "401" {
-                            errorMessage = ["INVALID USER", "Please sign out and login with an attendee account."]
-                        } else {
-                            errorMessage = ["ERROR: \(codeString)", "Something has gone wrong."]
-                        }
+                } catch APIRequestError.invalidHTTPReponse(code: let code, description: let description) {
+                    if code == 400 {
+                        errorMessage = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
+                    } else if code == 402 {
+                        errorMessage = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
+                    } else if code == 404 {
+                        errorMessage = ["NOT FOUND", "Failed to find item."]
+                    } else if code == 401 {
+                        errorMessage = ["INVALID USER", "Please sign out and login with an attendee account."]
+                    } else {
+                        errorMessage = ["ERROR: \(code)", "\(description)"]
                     }
+                    showError = true
+                    startFetchingQR = false
+                } catch {
+                    errorMessage = ["ERROR", "Something has gone wrong."]
                     showError = true
                     startFetchingQR = false
                 }
@@ -567,23 +567,23 @@ func addItemToCart(view: Int, showError: Binding<Bool>, errorMessage: Binding<[S
                     errorMessage.wrappedValue = ["SUCCESS!", "\(itemName ?? "Item") added to cart."]
                     showError.wrappedValue = true
                 }
+            } catch APIRequestError.invalidHTTPReponse(code: let code, description: let description) {
+                print("Failed to add to cart \(code): \(description)")
+                if code == 400 {
+                    errorMessage.wrappedValue = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
+                } else if code == 402 {
+                    errorMessage.wrappedValue = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
+                } else if code == 404 {
+                    errorMessage.wrappedValue = ["NOT FOUND", "Failed to find item."]
+                } else if code == 401 {
+                    errorMessage.wrappedValue = ["INVALID USER", "Please sign out and login with an attendee account."]
+                } else {
+                    errorMessage.wrappedValue = ["ERROR: \(code)", "\(description)"]
+                }
+                showError.wrappedValue = true
             } catch {
                 print("Failed to add to cart: \(error)")
-                let errorDescription = "\(error)"
-                if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
-                    print("Error code: \(codeString)")
-                    if codeString == "400" {
-                        errorMessage.wrappedValue = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
-                    } else if codeString == "402" {
-                        errorMessage.wrappedValue = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
-                    } else if codeString == "404" {
-                        errorMessage.wrappedValue = ["NOT FOUND", "Failed to find item."]
-                    } else if codeString == "401" {
-                        errorMessage.wrappedValue = ["INVALID USER", "Please sign out and login with an attendee account."]
-                    } else {
-                        errorMessage.wrappedValue = ["ERROR", "Something has gone wrong."]
-                    }
-                }
+                errorMessage.wrappedValue = ["ERROR", "Something has gone wrong."]
                 showError.wrappedValue = true
             }
         }
@@ -599,7 +599,7 @@ func removeItemFromCart(itemId: String, completion: @escaping (String) -> Void) 
                 let (codeResult, _) = try result.get()
                 CartManager.shared.items = codeResult.items ?? CartManager.shared.items
             } catch {
-                print("Failed to add to cart: \(error)")
+                print("Failed to remove from cart: \(error)")
             }
         }
         .authorize(with: user)
