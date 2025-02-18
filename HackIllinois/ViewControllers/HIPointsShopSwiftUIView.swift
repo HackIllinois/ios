@@ -87,6 +87,9 @@ struct HIPointShopSwiftUIView: View {
     
     let isIpad = UIDevice.current.userInterfaceIdiom == .pad
     let resizeFactor = [(UIScreen.main.bounds.width/428), (UIScreen.main.bounds.height/926)] // sizing done based on iPhone 13 pro max, resizing factor to modify spacing [width, height]
+    
+    @State var showError = false
+    @State var errorMessage = ["", ""]
 
     var body: some View {
         if flowView == 0 {
@@ -165,7 +168,7 @@ struct HIPointShopSwiftUIView: View {
                 getCoins { newCoins in
                     coins = newCoins
                 }
-                shopManager.preloadItems()
+                QRFetchLoop()
             }
         } else if flowView == 1 {
             ZStack {
@@ -213,6 +216,7 @@ struct HIPointShopSwiftUIView: View {
                         .padding(.bottom, 90)
                         .onTapGesture {
                             startFetchingQR = true
+                            QRFetchLoop()
                             title = ""
                             flowView = 2
                         }
@@ -257,17 +261,23 @@ struct HIPointShopSwiftUIView: View {
                     }
                     Spacer()
                 }
-                VStack {
-                    Text("SCAN HERE TO COMPLETE PURCHASE")
-                        .padding(.bottom, 50)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 250 * resizeFactor[0])
-                        .font(Font.custom("Montserrat", size: 24).weight(.bold))
-                    Image(uiImage: UIImage(data: getQRCodeDate(text: qrCode)!)!)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 250 * resizeFactor[0], height: 250 * resizeFactor[0])
+                if startFetchingQR {
+                    VStack {
+                        Text("SCAN HERE TO COMPLETE PURCHASE")
+                            .padding(.bottom, 50)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 250 * resizeFactor[0])
+                            .font(Font.custom("Montserrat", size: 24).weight(.bold))
+                        Image(uiImage: UIImage(data: getQRCodeDate(text: qrCode)!)!)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 250 * resizeFactor[0], height: 250 * resizeFactor[0])
+                    }
                 }
+            }
+            .overlay(showError ? ErrorPopup(title: errorMessage[0], description: errorMessage[1], show: $showError) : nil)
+            .onDisappear {
+                startFetchingQR = false
             }
         }
     }
@@ -320,7 +330,6 @@ struct HIPointShopSwiftUIView: View {
                 .onCompletion { result in
                     do {
                         let (apiProfile, _) = try result.get()
-                        print(user.token)
                         DispatchQueue.main.async {
                             completion(apiProfile.points)
                         }
@@ -342,7 +351,21 @@ struct HIPointShopSwiftUIView: View {
                         self.qrCode = qr.QRCode!
                     }
                 } catch {
-                    print("An error has occurred \(error)")
+                    let errorDescription = "\(error)"
+                    if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
+                        print("Error code: \(codeString)")
+                        if codeString == "400" {
+                            errorMessage = ["Insufficient Quantity", "Not enough of that item in the shop."]
+                        } else if codeString == "402" {
+                            errorMessage = ["Insufficient Funds", "You don't have enough to purchase that item!"]
+                        } else if codeString == "404" {
+                            errorMessage = ["Not Found", "Failed to find item."]
+                        } else {
+                            errorMessage = ["Error", "Something has gone wrong."]
+                        }
+                    }
+                    showError = true
+                    startFetchingQR = false
                 }
             }
             .authorize(with: user)
@@ -582,6 +605,47 @@ struct TabBarButton: View {
                 .foregroundColor(Color(HIAppearance.metallicCopper))
                 .fontWeight(.heavy)
                 .font(.custom("MontserratRoman-Bold", size: UIDevice.current.userInterfaceIdiom == .pad ? 36 : 16))
+        }
+    }
+}
+
+struct ErrorPopup: View {
+    let title: String
+    let description: String
+    @Binding var show: Bool
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .ignoresSafeArea()
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                .foregroundColor(Color(.black).opacity(0.2))
+            VStack {
+                Text(title)
+                    .font(Font.custom("Montserrat", size: 20).weight(.bold))
+                    .padding(.top, 20)
+                    .padding(.bottom, 10)
+                Text(description)
+                    .font(Font.custom("Montserrat", size: 16))
+                    .frame(width: 275)
+                    .multilineTextAlignment(.center)
+                VStack {
+                    Rectangle()
+                        .frame(width: 300 * (UIScreen.main.bounds.width/393), height: 2)
+                        .foregroundColor(.black)
+                        .padding(.top, 10)
+                    Text("Close")
+                        .font(Font.custom("Montserrat", size: 16))
+                        .padding(.bottom, 8)
+                }
+                .onTapGesture {
+                    show = false
+                }
+            }
+            .frame(width: 300 * (UIScreen.main.bounds.width/393))
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
+            )
         }
     }
 }
