@@ -338,6 +338,16 @@ struct HIPointShopSwiftUIView: View {
                         }
                     } catch {
                         print("Failed to reload coins with error: \(error)")
+                        let errorDescription = "\(error)"
+                        if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
+                            print("Error code: \(codeString)")
+                            if codeString == "404" {
+                                errorMessage = ["INVALID USER", "Please sign out and login with an attendee account."]
+                            } else {
+                                errorMessage = ["ERROR: \(codeString)", "Something has gone wrong."]
+                            }
+                        }
+                        showError = true
                     }
                 }
                 .authorize(with: user)
@@ -363,8 +373,10 @@ struct HIPointShopSwiftUIView: View {
                             errorMessage = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
                         } else if codeString == "404" {
                             errorMessage = ["NOT FOUND", "Failed to find item."]
+                        } else if codeString == "401" {
+                            errorMessage = ["INVALID USER", "Please sign out and login with an attendee account."]
                         } else {
-                            errorMessage = ["ERROR", "Something has gone wrong."]
+                            errorMessage = ["ERROR: \(codeString)", "Something has gone wrong."]
                         }
                     }
                     showError = true
@@ -566,6 +578,8 @@ func addItemToCart(view: Int, showError: Binding<Bool>, errorMessage: Binding<[S
                         errorMessage.wrappedValue = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
                     } else if codeString == "404" {
                         errorMessage.wrappedValue = ["NOT FOUND", "Failed to find item."]
+                    } else if codeString == "401" {
+                        errorMessage.wrappedValue = ["INVALID USER", "Please sign out and login with an attendee account."]
                     } else {
                         errorMessage.wrappedValue = ["ERROR", "Something has gone wrong."]
                     }
