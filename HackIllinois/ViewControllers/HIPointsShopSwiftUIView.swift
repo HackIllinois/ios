@@ -128,7 +128,7 @@ struct HIPointShopSwiftUIView: View {
                     if listedItems.count >= 2 {
                         HStack(spacing: 16) {
                             ForEach(listedItems.prefix(2), id: \.name) { item in
-                                PointShopItemCell(item: item)
+                                PointShopItemCell(item: item, showError: $showError, errorMessage: $errorMessage)
                             }
                         }
                     }
@@ -138,7 +138,7 @@ struct HIPointShopSwiftUIView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
                                 ForEach(listedItems.dropFirst(2), id: \.name) { item in
-                                    PointShopItemCell(item: item)
+                                    PointShopItemCell(item: item, showError: $showError, errorMessage: $errorMessage)
                                 }
                             }
                             .padding(.horizontal, 8)
@@ -163,6 +163,7 @@ struct HIPointShopSwiftUIView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
+            .overlay(showError ? ErrorPopup(title: errorMessage[0], description: errorMessage[1], show: $showError) : nil)
             .onAppear {
                 // Fetch coins
                 getCoins { newCoins in
@@ -229,7 +230,7 @@ struct HIPointShopSwiftUIView: View {
                             GridItem(.flexible(), spacing: 5)
                         ], spacing: 16) {
                             ForEach(Array(cartManager.items.keys).sorted { $0 > $1 }, id: \.self) { key in
-                                CartItemCell(count: cartManager.items[key] ?? 0, item: findItem(by: key, in: shopManager.items)!)
+                                CartItemCell(count: cartManager.items[key] ?? 0, item: findItem(by: key, in: shopManager.items)!, showError: $showError, errorMessage: $errorMessage)
                             }
                         }
                     }
@@ -237,6 +238,7 @@ struct HIPointShopSwiftUIView: View {
                 .frame(height: 500 * resizeFactor[1])
                 .padding(.bottom, 60 * resizeFactor[0])
             }
+            .overlay(showError ? ErrorPopup(title: errorMessage[0], description: errorMessage[1], show: $showError) : nil)
             .onAppear {
                 cartManager.preloadCartItems()
             }
@@ -356,13 +358,13 @@ struct HIPointShopSwiftUIView: View {
                     if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
                         print("Error code: \(codeString)")
                         if codeString == "400" {
-                            errorMessage = ["Insufficient Quantity", "Not enough of that item in the shop."]
+                            errorMessage = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
                         } else if codeString == "402" {
-                            errorMessage = ["Insufficient Funds", "You don't have enough to purchase that item!"]
+                            errorMessage = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
                         } else if codeString == "404" {
-                            errorMessage = ["Not Found", "Failed to find item."]
+                            errorMessage = ["NOT FOUND", "Failed to find item."]
                         } else {
-                            errorMessage = ["Error", "Something has gone wrong."]
+                            errorMessage = ["ERROR", "Something has gone wrong."]
                         }
                     }
                     showError = true
@@ -395,6 +397,8 @@ struct HIPointShopSwiftUIView: View {
 struct PointShopItemCell: View {
     @ObservedObject var shopManager = PointShopManager.shared
     let item: Item
+    @Binding var showError: Bool
+    @Binding var errorMessage: [String]
 
     var body: some View {
         ZStack {
@@ -445,7 +449,7 @@ struct PointShopItemCell: View {
         .overlay(
             // Add button in the top right corner
             Button(action: {
-                addItemToCart(itemId: item.itemId) { itemName in
+                addItemToCart(showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
                     print("Added \(itemName) to cart")
                 }
             }) {
@@ -466,6 +470,8 @@ struct PointShopItemCell: View {
 struct CartItemCell: View {
     let count: Int
     let item: Item
+    @Binding var showError: Bool
+    @Binding var errorMessage: [String]
 
     var body: some View {
         ZStack {
@@ -504,7 +510,7 @@ struct CartItemCell: View {
                         .foregroundColor(.black)
                         .font(Font.custom("Montserrat", size: 18).weight(.bold))
                     Button(action: {
-                        addItemToCart(itemId: item.itemId) { itemName in
+                        addItemToCart(showError: $showError, errorMessage: $errorMessage, itemId: item.itemId) { itemName in
                             print("Added \(itemName) to cart")
                         }
                     }) {
@@ -527,7 +533,7 @@ struct CartItemCell: View {
     }
 }
 
-func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
+func addItemToCart(showError: Binding<Bool>, errorMessage: Binding<[String]>, itemId: String, completion: @escaping (String) -> Void) {
     guard let user = HIApplicationStateController.shared.user else { return }
     HIAPI.ShopService.addToCart(itemId: itemId, userToken: user.token)
         .onCompletion { result in
@@ -536,6 +542,20 @@ func addItemToCart(itemId: String, completion: @escaping (String) -> Void) {
                 CartManager.shared.items = codeResult.items ?? CartManager.shared.items
             } catch {
                 print("Failed to add to cart: \(error)")
+                let errorDescription = "\(error)"
+                if let codeString = errorDescription.split(separator: ":").dropFirst().first?.trimmingCharacters(in: .whitespaces).prefix(3) {
+                    print("Error code: \(codeString)")
+                    if codeString == "400" {
+                        errorMessage.wrappedValue = ["INSUFFICIENT QUANTITY", "Not enough of that item in the shop."]
+                    } else if codeString == "402" {
+                        errorMessage.wrappedValue = ["INSUFFICIENT FUNDS", "You don't have enough to purchase that item!"]
+                    } else if codeString == "404" {
+                        errorMessage.wrappedValue = ["NOT FOUND", "Failed to find item."]
+                    } else {
+                        errorMessage.wrappedValue = ["ERROR", "Something has gone wrong."]
+                    }
+                }
+                showError.wrappedValue = true
             }
         }
         .authorize(with: user)
@@ -622,30 +642,32 @@ struct ErrorPopup: View {
                 .foregroundColor(Color(.black).opacity(0.2))
             VStack {
                 Text(title)
-                    .font(Font.custom("Montserrat", size: 20).weight(.bold))
+                    .font(Font.custom("Montserrat", size: 18).weight(.bold))
+                    .foregroundColor(Color(red:109/255, green:41/255, blue:26/255))
                     .padding(.top, 20)
                     .padding(.bottom, 10)
                 Text(description)
-                    .font(Font.custom("Montserrat", size: 16))
+                    .font(Font.custom("Montserrat", size: 15).weight(.medium))
                     .frame(width: 275)
                     .multilineTextAlignment(.center)
-                VStack {
-                    Rectangle()
-                        .frame(width: 300 * (UIScreen.main.bounds.width/393), height: 2)
-                        .foregroundColor(.black)
-                        .padding(.top, 10)
-                    Text("Close")
-                        .font(Font.custom("Montserrat", size: 16))
-                        .padding(.bottom, 8)
-                }
-                .onTapGesture {
-                    show = false
-                }
+                Text("OK")
+                    .font(Font.custom("Montserrat", size: 18).weight(.bold))
+                    .foregroundColor(Color(red:109/255, green:41/255, blue:26/255))
+                    .padding(.vertical, 5)
+                    .onTapGesture {
+                        show = false
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(red: 255 / 255, green: 178 / 255, blue: 62 / 255))
+                            .frame(width: (300 - 16) * (UIScreen.main.bounds.width/393))
+                    )
+                    .padding(.bottom, 8 * UIScreen.main.bounds.width/393)
             }
             .frame(width: 300 * (UIScreen.main.bounds.width/393))
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(red: 255 / 255, green: 250 / 255, blue: 235 / 255))
+                    .fill(Color(red: 255 / 255, green: 247 / 255, blue: 240 / 255))
             )
         }
     }
